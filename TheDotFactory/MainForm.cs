@@ -1535,7 +1535,7 @@ namespace TheDotFactory
             string charBitmapVarName = String.Format(m_outputConfig.varNfBitmaps, getFontName(ref fontInfo.font)) + "[]";
 
             // header var
-            resultTextHeader += String.Format("extern {0};" + nl, charBitmapVarName);
+            //resultTextHeader += String.Format("extern {0};" + nl, charBitmapVarName);
 
             // source var
             resultTextSource += String.Format("{0} = " + nl+"{{" + nl, charBitmapVarName);
@@ -1769,13 +1769,13 @@ namespace TheDotFactory
                 }
 
                 // bitmap varname
-                string dataVarName = String.Format(m_outputConfig.varNfBitmaps, imageName);
+                string bitmapVarName = String.Format(m_outputConfig.varNfImageBitmap, imageName) + "[]";
 
                 // add to header
-                resultTextHeader += String.Format("extern {0};" + nl, dataVarName);
+                //resultTextHeader += String.Format("extern {0};" + nl, bitmapVarName);
 
-                // add header
-                resultTextSource += String.Format("{0} =" + nl+"{{" + nl, dataVarName);
+                // add to source
+                resultTextSource += String.Format("{0} =" + nl+"{{" + nl, bitmapVarName);
 
                 //
                 // Bitmap to string
@@ -1804,37 +1804,59 @@ namespace TheDotFactory
                                                         m_commentStartString, imageName, m_commentEndString);
                 }
 
-                // get var name
-                string heightVarName = String.Format(m_outputConfig.varNfHeight, imageName);
-                string widthVarName = String.Format(m_outputConfig.varNfWidth, imageName);
-
+                int imageWidth;
+                string imageWidthComment;
                 // display width in bytes?
                 if (m_outputConfig.descImgWidth == OutputConfiguration.DescriptorFormat.DisplayInBytes)
                 {
                     // in pages
-                    resultTextSource += String.Format("{0}Pages = {1};" + nl, widthVarName, pagesPerRow);
-                    resultTextHeader += String.Format("extern {0}Pages;" + nl, widthVarName);
+                    imageWidth = pagesPerRow;
+                    imageWidthComment = "Image width in bytes (pages)";
                 }
                 else
                 {
                     // in pixels
-                    resultTextSource += String.Format("{0}Pixels = {1};" + nl, widthVarName, bitmapManipulated.Width);
-                    resultTextHeader += String.Format("extern {0}Pixels;" + nl, widthVarName);
+                    imageWidth = bitmapManipulated.Width;
+                    imageWidthComment = "Image width in pixels";
                 }
 
+                int imageHeight;
+                string imageHeightComment;
                 // display height in bytes?
                 if (m_outputConfig.descImgHeight == OutputConfiguration.DescriptorFormat.DisplayInBytes)
                 {
                     // in pages
-                    resultTextSource += String.Format("{0}Pages = {1};" + nl, heightVarName, convertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bitmapManipulated.Height));
-                    resultTextHeader += String.Format("extern {0}Pages;" + nl, heightVarName);
+                    imageHeight = convertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bitmapManipulated.Height);
+                    imageHeightComment = "Image height in bytes (pages)";
                 }
                 else
                 {
                     // in pixels
-                    resultTextSource += String.Format("{0}Pixels = {1};"+nl, heightVarName, bitmapManipulated.Height);
-                    resultTextHeader += String.Format("extern {0}Pixels;"+nl, heightVarName);
+                    imageHeight = bitmapManipulated.Height;
+                    imageHeightComment = "Image height in pixels";
                 }
+
+                // get var name
+                string imageInfoVarName = String.Format(m_outputConfig.varNfImageInfo, imageName);
+
+                // image info header
+                resultTextHeader += String.Format("extern {0};" + nl, imageInfoVarName);
+
+                // image info source
+                resultTextSource += String.Format("{2} =" + nl + "{{" + nl +
+                                                  "\t{3}, {0} {4}{1}" + nl +
+                                                  "\t{5}, {0} {6}{1}" + nl +
+                                                  "\t{7}, {0} Image bitmap array{1}" + nl +
+                                                  "}};" + nl,
+                                                  m_commentStartString,
+                                                  m_commentEndString,
+                                                  imageInfoVarName,
+                                                  imageWidth,
+                                                  imageWidthComment,
+                                                  imageHeight,
+                                                  imageHeightComment,
+                                                  getVariableNameFromExpression(bitmapVarName));
+
             }
         }
 

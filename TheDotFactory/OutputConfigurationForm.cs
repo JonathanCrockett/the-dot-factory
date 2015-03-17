@@ -74,11 +74,11 @@ namespace TheDotFactory
             txtSpacePixels.Text = outputConfig.spaceGenerationPixels.ToString();
             txtLookupBlocksNewAfterCharCount.Text = outputConfig.lookupBlocksNewAfterCharCount.ToString();
             cbxOutputConfigurations.Text = outputConfig.displayName;
-            txtVarNfBitmaps.Text = outputConfig.varNfBitmaps;
+            txtVarNfFontBitmaps.Text = outputConfig.varNfBitmaps;
             txtVarNfCharInfo.Text = outputConfig.varNfCharInfo;
             txtVarNfFontInfo.Text = outputConfig.varNfFontInfo;
-            txtVarNfWidth.Text = outputConfig.varNfWidth;
-            txtVarNfHeight.Text = outputConfig.varNfHeight;
+            txtVarNfImageBitmap.Text = outputConfig.varNfImageBitmap;
+            txtVarNfImageInfo.Text = outputConfig.varNfImageInfo;
 
             // load check boxes
             cbxFlipHoriz.Checked = outputConfig.flipHorizontal;
@@ -121,11 +121,11 @@ namespace TheDotFactory
             outputConfig.byteLeadingString = cbxByteLeadingChar.Text;
             outputConfig.spaceGenerationPixels = (int)System.Convert.ToInt32(txtSpacePixels.Text, 10);
             outputConfig.lookupBlocksNewAfterCharCount = System.Convert.ToInt32(txtLookupBlocksNewAfterCharCount.Text, 10);
-            outputConfig.varNfBitmaps = txtVarNfBitmaps.Text;
+            outputConfig.varNfBitmaps = txtVarNfFontBitmaps.Text;
             outputConfig.varNfCharInfo = txtVarNfCharInfo.Text;
             outputConfig.varNfFontInfo = txtVarNfFontInfo.Text;
-            outputConfig.varNfWidth = txtVarNfWidth.Text;
-            outputConfig.varNfHeight = txtVarNfHeight.Text;
+            outputConfig.varNfImageBitmap = txtVarNfImageBitmap.Text;
+            outputConfig.varNfImageInfo = txtVarNfImageInfo.Text;
 
             // load check boxes
             outputConfig.flipHorizontal = cbxFlipHoriz.Checked;

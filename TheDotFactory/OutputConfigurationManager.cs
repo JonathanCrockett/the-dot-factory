@@ -147,8 +147,8 @@ namespace TheDotFactory
         public string varNfBitmaps = "const uint_8 {0}Bitmaps";
         public string varNfCharInfo = "const FONT_CHAR_INFO {0}Descriptors";
         public string varNfFontInfo = "const FONT_INFO {0}FontInfo";
-        public string varNfWidth = "const uint_8 {0}Width";
-        public string varNfHeight = "const uint_8 {0}Height";
+        public string varNfImageBitmap = "const uint_8 {0}Bitmap";
+        public string varNfImageInfo = "const IMAGE_INFO {0}ImageInfo";
 
         // display name
         public string displayName = "";
