@@ -36,7 +36,7 @@ namespace TheDotFactory
         private static String nl = Environment.NewLine;
 
         // application version
-        public const string ApplicationVersion = "0.1.4";
+        public const string ApplicationVersion = "0.1.5";
 
         // current loaded bitmap
         private Bitmap m_currentLoadedBitmap = null;
@@ -201,13 +201,13 @@ namespace TheDotFactory
         // populate preformatted text
         private void populateTextInsertCheckbox()
         {
-            string all = "", numbers = "", letters = "", uppercaseLetters = "", lowercaseLetters = "", symbols = "";
+            string allEnglish = "", numbers = "", letters = "", uppercaseLetters = "", lowercaseLetters = "", symbols = "";
 
             // generate characters
             for (char character = ' '; character < 127; ++character)
             {
                 // add to all
-                all += character;
+                allEnglish += character;
 
                 // classify letter
                 if (Char.IsNumber(character)) numbers += character;
@@ -216,12 +216,37 @@ namespace TheDotFactory
                 else if (Char.IsLetter(character) && !Char.IsLower(character)) { letters += character; uppercaseLetters += character; }
             }
 
+            string allEuropean = allEnglish, extraPunctuations = "", extraSymbols = "", extraNumbers = "";
+            for( char character = (char) 128; character <= 255; ++character )
+            {
+                if( Char.IsLetter( character ) )
+                {
+                    allEuropean += character;
+                }
+                else if( Char.IsPunctuation( character ) )
+                {
+                    extraPunctuations += character;
+                }
+                else if( Char.IsSymbol( character ) )
+                {
+                    extraSymbols += character;
+                }
+                else if( Char.IsNumber( character ) )
+                {
+                    extraNumbers += character;
+                }
+            }
+
             // add items
-            cbxTextInsert.Items.Add(new ComboBoxItem("All", all));
+            cbxTextInsert.Items.Add( new ComboBoxItem( "All European", allEuropean ) );
+            cbxTextInsert.Items.Add( new ComboBoxItem( "All English", allEnglish ) );
             cbxTextInsert.Items.Add(new ComboBoxItem("Numbers (0-9)", numbers));
             cbxTextInsert.Items.Add(new ComboBoxItem("Letters (A-z)", letters));
             cbxTextInsert.Items.Add(new ComboBoxItem("Lowercase letters (a-z)", lowercaseLetters));
             cbxTextInsert.Items.Add(new ComboBoxItem("Uppercase letters (A-Z)", uppercaseLetters));
+            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Punctuations", extraPunctuations ) );
+            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Symbols", extraSymbols ) );
+            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Numbers", extraNumbers ) );
 
             // use first
             cbxTextInsert.SelectedIndex = 0;
@@ -699,7 +724,7 @@ namespace TheDotFactory
                 for (int column = 0; column < bitmapToGenerate.Width; ++column) 
                 {
                     // is pixel set?
-                    if (bitmapToGenerate.GetPixel(column, row).ToArgb() == Color.Black.ToArgb())
+                    if( bitmapToGenerate.GetPixel(column, row).GetBrightness() < 0.5 )
                     {
                         // set the appropriate bit in the page
                         if (m_outputConfig.byteOrder == OutputConfiguration.ByteOrder.MsbFirst) currentValue |= (byte)(1 << (7 - bitsRead));
@@ -1438,7 +1463,7 @@ namespace TheDotFactory
                                                     getCharacterDescString(m_outputConfig.descCharHeight, character.height),
                                                     character.offset,
                                                     m_commentStartString,
-                                                    character.character,
+                                                    character.character == '\\' ? "\\ (backslash)" : new string(character.character, 1),
                                                     m_commentEndString + " ");
                 }
 
@@ -1738,7 +1763,7 @@ namespace TheDotFactory
                 // manipulate the bitmap
                 Bitmap bitmapManipulated;
 
-                // try to manipulate teh bitmap
+                // try to manipulate the bitmap
                 if (!manipulateBitmap(bitmapOriginal, bitmapBorder, out bitmapManipulated, 0, 0))
                 {
                     // show error
