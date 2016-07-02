@@ -36,7 +36,7 @@ namespace TheDotFactory
         private static String nl = Environment.NewLine;
 
         // application version
-        public const string ApplicationVersion = "0.1.4";
+        public const string ApplicationVersion = "0.1.5";
 
         // current loaded bitmap
         private Bitmap m_currentLoadedBitmap = null;
@@ -201,13 +201,13 @@ namespace TheDotFactory
         // populate preformatted text
         private void populateTextInsertCheckbox()
         {
-            string all = "", numbers = "", letters = "", uppercaseLetters = "", lowercaseLetters = "", symbols = "";
+            string allEnglish = "", numbers = "", letters = "", uppercaseLetters = "", lowercaseLetters = "", symbols = "";
 
             // generate characters
             for (char character = ' '; character < 127; ++character)
             {
                 // add to all
-                all += character;
+                allEnglish += character;
 
                 // classify letter
                 if (Char.IsNumber(character)) numbers += character;
@@ -216,12 +216,37 @@ namespace TheDotFactory
                 else if (Char.IsLetter(character) && !Char.IsLower(character)) { letters += character; uppercaseLetters += character; }
             }
 
+            string allEuropean = allEnglish, extraPunctuations = "", extraSymbols = "", extraNumbers = "";
+            for( char character = (char) 128; character <= 255; ++character )
+            {
+                if( Char.IsLetter( character ) )
+                {
+                    allEuropean += character;
+                }
+                else if( Char.IsPunctuation( character ) )
+                {
+                    extraPunctuations += character;
+                }
+                else if( Char.IsSymbol( character ) )
+                {
+                    extraSymbols += character;
+                }
+                else if( Char.IsNumber( character ) )
+                {
+                    extraNumbers += character;
+                }
+            }
+
             // add items
-            cbxTextInsert.Items.Add(new ComboBoxItem("All", all));
+            cbxTextInsert.Items.Add( new ComboBoxItem( "All European", allEuropean ) );
+            cbxTextInsert.Items.Add( new ComboBoxItem( "All English", allEnglish ) );
             cbxTextInsert.Items.Add(new ComboBoxItem("Numbers (0-9)", numbers));
             cbxTextInsert.Items.Add(new ComboBoxItem("Letters (A-z)", letters));
             cbxTextInsert.Items.Add(new ComboBoxItem("Lowercase letters (a-z)", lowercaseLetters));
             cbxTextInsert.Items.Add(new ComboBoxItem("Uppercase letters (A-Z)", uppercaseLetters));
+            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Punctuations", extraPunctuations ) );
+            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Symbols", extraSymbols ) );
+            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Numbers", extraNumbers ) );
 
             // use first
             cbxTextInsert.SelectedIndex = 0;
@@ -699,7 +724,7 @@ namespace TheDotFactory
                 for (int column = 0; column < bitmapToGenerate.Width; ++column) 
                 {
                     // is pixel set?
-                    if (bitmapToGenerate.GetPixel(column, row).ToArgb() == Color.Black.ToArgb())
+                    if( bitmapToGenerate.GetPixel(column, row).GetBrightness() < 0.5 )
                     {
                         // set the appropriate bit in the page
                         if (m_outputConfig.byteOrder == OutputConfiguration.ByteOrder.MsbFirst) currentValue |= (byte)(1 << (7 - bitsRead));
@@ -1438,7 +1463,7 @@ namespace TheDotFactory
                                                     getCharacterDescString(m_outputConfig.descCharHeight, character.height),
                                                     character.offset,
                                                     m_commentStartString,
-                                                    character.character,
+                                                    character.character == '\\' ? "\\ (backslash)" : new string(character.character, 1),
                                                     m_commentEndString + " ");
                 }
 
@@ -1535,7 +1560,7 @@ namespace TheDotFactory
             string charBitmapVarName = String.Format(m_outputConfig.varNfBitmaps, getFontName(ref fontInfo.font)) + "[]";
 
             // header var
-            resultTextHeader += String.Format("extern {0};" + nl, charBitmapVarName);
+            //resultTextHeader += String.Format("extern {0};" + nl, charBitmapVarName);
 
             // source var
             resultTextSource += String.Format("{0} = " + nl+"{{" + nl, charBitmapVarName);
@@ -1738,7 +1763,7 @@ namespace TheDotFactory
                 // manipulate the bitmap
                 Bitmap bitmapManipulated;
 
-                // try to manipulate teh bitmap
+                // try to manipulate the bitmap
                 if (!manipulateBitmap(bitmapOriginal, bitmapBorder, out bitmapManipulated, 0, 0))
                 {
                     // show error
@@ -1769,13 +1794,13 @@ namespace TheDotFactory
                 }
 
                 // bitmap varname
-                string dataVarName = String.Format(m_outputConfig.varNfBitmaps, imageName);
+                string bitmapVarName = String.Format(m_outputConfig.varNfImageBitmap, imageName) + "[]";
 
                 // add to header
-                resultTextHeader += String.Format("extern {0};" + nl, dataVarName);
+                //resultTextHeader += String.Format("extern {0};" + nl, bitmapVarName);
 
-                // add header
-                resultTextSource += String.Format("{0} =" + nl+"{{" + nl, dataVarName);
+                // add to source
+                resultTextSource += String.Format("{0} =" + nl+"{{" + nl, bitmapVarName);
 
                 //
                 // Bitmap to string
@@ -1804,37 +1829,59 @@ namespace TheDotFactory
                                                         m_commentStartString, imageName, m_commentEndString);
                 }
 
-                // get var name
-                string heightVarName = String.Format(m_outputConfig.varNfHeight, imageName);
-                string widthVarName = String.Format(m_outputConfig.varNfWidth, imageName);
-
+                int imageWidth;
+                string imageWidthComment;
                 // display width in bytes?
                 if (m_outputConfig.descImgWidth == OutputConfiguration.DescriptorFormat.DisplayInBytes)
                 {
                     // in pages
-                    resultTextSource += String.Format("{0}Pages = {1};" + nl, widthVarName, pagesPerRow);
-                    resultTextHeader += String.Format("extern {0}Pages;" + nl, widthVarName);
+                    imageWidth = pagesPerRow;
+                    imageWidthComment = "Image width in bytes (pages)";
                 }
                 else
                 {
                     // in pixels
-                    resultTextSource += String.Format("{0}Pixels = {1};" + nl, widthVarName, bitmapManipulated.Width);
-                    resultTextHeader += String.Format("extern {0}Pixels;" + nl, widthVarName);
+                    imageWidth = bitmapManipulated.Width;
+                    imageWidthComment = "Image width in pixels";
                 }
 
+                int imageHeight;
+                string imageHeightComment;
                 // display height in bytes?
                 if (m_outputConfig.descImgHeight == OutputConfiguration.DescriptorFormat.DisplayInBytes)
                 {
                     // in pages
-                    resultTextSource += String.Format("{0}Pages = {1};" + nl, heightVarName, convertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bitmapManipulated.Height));
-                    resultTextHeader += String.Format("extern {0}Pages;" + nl, heightVarName);
+                    imageHeight = convertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bitmapManipulated.Height);
+                    imageHeightComment = "Image height in bytes (pages)";
                 }
                 else
                 {
                     // in pixels
-                    resultTextSource += String.Format("{0}Pixels = {1};"+nl, heightVarName, bitmapManipulated.Height);
-                    resultTextHeader += String.Format("extern {0}Pixels;"+nl, heightVarName);
+                    imageHeight = bitmapManipulated.Height;
+                    imageHeightComment = "Image height in pixels";
                 }
+
+                // get var name
+                string imageInfoVarName = String.Format(m_outputConfig.varNfImageInfo, imageName);
+
+                // image info header
+                resultTextHeader += String.Format("extern {0};" + nl, imageInfoVarName);
+
+                // image info source
+                resultTextSource += String.Format("{2} =" + nl + "{{" + nl +
+                                                  "\t{3}, {0} {4}{1}" + nl +
+                                                  "\t{5}, {0} {6}{1}" + nl +
+                                                  "\t{7}, {0} Image bitmap array{1}" + nl +
+                                                  "}};" + nl,
+                                                  m_commentStartString,
+                                                  m_commentEndString,
+                                                  imageInfoVarName,
+                                                  imageWidth,
+                                                  imageWidthComment,
+                                                  imageHeight,
+                                                  imageHeightComment,
+                                                  getVariableNameFromExpression(bitmapVarName));
+
             }
         }
 
