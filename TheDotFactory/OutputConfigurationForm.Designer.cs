@@ -51,7 +51,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.btnSaveNewConfig = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.txtBmpVisualizerChar = new System.Windows.Forms.TextBox();
+            this.txtBmpVisualizerChar = new System.Windows.Forms.ComboBox();
             this.cbxCommentStyle = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cbxCommentCharDesc = new System.Windows.Forms.CheckBox();
@@ -62,27 +62,6 @@
             this.rbnLineWrapAtBitmap = new System.Windows.Forms.RadioButton();
             this.rbnLineWrapAtColumn = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.cbxImgHeightFormat = new System.Windows.Forms.ComboBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.cbxImgWidthFormat = new System.Windows.Forms.ComboBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.txtLookupBlocksNewAfterCharCount = new System.Windows.Forms.TextBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.cbxGenerateLookupBlocks = new System.Windows.Forms.CheckBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.cbxGenerateLookupArray = new System.Windows.Forms.CheckBox();
-            this.cbxFontHeightFormat = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.cbxCharHeightFormat = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cbxCharWidthFormat = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.cbxGenerateSpaceBitmap = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txtSpacePixels = new System.Windows.Forms.TextBox();
             this.btnDeleteConfig = new System.Windows.Forms.Button();
             this.btnUpdateConfig = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -97,14 +76,35 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.cbxCharacterEncoding = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.cbxGenerateSpaceBitmap = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtSpacePixels = new System.Windows.Forms.TextBox();
+            this.cbxGenerateLookupArray = new UIToolbox.CheckGroupBox();
+            this.cbxImgHeightFormat = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.cbxImgWidthFormat = new System.Windows.Forms.ComboBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.cbxGenerateLookupBlocks = new UIToolbox.CheckGroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.txtLookupBlocksNewAfterCharCount = new System.Windows.Forms.TextBox();
+            this.cbxFontHeightFormat = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cbxCharHeightFormat = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cbxCharWidthFormat = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cbxAddCodePage = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.gbxPadding.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            this.groupBox7.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.cbxGenerateLookupArray.SuspendLayout();
+            this.cbxGenerateLookupBlocks.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox3
@@ -139,7 +139,7 @@
             // 
             this.cbxBitLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBitLayout.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cbxBitLayout.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.cbxBitLayout.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxBitLayout.FormattingEnabled = true;
             this.cbxBitLayout.Location = new System.Drawing.Point(69, 14);
             this.cbxBitLayout.Name = "cbxBitLayout";
@@ -327,7 +327,7 @@
             this.cbxOutputConfigurations.FormattingEnabled = true;
             this.cbxOutputConfigurations.Location = new System.Drawing.Point(82, 12);
             this.cbxOutputConfigurations.Name = "cbxOutputConfigurations";
-            this.cbxOutputConfigurations.Size = new System.Drawing.Size(493, 21);
+            this.cbxOutputConfigurations.Size = new System.Drawing.Size(497, 21);
             this.cbxOutputConfigurations.TabIndex = 36;
             this.cbxOutputConfigurations.SelectedIndexChanged += new System.EventHandler(this.cbxOutputConfigurations_SelectedIndexChanged);
             // 
@@ -345,7 +345,7 @@
             this.btnSaveNewConfig.FlatAppearance.BorderSize = 0;
             this.btnSaveNewConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSaveNewConfig.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveNewConfig.Image")));
-            this.btnSaveNewConfig.Location = new System.Drawing.Point(610, 10);
+            this.btnSaveNewConfig.Location = new System.Drawing.Point(617, 10);
             this.btnSaveNewConfig.Name = "btnSaveNewConfig";
             this.btnSaveNewConfig.Size = new System.Drawing.Size(26, 23);
             this.btnSaveNewConfig.TabIndex = 37;
@@ -370,14 +370,14 @@
             // 
             // txtBmpVisualizerChar
             // 
-            this.txtBmpVisualizerChar.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBmpVisualizerChar.Location = new System.Drawing.Point(119, 37);
-            this.txtBmpVisualizerChar.MaxLength = 1;
+            this.txtBmpVisualizerChar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.txtBmpVisualizerChar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBmpVisualizerChar.FormattingEnabled = true;
+            this.txtBmpVisualizerChar.Location = new System.Drawing.Point(117, 36);
             this.txtBmpVisualizerChar.Name = "txtBmpVisualizerChar";
-            this.txtBmpVisualizerChar.Size = new System.Drawing.Size(21, 20);
-            this.txtBmpVisualizerChar.TabIndex = 49;
-            this.txtBmpVisualizerChar.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtBmpVisualizerChar.TextChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            this.txtBmpVisualizerChar.Size = new System.Drawing.Size(47, 21);
+            this.txtBmpVisualizerChar.TabIndex = 44;
+            this.txtBmpVisualizerChar.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
             // 
             // cbxCommentStyle
             // 
@@ -442,14 +442,14 @@
             this.btnApply.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnApply.Image = ((System.Drawing.Image)(resources.GetObject("btnApply.Image")));
             this.btnApply.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnApply.Location = new System.Drawing.Point(598, 414);
+            this.btnApply.Location = new System.Drawing.Point(616, 439);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(64, 23);
             this.btnApply.TabIndex = 40;
             this.btnApply.Text = "Apply ";
             this.btnApply.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler(this.button1_Click);
+            this.btnApply.Click += new System.EventHandler(this.buttonApply_Click);
             // 
             // groupBox5
             // 
@@ -473,7 +473,7 @@
             this.rbnLineWrapAtBitmap.TabIndex = 1;
             this.rbnLineWrapAtBitmap.Text = "At bitmap";
             this.rbnLineWrapAtBitmap.UseVisualStyleBackColor = true;
-            this.rbnLineWrapAtBitmap.CheckedChanged += new System.EventHandler(this.rbnLineWrapAtBitmap_Click);
+            this.rbnLineWrapAtBitmap.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
             // 
             // rbnLineWrapAtColumn
             // 
@@ -487,267 +487,22 @@
             this.rbnLineWrapAtColumn.TabStop = true;
             this.rbnLineWrapAtColumn.Text = "At column";
             this.rbnLineWrapAtColumn.UseVisualStyleBackColor = true;
-            this.rbnLineWrapAtColumn.CheckedChanged += new System.EventHandler(this.rbnLineWrapAtBitmap_Click);
+            this.rbnLineWrapAtColumn.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
             // 
             // label4
             // 
             this.label4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label4.Location = new System.Drawing.Point(18, 44);
+            this.label4.Location = new System.Drawing.Point(18, 36);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(644, 2);
+            this.label4.Size = new System.Drawing.Size(661, 2);
             this.label4.TabIndex = 42;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.cbxImgHeightFormat);
-            this.groupBox6.Controls.Add(this.label22);
-            this.groupBox6.Controls.Add(this.cbxImgWidthFormat);
-            this.groupBox6.Controls.Add(this.label23);
-            this.groupBox6.Controls.Add(this.txtLookupBlocksNewAfterCharCount);
-            this.groupBox6.Controls.Add(this.label21);
-            this.groupBox6.Controls.Add(this.label13);
-            this.groupBox6.Controls.Add(this.cbxGenerateLookupBlocks);
-            this.groupBox6.Controls.Add(this.label14);
-            this.groupBox6.Controls.Add(this.cbxGenerateLookupArray);
-            this.groupBox6.Controls.Add(this.cbxFontHeightFormat);
-            this.groupBox6.Controls.Add(this.label2);
-            this.groupBox6.Controls.Add(this.cbxCharHeightFormat);
-            this.groupBox6.Controls.Add(this.label3);
-            this.groupBox6.Controls.Add(this.cbxCharWidthFormat);
-            this.groupBox6.Controls.Add(this.label5);
-            this.groupBox6.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox6.Location = new System.Drawing.Point(443, 58);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(222, 269);
-            this.groupBox6.TabIndex = 43;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Descriptors";
-            // 
-            // cbxImgHeightFormat
-            // 
-            this.cbxImgHeightFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxImgHeightFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cbxImgHeightFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.cbxImgHeightFormat.FormattingEnabled = true;
-            this.cbxImgHeightFormat.Location = new System.Drawing.Point(87, 238);
-            this.cbxImgHeightFormat.Name = "cbxImgHeightFormat";
-            this.cbxImgHeightFormat.Size = new System.Drawing.Size(112, 21);
-            this.cbxImgHeightFormat.TabIndex = 64;
-            this.cbxImgHeightFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label22.Location = new System.Drawing.Point(10, 241);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(71, 13);
-            this.label22.TabIndex = 63;
-            this.label22.Text = "Image height:";
-            // 
-            // cbxImgWidthFormat
-            // 
-            this.cbxImgWidthFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxImgWidthFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cbxImgWidthFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.cbxImgWidthFormat.FormattingEnabled = true;
-            this.cbxImgWidthFormat.Location = new System.Drawing.Point(87, 212);
-            this.cbxImgWidthFormat.Name = "cbxImgWidthFormat";
-            this.cbxImgWidthFormat.Size = new System.Drawing.Size(112, 21);
-            this.cbxImgWidthFormat.TabIndex = 62;
-            this.cbxImgWidthFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label23.Location = new System.Drawing.Point(14, 215);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(67, 13);
-            this.label23.TabIndex = 61;
-            this.label23.Text = "Image width:";
-            // 
-            // txtLookupBlocksNewAfterCharCount
-            // 
-            this.txtLookupBlocksNewAfterCharCount.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLookupBlocksNewAfterCharCount.Location = new System.Drawing.Point(163, 177);
-            this.txtLookupBlocksNewAfterCharCount.Name = "txtLookupBlocksNewAfterCharCount";
-            this.txtLookupBlocksNewAfterCharCount.Size = new System.Drawing.Size(36, 21);
-            this.txtLookupBlocksNewAfterCharCount.TabIndex = 58;
-            this.txtLookupBlocksNewAfterCharCount.Text = "80";
-            this.txtLookupBlocksNewAfterCharCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtLookupBlocksNewAfterCharCount.TextChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label21.Location = new System.Drawing.Point(13, 180);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(144, 13);
-            this.label21.TabIndex = 60;
-            this.label21.Text = "between characters exceeds";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label13.Location = new System.Drawing.Point(13, 161);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(197, 13);
-            this.label13.TabIndex = 59;
-            this.label13.Text = "Create new descriptor array when space";
-            // 
-            // cbxGenerateLookupBlocks
-            // 
-            this.cbxGenerateLookupBlocks.AutoSize = true;
-            this.cbxGenerateLookupBlocks.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxGenerateLookupBlocks.Location = new System.Drawing.Point(20, 125);
-            this.cbxGenerateLookupBlocks.Name = "cbxGenerateLookupBlocks";
-            this.cbxGenerateLookupBlocks.Size = new System.Drawing.Size(142, 17);
-            this.cbxGenerateLookupBlocks.TabIndex = 53;
-            this.cbxGenerateLookupBlocks.Text = "Multiple descriptor arrays";
-            this.cbxGenerateLookupBlocks.UseVisualStyleBackColor = true;
-            this.cbxGenerateLookupBlocks.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // label14
-            // 
-            this.label14.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label14.Location = new System.Drawing.Point(6, 155);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(210, 48);
-            this.label14.TabIndex = 57;
-            // 
-            // cbxGenerateLookupArray
-            // 
-            this.cbxGenerateLookupArray.AutoSize = true;
-            this.cbxGenerateLookupArray.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxGenerateLookupArray.Location = new System.Drawing.Point(20, 19);
-            this.cbxGenerateLookupArray.Name = "cbxGenerateLookupArray";
-            this.cbxGenerateLookupArray.Size = new System.Drawing.Size(180, 17);
-            this.cbxGenerateLookupArray.TabIndex = 52;
-            this.cbxGenerateLookupArray.Text = "Generate descriptor lookup array";
-            this.cbxGenerateLookupArray.UseVisualStyleBackColor = true;
-            this.cbxGenerateLookupArray.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // cbxFontHeightFormat
-            // 
-            this.cbxFontHeightFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxFontHeightFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cbxFontHeightFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.cbxFontHeightFormat.FormattingEnabled = true;
-            this.cbxFontHeightFormat.Location = new System.Drawing.Point(89, 94);
-            this.cbxFontHeightFormat.Name = "cbxFontHeightFormat";
-            this.cbxFontHeightFormat.Size = new System.Drawing.Size(112, 21);
-            this.cbxFontHeightFormat.TabIndex = 48;
-            this.cbxFontHeightFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label2.Location = new System.Drawing.Point(20, 97);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 13);
-            this.label2.TabIndex = 47;
-            this.label2.Text = "Font height:";
-            // 
-            // cbxCharHeightFormat
-            // 
-            this.cbxCharHeightFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxCharHeightFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cbxCharHeightFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.cbxCharHeightFormat.FormattingEnabled = true;
-            this.cbxCharHeightFormat.Location = new System.Drawing.Point(89, 68);
-            this.cbxCharHeightFormat.Name = "cbxCharHeightFormat";
-            this.cbxCharHeightFormat.Size = new System.Drawing.Size(112, 21);
-            this.cbxCharHeightFormat.TabIndex = 46;
-            this.cbxCharHeightFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label3.Location = new System.Drawing.Point(17, 71);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 13);
-            this.label3.TabIndex = 45;
-            this.label3.Text = "Char height:";
-            // 
-            // cbxCharWidthFormat
-            // 
-            this.cbxCharWidthFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxCharWidthFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cbxCharWidthFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.cbxCharWidthFormat.FormattingEnabled = true;
-            this.cbxCharWidthFormat.Location = new System.Drawing.Point(89, 42);
-            this.cbxCharWidthFormat.Name = "cbxCharWidthFormat";
-            this.cbxCharWidthFormat.Size = new System.Drawing.Size(112, 21);
-            this.cbxCharWidthFormat.TabIndex = 44;
-            this.cbxCharWidthFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label5.Location = new System.Drawing.Point(23, 45);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(60, 13);
-            this.label5.TabIndex = 43;
-            this.label5.Text = "Char width:";
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.cbxGenerateSpaceBitmap);
-            this.groupBox7.Controls.Add(this.label6);
-            this.groupBox7.Controls.Add(this.txtSpacePixels);
-            this.groupBox7.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox7.Location = new System.Drawing.Point(443, 332);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(222, 75);
-            this.groupBox7.TabIndex = 44;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Space char generation";
-            // 
-            // cbxGenerateSpaceBitmap
-            // 
-            this.cbxGenerateSpaceBitmap.AutoSize = true;
-            this.cbxGenerateSpaceBitmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxGenerateSpaceBitmap.Location = new System.Drawing.Point(12, 20);
-            this.cbxGenerateSpaceBitmap.Name = "cbxGenerateSpaceBitmap";
-            this.cbxGenerateSpaceBitmap.Size = new System.Drawing.Size(136, 17);
-            this.cbxGenerateSpaceBitmap.TabIndex = 50;
-            this.cbxGenerateSpaceBitmap.Text = "Generate space bitmap";
-            this.cbxGenerateSpaceBitmap.UseVisualStyleBackColor = true;
-            this.cbxGenerateSpaceBitmap.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label6.Location = new System.Drawing.Point(52, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(104, 13);
-            this.label6.TabIndex = 49;
-            this.label6.Text = "pixels for space char";
-            // 
-            // txtSpacePixels
-            // 
-            this.txtSpacePixels.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSpacePixels.Location = new System.Drawing.Point(12, 42);
-            this.txtSpacePixels.Name = "txtSpacePixels";
-            this.txtSpacePixels.Size = new System.Drawing.Size(36, 21);
-            this.txtSpacePixels.TabIndex = 48;
-            this.txtSpacePixels.Text = "2";
-            this.txtSpacePixels.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtSpacePixels.TextChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
             // 
             // btnDeleteConfig
             // 
             this.btnDeleteConfig.FlatAppearance.BorderSize = 0;
             this.btnDeleteConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDeleteConfig.Image = ((System.Drawing.Image)(resources.GetObject("btnDeleteConfig.Image")));
-            this.btnDeleteConfig.Location = new System.Drawing.Point(639, 10);
+            this.btnDeleteConfig.Location = new System.Drawing.Point(649, 10);
             this.btnDeleteConfig.Name = "btnDeleteConfig";
             this.btnDeleteConfig.Size = new System.Drawing.Size(26, 23);
             this.btnDeleteConfig.TabIndex = 45;
@@ -760,7 +515,7 @@
             this.btnUpdateConfig.FlatAppearance.BorderSize = 0;
             this.btnUpdateConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUpdateConfig.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateConfig.Image")));
-            this.btnUpdateConfig.Location = new System.Drawing.Point(581, 10);
+            this.btnUpdateConfig.Location = new System.Drawing.Point(585, 10);
             this.btnUpdateConfig.Name = "btnUpdateConfig";
             this.btnUpdateConfig.Size = new System.Drawing.Size(26, 23);
             this.btnUpdateConfig.TabIndex = 46;
@@ -892,16 +647,265 @@
             this.label9.TabIndex = 43;
             this.label9.Text = "Font bitmaps:";
             // 
+            // cbxCharacterEncoding
+            // 
+            this.cbxCharacterEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxCharacterEncoding.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cbxCharacterEncoding.FormattingEnabled = true;
+            this.cbxCharacterEncoding.Location = new System.Drawing.Point(554, 381);
+            this.cbxCharacterEncoding.Name = "cbxCharacterEncoding";
+            this.cbxCharacterEncoding.Size = new System.Drawing.Size(92, 21);
+            this.cbxCharacterEncoding.TabIndex = 51;
+            this.cbxCharacterEncoding.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(448, 384);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(100, 13);
+            this.label14.TabIndex = 52;
+            this.label14.Text = "Character encoding";
+            // 
+            // cbxGenerateSpaceBitmap
+            // 
+            this.cbxGenerateSpaceBitmap.AutoSize = true;
+            this.cbxGenerateSpaceBitmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxGenerateSpaceBitmap.Location = new System.Drawing.Point(458, 313);
+            this.cbxGenerateSpaceBitmap.Name = "cbxGenerateSpaceBitmap";
+            this.cbxGenerateSpaceBitmap.Size = new System.Drawing.Size(136, 17);
+            this.cbxGenerateSpaceBitmap.TabIndex = 50;
+            this.cbxGenerateSpaceBitmap.TabStop = false;
+            this.cbxGenerateSpaceBitmap.Text = "Generate space bitmap";
+            this.cbxGenerateSpaceBitmap.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label6.Location = new System.Drawing.Point(501, 339);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(104, 13);
+            this.label6.TabIndex = 49;
+            this.label6.Text = "pixels for space char";
+            // 
+            // txtSpacePixels
+            // 
+            this.txtSpacePixels.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSpacePixels.Location = new System.Drawing.Point(455, 336);
+            this.txtSpacePixels.Name = "txtSpacePixels";
+            this.txtSpacePixels.Size = new System.Drawing.Size(36, 21);
+            this.txtSpacePixels.TabIndex = 48;
+            this.txtSpacePixels.Text = "2";
+            this.txtSpacePixels.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtSpacePixels.TextChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // cbxGenerateLookupArray
+            // 
+            this.cbxGenerateLookupArray.AutoSize = true;
+            this.cbxGenerateLookupArray.Controls.Add(this.cbxImgHeightFormat);
+            this.cbxGenerateLookupArray.Controls.Add(this.label22);
+            this.cbxGenerateLookupArray.Controls.Add(this.cbxImgWidthFormat);
+            this.cbxGenerateLookupArray.Controls.Add(this.label23);
+            this.cbxGenerateLookupArray.Controls.Add(this.cbxGenerateLookupBlocks);
+            this.cbxGenerateLookupArray.Controls.Add(this.cbxFontHeightFormat);
+            this.cbxGenerateLookupArray.Controls.Add(this.label2);
+            this.cbxGenerateLookupArray.Controls.Add(this.cbxCharHeightFormat);
+            this.cbxGenerateLookupArray.Controls.Add(this.label3);
+            this.cbxGenerateLookupArray.Controls.Add(this.cbxCharWidthFormat);
+            this.cbxGenerateLookupArray.Controls.Add(this.label5);
+            this.cbxGenerateLookupArray.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxGenerateLookupArray.Location = new System.Drawing.Point(443, 58);
+            this.cbxGenerateLookupArray.Name = "cbxGenerateLookupArray";
+            this.cbxGenerateLookupArray.Size = new System.Drawing.Size(237, 249);
+            this.cbxGenerateLookupArray.TabIndex = 43;
+            this.cbxGenerateLookupArray.TabStop = false;
+            this.cbxGenerateLookupArray.Text = "Generate descriptors lookup array";
+            this.cbxGenerateLookupArray.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // cbxImgHeightFormat
+            // 
+            this.cbxImgHeightFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxImgHeightFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cbxImgHeightFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.cbxImgHeightFormat.FormattingEnabled = true;
+            this.cbxImgHeightFormat.Location = new System.Drawing.Point(91, 208);
+            this.cbxImgHeightFormat.Name = "cbxImgHeightFormat";
+            this.cbxImgHeightFormat.Size = new System.Drawing.Size(112, 21);
+            this.cbxImgHeightFormat.TabIndex = 64;
+            this.cbxImgHeightFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label22.Location = new System.Drawing.Point(12, 211);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(71, 13);
+            this.label22.TabIndex = 63;
+            this.label22.Text = "Image height:";
+            // 
+            // cbxImgWidthFormat
+            // 
+            this.cbxImgWidthFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxImgWidthFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cbxImgWidthFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.cbxImgWidthFormat.FormattingEnabled = true;
+            this.cbxImgWidthFormat.Location = new System.Drawing.Point(91, 181);
+            this.cbxImgWidthFormat.Name = "cbxImgWidthFormat";
+            this.cbxImgWidthFormat.Size = new System.Drawing.Size(112, 21);
+            this.cbxImgWidthFormat.TabIndex = 62;
+            this.cbxImgWidthFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label23.Location = new System.Drawing.Point(16, 186);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(67, 13);
+            this.label23.TabIndex = 61;
+            this.label23.Text = "Image width:";
+            // 
+            // cbxGenerateLookupBlocks
+            // 
+            this.cbxGenerateLookupBlocks.AutoSize = true;
+            this.cbxGenerateLookupBlocks.Controls.Add(this.label13);
+            this.cbxGenerateLookupBlocks.Controls.Add(this.label21);
+            this.cbxGenerateLookupBlocks.Controls.Add(this.txtLookupBlocksNewAfterCharCount);
+            this.cbxGenerateLookupBlocks.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxGenerateLookupBlocks.Location = new System.Drawing.Point(12, 99);
+            this.cbxGenerateLookupBlocks.Name = "cbxGenerateLookupBlocks";
+            this.cbxGenerateLookupBlocks.Size = new System.Drawing.Size(209, 77);
+            this.cbxGenerateLookupBlocks.TabIndex = 53;
+            this.cbxGenerateLookupBlocks.TabStop = false;
+            this.cbxGenerateLookupBlocks.Text = "Multiple descriptor arrays";
+            this.cbxGenerateLookupBlocks.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label13.Location = new System.Drawing.Point(6, 17);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(197, 13);
+            this.label13.TabIndex = 59;
+            this.label13.Text = "Create new descriptor array when space";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label21.Location = new System.Drawing.Point(6, 34);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(144, 13);
+            this.label21.TabIndex = 60;
+            this.label21.Text = "between characters exceeds";
+            // 
+            // txtLookupBlocksNewAfterCharCount
+            // 
+            this.txtLookupBlocksNewAfterCharCount.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLookupBlocksNewAfterCharCount.Location = new System.Drawing.Point(156, 36);
+            this.txtLookupBlocksNewAfterCharCount.Name = "txtLookupBlocksNewAfterCharCount";
+            this.txtLookupBlocksNewAfterCharCount.Size = new System.Drawing.Size(36, 21);
+            this.txtLookupBlocksNewAfterCharCount.TabIndex = 58;
+            this.txtLookupBlocksNewAfterCharCount.Text = "80";
+            this.txtLookupBlocksNewAfterCharCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtLookupBlocksNewAfterCharCount.TextChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // cbxFontHeightFormat
+            // 
+            this.cbxFontHeightFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxFontHeightFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cbxFontHeightFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.cbxFontHeightFormat.FormattingEnabled = true;
+            this.cbxFontHeightFormat.Location = new System.Drawing.Point(91, 72);
+            this.cbxFontHeightFormat.Name = "cbxFontHeightFormat";
+            this.cbxFontHeightFormat.Size = new System.Drawing.Size(112, 21);
+            this.cbxFontHeightFormat.TabIndex = 48;
+            this.cbxFontHeightFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label2.Location = new System.Drawing.Point(22, 75);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(63, 13);
+            this.label2.TabIndex = 47;
+            this.label2.Text = "Font height:";
+            // 
+            // cbxCharHeightFormat
+            // 
+            this.cbxCharHeightFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxCharHeightFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cbxCharHeightFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.cbxCharHeightFormat.FormattingEnabled = true;
+            this.cbxCharHeightFormat.Location = new System.Drawing.Point(91, 46);
+            this.cbxCharHeightFormat.Name = "cbxCharHeightFormat";
+            this.cbxCharHeightFormat.Size = new System.Drawing.Size(112, 21);
+            this.cbxCharHeightFormat.TabIndex = 46;
+            this.cbxCharHeightFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label3.Location = new System.Drawing.Point(19, 49);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 13);
+            this.label3.TabIndex = 45;
+            this.label3.Text = "Char height:";
+            // 
+            // cbxCharWidthFormat
+            // 
+            this.cbxCharWidthFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxCharWidthFormat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cbxCharWidthFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.cbxCharWidthFormat.FormattingEnabled = true;
+            this.cbxCharWidthFormat.Location = new System.Drawing.Point(91, 20);
+            this.cbxCharWidthFormat.Name = "cbxCharWidthFormat";
+            this.cbxCharWidthFormat.Size = new System.Drawing.Size(112, 21);
+            this.cbxCharWidthFormat.TabIndex = 44;
+            this.cbxCharWidthFormat.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label5.Location = new System.Drawing.Point(23, 23);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(60, 13);
+            this.label5.TabIndex = 43;
+            this.label5.Text = "Char width:";
+            // 
+            // cbxAddCodePage
+            // 
+            this.cbxAddCodePage.AutoSize = true;
+            this.cbxAddCodePage.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxAddCodePage.Location = new System.Drawing.Point(453, 407);
+            this.cbxAddCodePage.Name = "cbxAddCodePage";
+            this.cbxAddCodePage.Size = new System.Drawing.Size(197, 17);
+            this.cbxAddCodePage.TabIndex = 65;
+            this.cbxAddCodePage.Text = "Add codepage identifier to font info";
+            this.cbxAddCodePage.UseVisualStyleBackColor = true;
+            this.cbxAddCodePage.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
             // OutputConfigurationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(680, 450);
+            this.ClientSize = new System.Drawing.Size(694, 474);
+            this.Controls.Add(this.cbxAddCodePage);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.txtSpacePixels);
+            this.Controls.Add(this.cbxCharacterEncoding);
+            this.Controls.Add(this.cbxGenerateSpaceBitmap);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnUpdateConfig);
             this.Controls.Add(this.btnDeleteConfig);
-            this.Controls.Add(this.groupBox7);
-            this.Controls.Add(this.groupBox6);
+            this.Controls.Add(this.cbxGenerateLookupArray);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.btnApply);
@@ -927,12 +931,12 @@
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.cbxGenerateLookupArray.ResumeLayout(false);
+            this.cbxGenerateLookupArray.PerformLayout();
+            this.cbxGenerateLookupBlocks.ResumeLayout(false);
+            this.cbxGenerateLookupBlocks.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -970,21 +974,18 @@
         private System.Windows.Forms.ComboBox cbxRotation;
         private System.Windows.Forms.CheckBox cbxFlipVert;
         private System.Windows.Forms.CheckBox cbxFlipHoriz;
-        private System.Windows.Forms.GroupBox groupBox6;
+        private UIToolbox.CheckGroupBox cbxGenerateLookupArray;
         private System.Windows.Forms.ComboBox cbxFontHeightFormat;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbxCharHeightFormat;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cbxCharWidthFormat;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtSpacePixels;
         private System.Windows.Forms.CheckBox cbxGenerateSpaceBitmap;
         private System.Windows.Forms.Button btnDeleteConfig;
         private System.Windows.Forms.Button btnUpdateConfig;
-        private System.Windows.Forms.CheckBox cbxGenerateLookupArray;
-        private System.Windows.Forms.TextBox txtBmpVisualizerChar;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
@@ -997,10 +998,9 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox txtVarNfImageInfo;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.CheckBox cbxGenerateLookupBlocks;
+        private UIToolbox.CheckGroupBox cbxGenerateLookupBlocks;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox txtLookupBlocksNewAfterCharCount;
         private System.Windows.Forms.ComboBox cbxImgHeightFormat;
         private System.Windows.Forms.Label label22;
@@ -1008,5 +1008,9 @@
         private System.Windows.Forms.Label label23;
 		private System.Windows.Forms.Label label24;
 		private System.Windows.Forms.ComboBox cbxBitLayout;
+        private System.Windows.Forms.ComboBox txtBmpVisualizerChar;
+        private System.Windows.Forms.ComboBox cbxCharacterEncoding;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.CheckBox cbxAddCodePage;
     }
 }

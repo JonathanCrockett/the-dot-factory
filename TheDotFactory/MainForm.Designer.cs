@@ -57,22 +57,29 @@
             this.txtInputFont = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel9 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
+            this.dataGridViewBackgroundColor = new System.Windows.Forms.DataGridView();
+            this.cBackground = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.cColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.buttonImageColorInvert = new System.Windows.Forms.Button();
+            this.buttonImageColorAuto = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.btnBitmapLoad = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.txtImageName = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtImagePath = new System.Windows.Forms.TextBox();
+            this.panelPicture = new System.Windows.Forms.Panel();
             this.pbxBitmap = new System.Windows.Forms.PictureBox();
-            this.panel9 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.label13 = new System.Windows.Forms.Label();
-            this.txtOutputTextSource = new System.Windows.Forms.RichTextBox();
+            this.txtOutputTextSource = new FastColoredTextBoxNS.FastColoredTextBox();
             this.ctxMenuSource = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmCopySource = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtOutputTextHeader = new System.Windows.Forms.RichTextBox();
+            this.txtOutputTextHeader = new FastColoredTextBoxNS.FastColoredTextBox();
             this.ctxMenuHeader = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmCopyHeader = new System.Windows.Forms.ToolStripMenuItem();
             this.label6 = new System.Windows.Forms.Label();
@@ -97,6 +104,7 @@
             this.label16 = new System.Windows.Forms.Label();
             this.dlgSaveAs = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -108,6 +116,8 @@
             this.tabPage2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewBackgroundColor)).BeginInit();
+            this.panelPicture.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbxBitmap)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -216,6 +226,7 @@
             // 
             // tableLayoutPanel4
             // 
+            this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel4.ColumnCount = 1;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel4.Controls.Add(this.label1, 0, 0);
@@ -252,7 +263,7 @@
             this.tcInput.Location = new System.Drawing.Point(3, 28);
             this.tcInput.Name = "tcInput";
             this.tcInput.SelectedIndex = 0;
-            this.tcInput.Size = new System.Drawing.Size(468, 701);
+            this.tcInput.Size = new System.Drawing.Size(468, 661);
             this.tcInput.TabIndex = 7;
             // 
             // tabPage1
@@ -262,7 +273,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(460, 675);
+            this.tabPage1.Size = new System.Drawing.Size(460, 635);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Text";
             // 
@@ -282,7 +293,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 3F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(454, 669);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(454, 629);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
             // panel5
@@ -298,9 +309,11 @@
             // 
             this.txtInputText.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtInputText.Location = new System.Drawing.Point(3, 89);
+            this.txtInputText.MaxLength = 65535;
             this.txtInputText.Multiline = true;
             this.txtInputText.Name = "txtInputText";
-            this.txtInputText.Size = new System.Drawing.Size(448, 577);
+            this.txtInputText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtInputText.Size = new System.Drawing.Size(448, 537);
             this.txtInputText.TabIndex = 10;
             // 
             // panel6
@@ -386,7 +399,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(460, 675);
+            this.tabPage2.Size = new System.Drawing.Size(460, 635);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Image";
             // 
@@ -394,22 +407,35 @@
             // 
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.panel8, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.pbxBitmap, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.panel9, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.panel8, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.panelPicture, 0, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 3;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 3F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 160F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 5F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(454, 669);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(454, 629);
             this.tableLayoutPanel2.TabIndex = 12;
+            // 
+            // panel9
+            // 
+            this.panel9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
+            this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel9.Location = new System.Drawing.Point(3, 163);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(448, 1);
+            this.panel9.TabIndex = 10;
             // 
             // panel8
             // 
+            this.panel8.Controls.Add(this.dataGridViewBackgroundColor);
+            this.panel8.Controls.Add(this.buttonImageColorInvert);
+            this.panel8.Controls.Add(this.buttonImageColorAuto);
+            this.panel8.Controls.Add(this.label3);
             this.panel8.Controls.Add(this.btnBitmapLoad);
             this.panel8.Controls.Add(this.label11);
             this.panel8.Controls.Add(this.txtImageName);
@@ -418,8 +444,81 @@
             this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel8.Location = new System.Drawing.Point(3, 3);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(448, 74);
+            this.panel8.Size = new System.Drawing.Size(448, 154);
             this.panel8.TabIndex = 9;
+            // 
+            // dataGridViewBackgroundColor
+            // 
+            this.dataGridViewBackgroundColor.AllowUserToAddRows = false;
+            this.dataGridViewBackgroundColor.AllowUserToDeleteRows = false;
+            this.dataGridViewBackgroundColor.AllowUserToResizeColumns = false;
+            this.dataGridViewBackgroundColor.AllowUserToResizeRows = false;
+            this.dataGridViewBackgroundColor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewBackgroundColor.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCellsExceptHeader;
+            this.dataGridViewBackgroundColor.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
+            this.dataGridViewBackgroundColor.ColumnHeadersVisible = false;
+            this.dataGridViewBackgroundColor.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.cBackground,
+            this.cColor});
+            this.dataGridViewBackgroundColor.Location = new System.Drawing.Point(80, 66);
+            this.dataGridViewBackgroundColor.MultiSelect = false;
+            this.dataGridViewBackgroundColor.Name = "dataGridViewBackgroundColor";
+            this.dataGridViewBackgroundColor.RowHeadersVisible = false;
+            this.dataGridViewBackgroundColor.Size = new System.Drawing.Size(275, 72);
+            this.dataGridViewBackgroundColor.TabIndex = 20;
+            this.dataGridViewBackgroundColor.VirtualMode = true;
+            this.dataGridViewBackgroundColor.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridViewBackgroundColor_CellValueNeeded);
+            this.dataGridViewBackgroundColor.CellValuePushed += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridViewBackgroundColor_CellValuePushed);
+            this.dataGridViewBackgroundColor.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridViewBackgroundColor_CurrentCellDirtyStateChanged_1);
+            // 
+            // cBackground
+            // 
+            this.cBackground.FalseValue = "0";
+            this.cBackground.HeaderText = "Background";
+            this.cBackground.Name = "cBackground";
+            this.cBackground.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.cBackground.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.cBackground.TrueValue = "1";
+            this.cBackground.Width = 5;
+            // 
+            // cColor
+            // 
+            this.cColor.HeaderText = "Color";
+            this.cColor.Name = "cColor";
+            this.cColor.Width = 5;
+            // 
+            // buttonImageColorInvert
+            // 
+            this.buttonImageColorInvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonImageColorInvert.Location = new System.Drawing.Point(361, 95);
+            this.buttonImageColorInvert.Name = "buttonImageColorInvert";
+            this.buttonImageColorInvert.Size = new System.Drawing.Size(75, 23);
+            this.buttonImageColorInvert.TabIndex = 19;
+            this.buttonImageColorInvert.Text = "Invert";
+            this.buttonImageColorInvert.UseVisualStyleBackColor = true;
+            this.buttonImageColorInvert.Click += new System.EventHandler(this.buttonImageColorInvert_Click);
+            // 
+            // buttonImageColorAuto
+            // 
+            this.buttonImageColorAuto.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonImageColorAuto.Location = new System.Drawing.Point(361, 66);
+            this.buttonImageColorAuto.Name = "buttonImageColorAuto";
+            this.buttonImageColorAuto.Size = new System.Drawing.Size(75, 23);
+            this.buttonImageColorAuto.TabIndex = 18;
+            this.buttonImageColorAuto.Text = "Auto";
+            this.buttonImageColorAuto.UseVisualStyleBackColor = true;
+            this.buttonImageColorAuto.Click += new System.EventHandler(this.buttonImageColorAuto_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(10, 66);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 13);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "Back. color:";
             // 
             // btnBitmapLoad
             // 
@@ -445,9 +544,11 @@
             // 
             // txtImageName
             // 
+            this.txtImageName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtImageName.Location = new System.Drawing.Point(80, 39);
             this.txtImageName.Name = "txtImageName";
-            this.txtImageName.Size = new System.Drawing.Size(141, 20);
+            this.txtImageName.Size = new System.Drawing.Size(276, 20);
             this.txtImageName.TabIndex = 11;
             // 
             // label7
@@ -468,24 +569,24 @@
             this.txtImagePath.Size = new System.Drawing.Size(326, 20);
             this.txtImagePath.TabIndex = 8;
             // 
+            // panelPicture
+            // 
+            this.panelPicture.AutoScroll = true;
+            this.panelPicture.Controls.Add(this.pbxBitmap);
+            this.panelPicture.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelPicture.Location = new System.Drawing.Point(3, 168);
+            this.panelPicture.Name = "panelPicture";
+            this.panelPicture.Size = new System.Drawing.Size(448, 458);
+            this.panelPicture.TabIndex = 11;
+            // 
             // pbxBitmap
             // 
-            this.pbxBitmap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbxBitmap.ImageLocation = "";
-            this.pbxBitmap.Location = new System.Drawing.Point(3, 86);
+            this.pbxBitmap.Location = new System.Drawing.Point(3, 3);
             this.pbxBitmap.Name = "pbxBitmap";
-            this.pbxBitmap.Size = new System.Drawing.Size(448, 580);
+            this.pbxBitmap.Size = new System.Drawing.Size(99, 110);
             this.pbxBitmap.TabIndex = 11;
             this.pbxBitmap.TabStop = false;
-            // 
-            // panel9
-            // 
-            this.panel9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
-            this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel9.Location = new System.Drawing.Point(3, 83);
-            this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(448, 1);
-            this.panel9.TabIndex = 10;
             // 
             // tableLayoutPanel3
             // 
@@ -550,15 +651,20 @@
             // 
             // txtOutputTextSource
             // 
+            this.txtOutputTextSource.AutoScrollMinSize = new System.Drawing.Size(27, 14);
+            this.txtOutputTextSource.BackBrush = null;
             this.txtOutputTextSource.ContextMenuStrip = this.ctxMenuSource;
+            this.txtOutputTextSource.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtOutputTextSource.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.txtOutputTextSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtOutputTextSource.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOutputTextSource.Language = FastColoredTextBoxNS.Language.CSharp;
             this.txtOutputTextSource.Location = new System.Drawing.Point(3, 21);
             this.txtOutputTextSource.Name = "txtOutputTextSource";
+            this.txtOutputTextSource.Paddings = new System.Windows.Forms.Padding(0);
+            this.txtOutputTextSource.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.txtOutputTextSource.Size = new System.Drawing.Size(486, 445);
             this.txtOutputTextSource.TabIndex = 16;
-            this.txtOutputTextSource.Text = "";
-            this.txtOutputTextSource.WordWrap = false;
             // 
             // ctxMenuSource
             // 
@@ -576,15 +682,20 @@
             // 
             // txtOutputTextHeader
             // 
+            this.txtOutputTextHeader.AutoScrollMinSize = new System.Drawing.Size(27, 14);
+            this.txtOutputTextHeader.BackBrush = null;
             this.txtOutputTextHeader.ContextMenuStrip = this.ctxMenuHeader;
+            this.txtOutputTextHeader.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtOutputTextHeader.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.txtOutputTextHeader.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtOutputTextHeader.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOutputTextHeader.Language = FastColoredTextBoxNS.Language.CSharp;
             this.txtOutputTextHeader.Location = new System.Drawing.Point(3, 490);
             this.txtOutputTextHeader.Name = "txtOutputTextHeader";
+            this.txtOutputTextHeader.Paddings = new System.Windows.Forms.Padding(0);
+            this.txtOutputTextHeader.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.txtOutputTextHeader.Size = new System.Drawing.Size(486, 107);
             this.txtOutputTextHeader.TabIndex = 14;
-            this.txtOutputTextHeader.Text = "";
-            this.txtOutputTextHeader.WordWrap = false;
             // 
             // ctxMenuHeader
             // 
@@ -592,7 +703,6 @@
             this.tsmCopyHeader});
             this.ctxMenuHeader.Name = "ctxMenuSource";
             this.ctxMenuHeader.Size = new System.Drawing.Size(103, 26);
-            this.ctxMenuHeader.Opening += new System.ComponentModel.CancelEventHandler(this.ctxMenuHeader_Opening);
             // 
             // tsmCopyHeader
             // 
@@ -828,6 +938,7 @@
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tcInput.ResumeLayout(false);
@@ -840,6 +951,8 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewBackgroundColor)).EndInit();
+            this.panelPicture.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbxBitmap)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
@@ -874,7 +987,7 @@
         private System.Windows.Forms.OpenFileDialog dlgOpenFile;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.RichTextBox txtOutputTextSource;
+        private FastColoredTextBoxNS.FastColoredTextBox txtOutputTextSource;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.ComboBox cbxOutputConfiguration;
@@ -918,9 +1031,17 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
-        private System.Windows.Forms.RichTextBox txtOutputTextHeader;
+        private FastColoredTextBoxNS.FastColoredTextBox txtOutputTextHeader;
         private System.Windows.Forms.Panel panel1;
-
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button buttonImageColorInvert;
+        private System.Windows.Forms.Button buttonImageColorAuto;
+        private System.Windows.Forms.Panel panelPicture;
+        private System.Windows.Forms.DataGridView dataGridViewBackgroundColor;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn cBackground;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cColor;
+        //private System.Windows.Forms.DataGridViewTextBoxColumn Color;
+        //private System.Windows.Forms.DataGridViewCheckBoxColumn Background;
     }
 }
 

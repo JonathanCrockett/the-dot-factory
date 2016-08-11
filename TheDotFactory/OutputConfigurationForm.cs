@@ -38,14 +38,19 @@ namespace TheDotFactory
             foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxCharHeightFormat.Items.Add(s);
             foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxFontHeightFormat.Items.Add(s);
             foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxImgWidthFormat.Items.Add(s);
-            foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxImgHeightFormat.Items.Add(s); 
+            foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxImgHeightFormat.Items.Add(s);
+
+            foreach (string s in CodePageInfo.GetEncoderNameList())
+                cbxCharacterEncoding.Items.Add(s);
 
             // add leading
             cbxByteLeadingChar.Items.Add(OutputConfiguration.ByteLeadingStringBinary);
             cbxByteLeadingChar.Items.Add(OutputConfiguration.ByteLeadingStringHex);
 
+            foreach (string s in OutputConfiguration.CommentVisualisatorChar) txtBmpVisualizerChar.Items.Add(s);
+
             // re-populate dropdown
-            m_outputConfigurationManager.comboboxPopulate(cbxOutputConfigurations);
+            m_outputConfigurationManager.comboBoxPopulate(cbxOutputConfigurations);
         }
 
         // output configuration to form
@@ -68,7 +73,6 @@ namespace TheDotFactory
             cbxImgWidthFormat.SelectedIndex = (int)outputConfig.descImgWidth;
             cbxImgHeightFormat.SelectedIndex = (int)outputConfig.descImgHeight;
 
-
             // text boxes
             cbxByteLeadingChar.Text = outputConfig.byteLeadingString;
             txtSpacePixels.Text = outputConfig.spaceGenerationPixels.ToString();
@@ -88,8 +92,10 @@ namespace TheDotFactory
             cbxCommentCharDesc.Checked = outputConfig.commentCharDescriptor;
             cbxGenerateSpaceBitmap.Checked = outputConfig.generateSpaceCharacterBitmap;
             cbxGenerateLookupArray.Checked = outputConfig.generateLookupArray;
-            txtBmpVisualizerChar.Text = outputConfig.bmpVisualizerChar;
+            txtBmpVisualizerChar.Text = outputConfig.bmpVisualizerChar + outputConfig.bmpVisualizerCharEmpty;
             cbxGenerateLookupBlocks.Checked = outputConfig.generateLookupBlocks;
+            cbxCharacterEncoding.Text = CodePageInfo.GetCodepageName(outputConfig.CodePage);
+            cbxAddCodePage.Checked = outputConfig.addCodePage;
 
             // radio buttons
             // -- wrap          
@@ -135,7 +141,23 @@ namespace TheDotFactory
             outputConfig.commentCharDescriptor = cbxCommentCharDesc.Checked;
             outputConfig.generateSpaceCharacterBitmap = cbxGenerateSpaceBitmap.Checked;
             outputConfig.generateLookupArray = cbxGenerateLookupArray.Checked;
-            outputConfig.bmpVisualizerChar = txtBmpVisualizerChar.Text;
+            if (txtBmpVisualizerChar.Text.Length >= 2)
+            {
+                outputConfig.bmpVisualizerChar = txtBmpVisualizerChar.Text.Substring(0, 1);
+                outputConfig.bmpVisualizerCharEmpty = txtBmpVisualizerChar.Text.Substring(1, 1);
+            }
+            else if (txtBmpVisualizerChar.Text.Length == 1)
+            {
+                outputConfig.bmpVisualizerChar = txtBmpVisualizerChar.Text;
+                outputConfig.bmpVisualizerCharEmpty = " ";
+            }
+            else
+            {
+                outputConfig.bmpVisualizerChar = "#";
+                outputConfig.bmpVisualizerCharEmpty = " ";
+            }
+            outputConfig.CodePage = CodePageInfo.GetCodepage(cbxCharacterEncoding.Text);
+            outputConfig.addCodePage = cbxAddCodePage.Checked;
             outputConfig.generateLookupBlocks = cbxGenerateLookupBlocks.Checked;
 
             // radio buttons
@@ -214,38 +236,10 @@ namespace TheDotFactory
             }
         }
 
-        // 
-        public int getDisplayStringIndex(ref string[] displayStrings, string selectedText)
-        {
-            return 0;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonApply_Click(object sender, EventArgs e)
         {
             // close self
             Close();
-        }
-
-        private void rbnLineWrapAtBitmap_Click(object sender, EventArgs e)
-        {
-            // notify change
-            onOutputConfigurationFormChange(sender, e);
-            
-            // check which is set
-            if (rbnLineWrapAtBitmap.Checked)
-            {
-                // disallow char visualizer
-                cbxCommentCharVisual.Checked = false;
-                cbxCommentCharVisual.Enabled = false;
-                txtBmpVisualizerChar.Enabled = false;
-            }
-            else
-            {
-                // allow char visualizer
-                cbxCommentCharVisual.Checked = true;
-                cbxCommentCharVisual.Enabled = true;
-                txtBmpVisualizerChar.Enabled = true;
-            }
         }
 
         private void cbxByteFormat_TextChanged(object sender, EventArgs e)
@@ -267,6 +261,7 @@ namespace TheDotFactory
 
         private void OutputConfigurationForm_Load(object sender, EventArgs e)
         {
+
         }
 
         private void btnSaveNewConfig_Click(object sender, EventArgs e)
@@ -302,7 +297,7 @@ namespace TheDotFactory
                 m_outputConfigurationManager.configurationAdd(ref oc);
 
                 // re-populate dropdown
-                m_outputConfigurationManager.comboboxPopulate(cbxOutputConfigurations);
+                m_outputConfigurationManager.comboBoxPopulate(cbxOutputConfigurations);
 
                 // set selected index
                 cbxOutputConfigurations.SelectedIndex = cbxOutputConfigurations.Items.Count - 1;
@@ -337,7 +332,7 @@ namespace TheDotFactory
             m_outputConfigurationManager.configurationDelete(cbxOutputConfigurations.SelectedIndex);
 
             // re-populate dropdown
-            m_outputConfigurationManager.comboboxPopulate(cbxOutputConfigurations);
+            m_outputConfigurationManager.comboBoxPopulate(cbxOutputConfigurations);
 
             // re-save 
             m_outputConfigurationManager.saveToFile("OutputConfigs.xml");
@@ -410,11 +405,6 @@ namespace TheDotFactory
                 // when user has changed a preset, enter modifying state
                 modifyingPresetConfigurationEnter();
             }
-        }
-
-        private void txtLookupBlocksNewAfterCharCount_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

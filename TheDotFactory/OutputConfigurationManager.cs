@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using System.Windows.Forms;
@@ -9,8 +10,23 @@ using System.Windows.Forms;
 namespace TheDotFactory
 {
     // an output configuration preset
+    [Serializable]
     public class OutputConfiguration
     {
+        [XmlAttribute("space", Namespace = "http://www.w3.org/XML/1998/namespace")]
+        public string Space = "preserve";
+
+        public const string CommentStartCPP = "// ";
+        public const string CommentBlockEndCPP = "// ";
+        public const string CommentBlockMiddleCPP = "// ";
+        public const string CommentEndCPP = "";
+        public const string CommentStartC = "/* ";
+        public const string CommentBlockEndC = "*/";
+        public const string CommentBlockMiddleC = "** ";
+        public const string CommentEndC = "*/";
+
+
+        #region enums constans
         // padding removal type
         public enum PaddingRemoval
         {
@@ -95,20 +111,30 @@ namespace TheDotFactory
             "In bytes"
         };
 
-        // clone self
-        public OutputConfiguration clone() { return (OutputConfiguration)this.MemberwiseClone(); }
-
         // leading strings
         public const string ByteLeadingStringBinary = "0b";
         public const string ByteLeadingStringHex = "0x";
 
+        public static readonly string[] CommentVisualisatorChar = new string[]
+            {
+                "#",
+                "█",
+                "O_",
+            };
+
+        #endregion
+
+        // clone self
+        public OutputConfiguration clone() { return (OutputConfiguration)this.MemberwiseClone(); }
+
+        #region data
         // comments
         public bool commentVariableName = true;
         public bool commentCharVisualizer = true;
         public bool commentCharDescriptor = true;
         public CommentStyle commentStyle = CommentStyle.Cpp;
         public String bmpVisualizerChar = "#";
-
+        public String bmpVisualizerCharEmpty = " ";
         // rotation
         public Rotation rotation = Rotation.RotateZero;
 
@@ -138,6 +164,7 @@ namespace TheDotFactory
         public int lookupBlocksNewAfterCharCount = 80;
         public DescriptorFormat descImgWidth = DescriptorFormat.DisplayInBytes;
         public DescriptorFormat descImgHeight = DescriptorFormat.DisplayInBits;
+        public bool addCodePage = true;
 
         // space generation
         public bool generateSpaceCharacterBitmap = false;
@@ -152,6 +179,28 @@ namespace TheDotFactory
 
         // display name
         public string displayName = "";
+
+        //
+        public int CodePage = 1200;             // UTF-16
+
+        #endregion
+
+        public string CommentStart
+        {
+            get { return commentStyle == CommentStyle.Cpp ? CommentStartCPP : CommentStartC; }
+        }
+        public string CommentBlockEnd
+        {
+            get { return commentStyle == CommentStyle.Cpp ? CommentBlockEndCPP : CommentBlockEndC; }
+        }
+        public string CommentBlockMiddle
+        {
+            get { return commentStyle == CommentStyle.Cpp ? CommentBlockMiddleCPP : CommentBlockMiddleC; }
+        }
+        public string CommentEnd
+        {
+            get { return commentStyle == CommentStyle.Cpp ? CommentEndCPP : CommentEndC; }
+        }
     }
 
     // the output configuration manager
@@ -224,13 +273,16 @@ namespace TheDotFactory
                 // close and flush the stream
                 textReader.Close();
             }
-            catch (IOException)
+            catch (IOException)  { }
+            catch (InvalidOperationException) { }
+            catch (Exception  exc)
             {
+                MessageBox.Show(exc.ToString());
             }
         }
 
         // populate the cbx
-        public void comboboxPopulate(ComboBox combobox)
+        public void comboBoxPopulate(ComboBox combobox)
         {
             // clear all items
             combobox.Items.Clear();
