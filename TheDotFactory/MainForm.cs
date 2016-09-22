@@ -40,6 +40,8 @@ namespace TheDotFactory
         // contains all colors that are present in the image, colors which are value are True are handelt as background colors
         Dictionary<Color, bool> colorList = new Dictionary<Color, bool>();
 
+        bool updateBitmapAllowed = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -87,6 +89,8 @@ namespace TheDotFactory
 
             // set checkbox stuff
             populateTextInsertCheckbox();
+
+            populateComboBoxInputImageCodepage();
 
             // apply font to all appropriate places
             updateSelectedFont(Properties.Settings.Default.InputFont);
@@ -138,7 +142,17 @@ namespace TheDotFactory
             else if (tcInput.SelectedTab.Text == "Image")
             {
                 // generate output bitmap
-                generateOutputForImage(m_outputConfig, colorList, m_currentLoadedBitmap, textSource, textHeader);
+                if (checkGroupBoxFontImage.Checked)
+                {
+                    int codepage = 0;
+
+                    TryParseCodePageString(comboBoxInputImageCodepage.Text, out codepage);
+
+                    Size tileSize = new Size((int)numericUpDownInputImageTileSizeX.Value, (int)numericUpDownInputImageTileSizeY.Value);
+
+                    generateOutputForFontImage(m_outputConfig, colorList, tileSize, codepage, m_currentLoadedBitmap, textSource, textHeader);
+                }
+                else generateOutputForImage(m_outputConfig, colorList, m_currentLoadedBitmap, textSource, textHeader);
             }
             else throw new Exception("Unknowen tabpage");
 
@@ -174,9 +188,6 @@ namespace TheDotFactory
                 if (m_currentLoadedBitmap != null) m_currentLoadedBitmap.Dispose();
                 m_currentLoadedBitmap = new Bitmap(dlgOpenFile.FileName).ChangePixelFormat(PixelFormat.Format32bppArgb);
 
-                // try to open the bitmap
-                pbxBitmap.Image = m_currentLoadedBitmap;
-                pbxBitmap.Size = m_currentLoadedBitmap.Size;
                 // set the path
                 txtImagePath.Text = dlgOpenFile.FileName;
 
@@ -197,6 +208,16 @@ namespace TheDotFactory
 
                 // Set picterbox background
                 pbxBitmap.BackColor = GetBackColorForPicturbox();
+
+                Size sz = DetectTileSize();
+
+                updateBitmapAllowed = false;
+                numericUpDownInputImageTilesPerLine.Value = 16;
+                numericUpDownInputImageTileSizeX.Value = sz.Width;
+                numericUpDownInputImageTileSizeY.Value = sz.Height;
+                updateBitmapAllowed = true;
+
+                UpdateInputImageFont(sender, e);
             }
         }
 
@@ -309,6 +330,7 @@ namespace TheDotFactory
         {
             colorList = colorList.ToDictionary(p => p.Key, p => !p.Value);
             dataGridViewBackgroundColor.Refresh();
+            updateBitmapPreview();
         }
 
         private void buttonImageColorAuto_Click(object sender, EventArgs e)
@@ -322,6 +344,7 @@ namespace TheDotFactory
             colorList = colorList.ToDictionary(p => p.Key, p => p.Key.GetBrightness() >= avg);
 
             dataGridViewBackgroundColor.Refresh();
+            updateBitmapPreview();
         }
 
         #region dataGridViewBackgroundColor
@@ -344,6 +367,7 @@ namespace TheDotFactory
             {
                 colorList[dataGridViewBackgroundColor[1, e.RowIndex].Style.BackColor]
                     = (bool)dataGridViewBackgroundColor[0, e.RowIndex].EditedFormattedValue;
+                updateBitmapPreview();
 
             }
         }
@@ -438,6 +462,128 @@ namespace TheDotFactory
 
                         return Color.White;
                     });
+        }
+
+        private void populateComboBoxInputImageCodepage()
+        {
+            comboBoxInputImageCodepage.Items.Clear();
+            comboBoxInputImageCodepage.Items.AddRange(Encoding.GetEncodings().Select( e => e.GetEncoding().WebName  ).ToArray());
+        }
+
+        private bool TryParseCodePageString(string s, out int codepage)
+        {
+            if (int.TryParse(s, out codepage)) return true;
+
+            try
+            {
+                codepage = Encoding.GetEncoding(s.TrimEnd('\t')).CodePage;
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private Size DetectTileSize()
+        {
+            if(m_currentLoadedBitmap != null)
+            {
+                return new Size(m_currentLoadedBitmap.Width / 16, m_currentLoadedBitmap.Height / 16);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        private void updateBitmap()
+        {
+            if (!updateBitmapAllowed) return;
+
+            int w = (int)numericUpDownInputImageTileSizeX.Value;
+            int h = (int)numericUpDownInputImageTileSizeY.Value;
+            int tilesPerLine = (int)numericUpDownInputImageTilesPerLine.Value;
+            Size sz = new Size(Math.Max(m_currentLoadedBitmap.Width, w * tilesPerLine), Math.Max(m_currentLoadedBitmap.Height, (h * ((256 / tilesPerLine) + ((256 % tilesPerLine != 0) ? 1 : 0)) )));
+            Bitmap bmp = new Bitmap(sz.Width, sz.Height);
+            Graphics g = Graphics.FromImage(bmp);
+
+            g.DrawImage(m_currentLoadedBitmap, 0,0, m_currentLoadedBitmap.Width, m_currentLoadedBitmap.Height);
+
+            if (checkGroupBoxFontImage.Checked)
+            {
+                if (checkBoxInputImageOverlay.Checked)
+                { 
+                    Color c = Color.FromArgb(64, Color.Black);
+                    Color d = Color.FromArgb(64, Color.Magenta);
+                    Brush b = new SolidBrush(c);
+                    Brush m = new SolidBrush(d);
+
+                    int x, y;
+
+                    for (y = 0, x = 0; y * h < sz.Height && y * tilesPerLine <= 256; y++)
+                    {
+                        for (x = 0; x < tilesPerLine && y * tilesPerLine + x <= 256; x++)
+                        {
+                            if ((y % 2 != 0) != (x % 2 != 0))
+                            {
+                                g.FillRectangle(b, x * w, y * h, w, h);
+                            }
+                            else
+                            {
+                                g.FillRectangle(m, x * w, y * h, w, h);
+                            }
+                        }
+                    }
+                }
+
+                Point p = new Point(hScrollBarInputImageCharacterPos.Value % tilesPerLine * w, hScrollBarInputImageCharacterPos.Value / tilesPerLine * h);
+
+                Rectangle r = new Rectangle(p, new Size(w, h));
+
+                g.DrawRectangle(Pens.Black, r);
+            }
+
+            pbxBitmap.Image = bmp;
+            pbxBitmap.Size = bmp.Size;
+        }
+
+        private void updateBitmapPreview()
+        {
+            if (checkGroupBoxFontImage.Checked && m_currentLoadedBitmap != null)
+            {
+                int w = (int)numericUpDownInputImageTileSizeX.Value;
+                int h = (int)numericUpDownInputImageTileSizeY.Value;
+                int tilesPerLine = (int)numericUpDownInputImageTilesPerLine.Value;
+
+                Point p = new Point(hScrollBarInputImageCharacterPos.Value % tilesPerLine * w, hScrollBarInputImageCharacterPos.Value / tilesPerLine * h);
+
+                Rectangle r = new Rectangle(p, new Size(w, h));
+                Color c;
+                if (colorList.ContainsValue(true)) c = colorList.GetEnabledKeys()[0];
+                else c = Color.Transparent;
+                Bitmap character = m_currentLoadedBitmap.Clone(r, PixelFormat.Format32bppArgb, c); ;
+
+                Size newSize = r.Size;
+                int faktor = 1;
+
+                while (newSize.Height <= 32)
+                {
+                    newSize.Height *= 2;
+                    newSize.Width *= 2;
+                    faktor *= 2;
+                }
+
+                //convert to black white image
+                character = character.ToArgbArray().Select(argb =>
+                {
+                    return colorList[Color.FromArgb(argb)] ? Color.Black.ToArgb() : Color.White.ToArgb();
+                }).ToArray().ToBitmap(r.Size);
+
+                pictureBoxInputImageFontCharacterPreview.Image = character.ResizeImage(faktor);
+                pictureBoxInputImageFontCharacterPreview.Size = newSize;
+            }
         }
         #endregion
 
@@ -719,7 +865,201 @@ namespace TheDotFactory
         #endregion
 
         #region fontbitmap
+        private void generateOutputForFontImage(OutputConfiguration outConfig, 
+            Dictionary<Color, bool> colorList, 
+            Size tileSize, 
+            int codepage, 
+            Bitmap bitmapOriginal, 
+            StringBuilder textSource,
+            StringBuilder textHeader)
+        {
+            // the name of the bitmap
+            string imageName;
+            Color[] backgroundColors;
+            BitmapInfo bi;
+
+            textSource.Clear();
+            textHeader.Clear();
+
+            if (bitmapOriginal == null || txtImageName.Text == "")
+            {
+                textSource.Append("No image found ");
+                return;
+            }
+
+            imageName = txtImageName.Text.ScrubVariableName();
+            backgroundColors = colorList.GetEnabledKeys<Color>();
+
+            // check if bitmap is assigned
+            if (m_currentLoadedBitmap != null)
+            {
+                //
+                // Bitmap manipulation
+                //
+                bi = new BitmapInfo(m_outputConfig, m_currentLoadedBitmap, colorList);
+
+                // try to manipulate the bitmap
+
+                if (!bi.GenerateManipulatetBitmap(bi.OriginalBorder))
+                {
+                    // show error
+                    MessageBox.Show("No blackground pixels found in bitmap",
+                                    "Can't convert bitmap",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+
+                    // stop here, failed to manipulate the bitmap for whatever reason
+                    return;
+                }
+
+                // according to config
+                if (m_outputConfig.addCommentVariableName)
+                {
+                    // add source file header
+                    textSource.AppendFormat("{0}" + m_outputConfig.nl + "{1} Image data for {2}" + m_outputConfig.nl + "{3}" + m_outputConfig.nl + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, 
+                                                        m_outputConfig.CommentBlockMiddle, 
+                                                        imageName,
+                                                        m_outputConfig.CommentBlockEnd);
+
+                    // add header file header
+                    textHeader.AppendFormat("{0}Bitmap info for {1}{2}" + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, 
+                                                        imageName,
+                                                        m_outputConfig.CommentEnd);
+                }
+
+                // bitmap varname
+                string bitmapVarName = String.Format(m_outputConfig.varNfImageBitmap, imageName) + "[]";
+
+                // add to source
+                textSource.AppendFormat("{0} =" + m_outputConfig.nl + "{{" + m_outputConfig.nl, bitmapVarName);
+
+                //
+                // Bitmap to string
+                //
+                // page array
+                bi.GeneratePageArray();
+
+                // assign pages for fully populated 8 bits
+                int pagesPerRow = OutputConfiguration.DescriptorFormat.DisplayInBytes.ConvertValueByDescriptorFormat(bi.BitmapToGenerate.Width);
+
+                // now convert to string
+                bi.GenerateCharacterDataDescriptorAndVisulazer();
+                textSource.Append(bi.Descriptor);
+
+                // close
+                textSource.AppendFormat("}};" + m_outputConfig.nl + m_outputConfig.nl);
+
+                // according to config
+                if (m_outputConfig.addCommentVariableName)
+                {
+                    // set sizes comment
+                    textSource.AppendFormat("{0}Bitmap sizes for {1}{2}" + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, imageName, m_outputConfig.CommentEnd);
+                }
+
+                Func<string> getImageWidthString = () =>
+                {
+                    const string format = "\t{2}, {0} {3}{1}{4}";
+                    // display width in bytes?
+                    switch (m_outputConfig.descImgWidth)
+                    {
+                        case OutputConfiguration.DescriptorFormat.DisplayInBytes:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                pagesPerRow,
+                                "Image width in bytes (pages)",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DisplayInBits:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                bi.BitmapToGenerate.Width,
+                                "Image width in pixels",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                            return "";
+                        default:
+                            throw new NotImplementedException();
+                    }
+                };
+
+                Func<string> getImageHeigtString = () =>
+                {
+                    const string format = "\t{2}, {0} {3}{1}{4}";
+
+                    switch (m_outputConfig.descImgHeight)
+                    {
+                        case OutputConfiguration.DescriptorFormat.DisplayInBytes:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                OutputConfiguration.DescriptorFormat.DisplayInBytes.ConvertValueByDescriptorFormat(bi.BitmapToGenerate.Height),
+                                "Image height in bytes (pages)",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DisplayInBits:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                bi.BitmapToGenerate.Height,
+                                "Image height in pixels",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                            return "";
+                        default:
+                            throw new NotImplementedException();
+                    }
+                };
+
+                // get var name
+                string imageInfoVarName = String.Format(m_outputConfig.varNfImageInfo, imageName);
+
+                // image info header
+                textHeader.AppendFormat("extern {0};" + m_outputConfig.nl, imageInfoVarName);
+
+                // image info source
+                textSource.AppendFormat("{2} =" + m_outputConfig.nl + "{{" + m_outputConfig.nl +
+                                                  "{3}" +
+                                                  "{4}" +
+                                                  "\t{5}, {0} Image bitmap array{1}" + m_outputConfig.nl +
+                                                  "}};" + m_outputConfig.nl,
+                                                  m_outputConfig.CommentStart,
+                                                  m_outputConfig.CommentEnd,
+                                                  imageInfoVarName,
+                                                  getImageWidthString(),
+                                                  getImageHeigtString(),
+                                                  bitmapVarName.GetVariableNameFromExpression());
+
+            }
+        }
 
         #endregion
+
+        private void UpdateInputImageFont(object sender, EventArgs e)
+        {
+            updateBitmap();
+            updateBitmapPreview();
+        }
+
+        private void pbxBitmap_MouseClick(object sender, MouseEventArgs e)
+        {
+            Point p = e.Location;
+            int w = (int)numericUpDownInputImageTileSizeX.Value;
+            int h = (int)numericUpDownInputImageTileSizeY.Value;
+            int tilesPerLine = (int)numericUpDownInputImageTilesPerLine.Value;
+
+            p.X -= p.X % w;
+            p.Y -= p.Y % h;
+
+            hScrollBarInputImageCharacterPos.Value = p.Y * tilesPerLine / h + p.X / w;
+        }
+
+        private void hScrollBarInputImageCharacterPos_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateInputImageFont(sender, e);
+            textBoxInputImageCharacterPos.Text = hScrollBarInputImageCharacterPos.Value.ToString();
+        }
     }
 }

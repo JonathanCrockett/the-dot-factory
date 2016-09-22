@@ -247,7 +247,7 @@ namespace UIToolbox
 
             if(this.m_bCollapseGroupBoxIfUnchecked)
             {
-                base.Height = this.m_checkBox.Checked ? m_UncollapsedHeigth : COLLAPSED_HEIGHT; 
+                base.Height = this.m_checkBox.Checked ? m_UncollapsedHeigth : COLLAPSED_HEIGHT;
             }
 
 			if(CheckedChanged != null)

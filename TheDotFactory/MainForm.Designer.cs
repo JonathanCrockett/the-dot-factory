@@ -49,6 +49,8 @@
             this.panel5 = new System.Windows.Forms.Panel();
             this.txtInputText = new System.Windows.Forms.TextBox();
             this.panel6 = new System.Windows.Forms.Panel();
+            this.btnInsertText = new System.Windows.Forms.Button();
+            this.btnFontSelect = new System.Windows.Forms.Button();
             this.cbxTextInsert = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
             this.lblFont = new System.Windows.Forms.Label();
@@ -57,17 +59,32 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel9 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
+            this.checkGroupBoxFontImage = new UIToolbox.CheckGroupBox();
+            this.checkBoxInputImageOverlay = new System.Windows.Forms.CheckBox();
+            this.textBoxInputImageCharacterPos = new System.Windows.Forms.TextBox();
+            this.hScrollBarInputImageCharacterPos = new System.Windows.Forms.HScrollBar();
+            this.pictureBoxInputImageFontCharacterPreview = new System.Windows.Forms.PictureBox();
+            this.numericUpDownInputImageTilesPerLine = new System.Windows.Forms.NumericUpDown();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.comboBoxInputImageCodepage = new System.Windows.Forms.ComboBox();
+            this.numericUpDownInputImageTileSizeY = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownInputImageTileSizeX = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             this.dataGridViewBackgroundColor = new System.Windows.Forms.DataGridView();
             this.cBackground = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.cColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.buttonImageColorInvert = new System.Windows.Forms.Button();
             this.buttonImageColorAuto = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.btnBitmapLoad = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.txtImageName = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtImagePath = new System.Windows.Forms.TextBox();
             this.panelPicture = new System.Windows.Forms.Panel();
+            this.pbxBitmap = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
@@ -81,6 +98,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnOutputConfig = new System.Windows.Forms.Button();
+            this.btnGenerate = new System.Windows.Forms.Button();
             this.cbxOutputConfiguration = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
             this.fontDlgInputFont = new System.Windows.Forms.FontDialog();
@@ -95,12 +114,6 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label16 = new System.Windows.Forms.Label();
             this.dlgSaveAs = new System.Windows.Forms.SaveFileDialog();
-            this.btnInsertText = new System.Windows.Forms.Button();
-            this.btnFontSelect = new System.Windows.Forms.Button();
-            this.btnBitmapLoad = new System.Windows.Forms.Button();
-            this.pbxBitmap = new System.Windows.Forms.PictureBox();
-            this.btnOutputConfig = new System.Windows.Forms.Button();
-            this.btnGenerate = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
@@ -116,14 +129,19 @@
             this.tabPage2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel8.SuspendLayout();
+            this.checkGroupBoxFontImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxInputImageFontCharacterPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInputImageTilesPerLine)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInputImageTileSizeY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInputImageTileSizeX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewBackgroundColor)).BeginInit();
             this.panelPicture.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxBitmap)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.ctxMenuSource.SuspendLayout();
             this.ctxMenuHeader.SuspendLayout();
             this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxBitmap)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -332,6 +350,31 @@
             this.panel6.Size = new System.Drawing.Size(310, 70);
             this.panel6.TabIndex = 3;
             // 
+            // btnInsertText
+            // 
+            this.btnInsertText.FlatAppearance.BorderSize = 0;
+            this.btnInsertText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnInsertText.Image = global::TheDotFactory.Properties.Resources.add;
+            this.btnInsertText.Location = new System.Drawing.Point(224, 37);
+            this.btnInsertText.Name = "btnInsertText";
+            this.btnInsertText.Size = new System.Drawing.Size(26, 23);
+            this.btnInsertText.TabIndex = 15;
+            this.btnInsertText.UseVisualStyleBackColor = true;
+            this.btnInsertText.Click += new System.EventHandler(this.btnInsertText_Click);
+            // 
+            // btnFontSelect
+            // 
+            this.btnFontSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFontSelect.FlatAppearance.BorderSize = 0;
+            this.btnFontSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFontSelect.Image = global::TheDotFactory.Properties.Resources.font;
+            this.btnFontSelect.Location = new System.Drawing.Point(270, 11);
+            this.btnFontSelect.Name = "btnFontSelect";
+            this.btnFontSelect.Size = new System.Drawing.Size(19, 23);
+            this.btnFontSelect.TabIndex = 14;
+            this.btnFontSelect.UseVisualStyleBackColor = true;
+            this.btnFontSelect.Click += new System.EventHandler(this.btnFontSelect_Click);
+            // 
             // cbxTextInsert
             // 
             this.cbxTextInsert.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -392,9 +435,10 @@
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 3;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 160F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 5F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(316, 629);
             this.tableLayoutPanel2.TabIndex = 12;
             // 
@@ -402,13 +446,16 @@
             // 
             this.panel9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
             this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel9.Location = new System.Drawing.Point(3, 163);
+            this.panel9.Location = new System.Drawing.Point(3, 374);
             this.panel9.Name = "panel9";
             this.panel9.Size = new System.Drawing.Size(310, 1);
             this.panel9.TabIndex = 10;
             // 
             // panel8
             // 
+            this.panel8.AutoSize = true;
+            this.panel8.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel8.Controls.Add(this.checkGroupBoxFontImage);
             this.panel8.Controls.Add(this.dataGridViewBackgroundColor);
             this.panel8.Controls.Add(this.buttonImageColorInvert);
             this.panel8.Controls.Add(this.buttonImageColorAuto);
@@ -420,9 +467,172 @@
             this.panel8.Controls.Add(this.txtImagePath);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel8.Location = new System.Drawing.Point(3, 3);
+            this.panel8.MinimumSize = new System.Drawing.Size(1, 1);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(310, 154);
+            this.panel8.Size = new System.Drawing.Size(310, 365);
             this.panel8.TabIndex = 9;
+            // 
+            // checkGroupBoxFontImage
+            // 
+            this.checkGroupBoxFontImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkGroupBoxFontImage.AutoSize = true;
+            this.checkGroupBoxFontImage.CollapseIfNotChecked = true;
+            this.checkGroupBoxFontImage.Controls.Add(this.checkBoxInputImageOverlay);
+            this.checkGroupBoxFontImage.Controls.Add(this.textBoxInputImageCharacterPos);
+            this.checkGroupBoxFontImage.Controls.Add(this.hScrollBarInputImageCharacterPos);
+            this.checkGroupBoxFontImage.Controls.Add(this.pictureBoxInputImageFontCharacterPreview);
+            this.checkGroupBoxFontImage.Controls.Add(this.numericUpDownInputImageTilesPerLine);
+            this.checkGroupBoxFontImage.Controls.Add(this.label18);
+            this.checkGroupBoxFontImage.Controls.Add(this.label17);
+            this.checkGroupBoxFontImage.Controls.Add(this.label5);
+            this.checkGroupBoxFontImage.Controls.Add(this.comboBoxInputImageCodepage);
+            this.checkGroupBoxFontImage.Controls.Add(this.numericUpDownInputImageTileSizeY);
+            this.checkGroupBoxFontImage.Controls.Add(this.numericUpDownInputImageTileSizeX);
+            this.checkGroupBoxFontImage.Controls.Add(this.label4);
+            this.checkGroupBoxFontImage.Location = new System.Drawing.Point(13, 142);
+            this.checkGroupBoxFontImage.MinimumSize = new System.Drawing.Size(1, 1);
+            this.checkGroupBoxFontImage.Name = "checkGroupBoxFontImage";
+            this.checkGroupBoxFontImage.Size = new System.Drawing.Size(285, 220);
+            this.checkGroupBoxFontImage.TabIndex = 21;
+            this.checkGroupBoxFontImage.TabStop = false;
+            this.checkGroupBoxFontImage.Text = "Image as codepage image";
+            this.checkGroupBoxFontImage.CheckedChanged += new System.EventHandler(this.UpdateInputImageFont);
+            // 
+            // checkBoxInputImageOverlay
+            // 
+            this.checkBoxInputImageOverlay.AutoSize = true;
+            this.checkBoxInputImageOverlay.Location = new System.Drawing.Point(94, 184);
+            this.checkBoxInputImageOverlay.Name = "checkBoxInputImageOverlay";
+            this.checkBoxInputImageOverlay.Size = new System.Drawing.Size(88, 17);
+            this.checkBoxInputImageOverlay.TabIndex = 12;
+            this.checkBoxInputImageOverlay.Text = "Draw overlay";
+            this.checkBoxInputImageOverlay.UseVisualStyleBackColor = true;
+            this.checkBoxInputImageOverlay.CheckedChanged += new System.EventHandler(this.UpdateInputImageFont);
+            // 
+            // textBoxInputImageCharacterPos
+            // 
+            this.textBoxInputImageCharacterPos.Location = new System.Drawing.Point(94, 137);
+            this.textBoxInputImageCharacterPos.Name = "textBoxInputImageCharacterPos";
+            this.textBoxInputImageCharacterPos.Size = new System.Drawing.Size(100, 20);
+            this.textBoxInputImageCharacterPos.TabIndex = 11;
+            // 
+            // hScrollBarInputImageCharacterPos
+            // 
+            this.hScrollBarInputImageCharacterPos.LargeChange = 1;
+            this.hScrollBarInputImageCharacterPos.Location = new System.Drawing.Point(94, 160);
+            this.hScrollBarInputImageCharacterPos.Maximum = 255;
+            this.hScrollBarInputImageCharacterPos.Name = "hScrollBarInputImageCharacterPos";
+            this.hScrollBarInputImageCharacterPos.Size = new System.Drawing.Size(123, 17);
+            this.hScrollBarInputImageCharacterPos.TabIndex = 10;
+            this.hScrollBarInputImageCharacterPos.ValueChanged += new System.EventHandler(this.hScrollBarInputImageCharacterPos_ValueChanged);
+            // 
+            // pictureBoxInputImageFontCharacterPreview
+            // 
+            this.pictureBoxInputImageFontCharacterPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBoxInputImageFontCharacterPreview.Location = new System.Drawing.Point(6, 137);
+            this.pictureBoxInputImageFontCharacterPreview.Name = "pictureBoxInputImageFontCharacterPreview";
+            this.pictureBoxInputImageFontCharacterPreview.Size = new System.Drawing.Size(64, 64);
+            this.pictureBoxInputImageFontCharacterPreview.TabIndex = 9;
+            this.pictureBoxInputImageFontCharacterPreview.TabStop = false;
+            // 
+            // numericUpDownInputImageTilesPerLine
+            // 
+            this.numericUpDownInputImageTilesPerLine.Location = new System.Drawing.Point(94, 45);
+            this.numericUpDownInputImageTilesPerLine.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownInputImageTilesPerLine.Name = "numericUpDownInputImageTilesPerLine";
+            this.numericUpDownInputImageTilesPerLine.Size = new System.Drawing.Size(44, 20);
+            this.numericUpDownInputImageTilesPerLine.TabIndex = 8;
+            this.numericUpDownInputImageTilesPerLine.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownInputImageTilesPerLine.ValueChanged += new System.EventHandler(this.UpdateInputImageFont);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(7, 47);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(66, 13);
+            this.label18.TabIndex = 7;
+            this.label18.Text = "Tiles per line";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(158, 20);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(12, 13);
+            this.label17.TabIndex = 6;
+            this.label17.Text = "y";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(76, 20);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(12, 13);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "x";
+            // 
+            // comboBoxInputImageCodepage
+            // 
+            this.comboBoxInputImageCodepage.FormattingEnabled = true;
+            this.comboBoxInputImageCodepage.Location = new System.Drawing.Point(67, 88);
+            this.comboBoxInputImageCodepage.Name = "comboBoxInputImageCodepage";
+            this.comboBoxInputImageCodepage.Size = new System.Drawing.Size(212, 21);
+            this.comboBoxInputImageCodepage.TabIndex = 4;
+            // 
+            // numericUpDownInputImageTileSizeY
+            // 
+            this.numericUpDownInputImageTileSizeY.Location = new System.Drawing.Point(176, 18);
+            this.numericUpDownInputImageTileSizeY.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownInputImageTileSizeY.Name = "numericUpDownInputImageTileSizeY";
+            this.numericUpDownInputImageTileSizeY.Size = new System.Drawing.Size(41, 20);
+            this.numericUpDownInputImageTileSizeY.TabIndex = 3;
+            this.numericUpDownInputImageTileSizeY.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownInputImageTileSizeY.ValueChanged += new System.EventHandler(this.UpdateInputImageFont);
+            // 
+            // numericUpDownInputImageTileSizeX
+            // 
+            this.numericUpDownInputImageTileSizeX.Location = new System.Drawing.Point(94, 18);
+            this.numericUpDownInputImageTileSizeX.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownInputImageTileSizeX.Name = "numericUpDownInputImageTileSizeX";
+            this.numericUpDownInputImageTileSizeX.Size = new System.Drawing.Size(44, 20);
+            this.numericUpDownInputImageTileSizeX.TabIndex = 2;
+            this.numericUpDownInputImageTileSizeX.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownInputImageTileSizeX.ValueChanged += new System.EventHandler(this.UpdateInputImageFont);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 20);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(45, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Tile size";
             // 
             // dataGridViewBackgroundColor
             // 
@@ -430,9 +640,6 @@
             this.dataGridViewBackgroundColor.AllowUserToDeleteRows = false;
             this.dataGridViewBackgroundColor.AllowUserToResizeColumns = false;
             this.dataGridViewBackgroundColor.AllowUserToResizeRows = false;
-            this.dataGridViewBackgroundColor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewBackgroundColor.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCellsExceptHeader;
             this.dataGridViewBackgroundColor.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
             this.dataGridViewBackgroundColor.ColumnHeadersVisible = false;
@@ -443,7 +650,7 @@
             this.dataGridViewBackgroundColor.MultiSelect = false;
             this.dataGridViewBackgroundColor.Name = "dataGridViewBackgroundColor";
             this.dataGridViewBackgroundColor.RowHeadersVisible = false;
-            this.dataGridViewBackgroundColor.Size = new System.Drawing.Size(137, 72);
+            this.dataGridViewBackgroundColor.Size = new System.Drawing.Size(150, 70);
             this.dataGridViewBackgroundColor.TabIndex = 20;
             this.dataGridViewBackgroundColor.VirtualMode = true;
             this.dataGridViewBackgroundColor.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridViewBackgroundColor_CellValueNeeded);
@@ -469,9 +676,9 @@
             // buttonImageColorInvert
             // 
             this.buttonImageColorInvert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonImageColorInvert.Location = new System.Drawing.Point(223, 95);
+            this.buttonImageColorInvert.Location = new System.Drawing.Point(236, 95);
             this.buttonImageColorInvert.Name = "buttonImageColorInvert";
-            this.buttonImageColorInvert.Size = new System.Drawing.Size(75, 23);
+            this.buttonImageColorInvert.Size = new System.Drawing.Size(62, 23);
             this.buttonImageColorInvert.TabIndex = 19;
             this.buttonImageColorInvert.Text = "Invert";
             this.buttonImageColorInvert.UseVisualStyleBackColor = true;
@@ -480,9 +687,9 @@
             // buttonImageColorAuto
             // 
             this.buttonImageColorAuto.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonImageColorAuto.Location = new System.Drawing.Point(223, 66);
+            this.buttonImageColorAuto.Location = new System.Drawing.Point(236, 66);
             this.buttonImageColorAuto.Name = "buttonImageColorAuto";
-            this.buttonImageColorAuto.Size = new System.Drawing.Size(75, 23);
+            this.buttonImageColorAuto.Size = new System.Drawing.Size(62, 23);
             this.buttonImageColorAuto.TabIndex = 18;
             this.buttonImageColorAuto.Text = "Auto";
             this.buttonImageColorAuto.UseVisualStyleBackColor = true;
@@ -496,6 +703,19 @@
             this.label3.Size = new System.Drawing.Size(64, 13);
             this.label3.TabIndex = 17;
             this.label3.Text = "Back. color:";
+            // 
+            // btnBitmapLoad
+            // 
+            this.btnBitmapLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBitmapLoad.FlatAppearance.BorderSize = 0;
+            this.btnBitmapLoad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBitmapLoad.Image = global::TheDotFactory.Properties.Resources.folder;
+            this.btnBitmapLoad.Location = new System.Drawing.Point(274, 11);
+            this.btnBitmapLoad.Name = "btnBitmapLoad";
+            this.btnBitmapLoad.Size = new System.Drawing.Size(24, 23);
+            this.btnBitmapLoad.TabIndex = 15;
+            this.btnBitmapLoad.UseVisualStyleBackColor = true;
+            this.btnBitmapLoad.Click += new System.EventHandler(this.btnBitmapLoad_Click);
             // 
             // label11
             // 
@@ -512,7 +732,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtImageName.Location = new System.Drawing.Point(80, 39);
             this.txtImageName.Name = "txtImageName";
-            this.txtImageName.Size = new System.Drawing.Size(138, 20);
+            this.txtImageName.Size = new System.Drawing.Size(188, 20);
             this.txtImageName.TabIndex = 11;
             // 
             // label7
@@ -538,10 +758,20 @@
             this.panelPicture.AutoScroll = true;
             this.panelPicture.Controls.Add(this.pbxBitmap);
             this.panelPicture.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelPicture.Location = new System.Drawing.Point(3, 168);
+            this.panelPicture.Location = new System.Drawing.Point(3, 379);
             this.panelPicture.Name = "panelPicture";
             this.panelPicture.Size = new System.Drawing.Size(310, 458);
             this.panelPicture.TabIndex = 11;
+            // 
+            // pbxBitmap
+            // 
+            this.pbxBitmap.ImageLocation = "";
+            this.pbxBitmap.Location = new System.Drawing.Point(23, 36);
+            this.pbxBitmap.Name = "pbxBitmap";
+            this.pbxBitmap.Size = new System.Drawing.Size(99, 110);
+            this.pbxBitmap.TabIndex = 11;
+            this.pbxBitmap.TabStop = false;
+            this.pbxBitmap.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pbxBitmap_MouseClick);
             // 
             // tableLayoutPanel3
             // 
@@ -706,6 +936,35 @@
             this.panel4.Size = new System.Drawing.Size(644, 41);
             this.panel4.TabIndex = 2;
             // 
+            // btnOutputConfig
+            // 
+            this.btnOutputConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOutputConfig.FlatAppearance.BorderSize = 0;
+            this.btnOutputConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOutputConfig.Image = global::TheDotFactory.Properties.Resources.wrench;
+            this.btnOutputConfig.Location = new System.Drawing.Point(526, 9);
+            this.btnOutputConfig.Name = "btnOutputConfig";
+            this.btnOutputConfig.Size = new System.Drawing.Size(26, 23);
+            this.btnOutputConfig.TabIndex = 32;
+            this.btnOutputConfig.UseVisualStyleBackColor = true;
+            this.btnOutputConfig.Click += new System.EventHandler(this.btnOutputConfig_Click);
+            // 
+            // btnGenerate
+            // 
+            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGenerate.FlatAppearance.BorderSize = 0;
+            this.btnGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnGenerate.Image = global::TheDotFactory.Properties.Resources.lightning;
+            this.btnGenerate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnGenerate.Location = new System.Drawing.Point(558, 9);
+            this.btnGenerate.Name = "btnGenerate";
+            this.btnGenerate.Size = new System.Drawing.Size(76, 23);
+            this.btnGenerate.TabIndex = 31;
+            this.btnGenerate.Text = "Generate";
+            this.btnGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnGenerate.UseVisualStyleBackColor = true;
+            this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
+            // 
             // cbxOutputConfiguration
             // 
             this.cbxOutputConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -823,82 +1082,6 @@
             // 
             this.dlgSaveAs.Title = "Save source and header";
             // 
-            // btnInsertText
-            // 
-            this.btnInsertText.FlatAppearance.BorderSize = 0;
-            this.btnInsertText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnInsertText.Image = global::TheDotFactory.Properties.Resources.add;
-            this.btnInsertText.Location = new System.Drawing.Point(224, 37);
-            this.btnInsertText.Name = "btnInsertText";
-            this.btnInsertText.Size = new System.Drawing.Size(26, 23);
-            this.btnInsertText.TabIndex = 15;
-            this.btnInsertText.UseVisualStyleBackColor = true;
-            this.btnInsertText.Click += new System.EventHandler(this.btnInsertText_Click);
-            // 
-            // btnFontSelect
-            // 
-            this.btnFontSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFontSelect.FlatAppearance.BorderSize = 0;
-            this.btnFontSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFontSelect.Image = global::TheDotFactory.Properties.Resources.font;
-            this.btnFontSelect.Location = new System.Drawing.Point(270, 11);
-            this.btnFontSelect.Name = "btnFontSelect";
-            this.btnFontSelect.Size = new System.Drawing.Size(19, 23);
-            this.btnFontSelect.TabIndex = 14;
-            this.btnFontSelect.UseVisualStyleBackColor = true;
-            this.btnFontSelect.Click += new System.EventHandler(this.btnFontSelect_Click);
-            // 
-            // btnBitmapLoad
-            // 
-            this.btnBitmapLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBitmapLoad.FlatAppearance.BorderSize = 0;
-            this.btnBitmapLoad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBitmapLoad.Image = global::TheDotFactory.Properties.Resources.folder;
-            this.btnBitmapLoad.Location = new System.Drawing.Point(274, 11);
-            this.btnBitmapLoad.Name = "btnBitmapLoad";
-            this.btnBitmapLoad.Size = new System.Drawing.Size(24, 23);
-            this.btnBitmapLoad.TabIndex = 15;
-            this.btnBitmapLoad.UseVisualStyleBackColor = true;
-            this.btnBitmapLoad.Click += new System.EventHandler(this.btnBitmapLoad_Click);
-            // 
-            // pbxBitmap
-            // 
-            this.pbxBitmap.ImageLocation = "";
-            this.pbxBitmap.Location = new System.Drawing.Point(3, 3);
-            this.pbxBitmap.Name = "pbxBitmap";
-            this.pbxBitmap.Size = new System.Drawing.Size(99, 110);
-            this.pbxBitmap.TabIndex = 11;
-            this.pbxBitmap.TabStop = false;
-            // 
-            // btnOutputConfig
-            // 
-            this.btnOutputConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOutputConfig.FlatAppearance.BorderSize = 0;
-            this.btnOutputConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOutputConfig.Image = global::TheDotFactory.Properties.Resources.wrench;
-            this.btnOutputConfig.Location = new System.Drawing.Point(526, 9);
-            this.btnOutputConfig.Name = "btnOutputConfig";
-            this.btnOutputConfig.Size = new System.Drawing.Size(26, 23);
-            this.btnOutputConfig.TabIndex = 32;
-            this.btnOutputConfig.UseVisualStyleBackColor = true;
-            this.btnOutputConfig.Click += new System.EventHandler(this.btnOutputConfig_Click);
-            // 
-            // btnGenerate
-            // 
-            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGenerate.FlatAppearance.BorderSize = 0;
-            this.btnGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnGenerate.Image = global::TheDotFactory.Properties.Resources.lightning;
-            this.btnGenerate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnGenerate.Location = new System.Drawing.Point(558, 9);
-            this.btnGenerate.Name = "btnGenerate";
-            this.btnGenerate.Size = new System.Drawing.Size(76, 23);
-            this.btnGenerate.TabIndex = 31;
-            this.btnGenerate.Text = "Generate";
-            this.btnGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnGenerate.UseVisualStyleBackColor = true;
-            this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
-            // 
             // button2
             // 
             this.button2.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -954,17 +1137,24 @@
             this.panel6.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
+            this.checkGroupBoxFontImage.ResumeLayout(false);
+            this.checkGroupBoxFontImage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxInputImageFontCharacterPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInputImageTilesPerLine)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInputImageTileSizeY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInputImageTileSizeX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewBackgroundColor)).EndInit();
             this.panelPicture.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbxBitmap)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
             this.ctxMenuSource.ResumeLayout(false);
             this.ctxMenuHeader.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxBitmap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1045,6 +1235,19 @@
         private System.Windows.Forms.DataGridView dataGridViewBackgroundColor;
         private System.Windows.Forms.DataGridViewCheckBoxColumn cBackground;
         private System.Windows.Forms.DataGridViewTextBoxColumn cColor;
+        private UIToolbox.CheckGroupBox checkGroupBoxFontImage;
+        private System.Windows.Forms.NumericUpDown numericUpDownInputImageTileSizeY;
+        private System.Windows.Forms.NumericUpDown numericUpDownInputImageTileSizeX;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBoxInputImageCodepage;
+        private System.Windows.Forms.NumericUpDown numericUpDownInputImageTilesPerLine;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.PictureBox pictureBoxInputImageFontCharacterPreview;
+        private System.Windows.Forms.TextBox textBoxInputImageCharacterPos;
+        private System.Windows.Forms.HScrollBar hScrollBarInputImageCharacterPos;
+        private System.Windows.Forms.CheckBox checkBoxInputImageOverlay;
         //private System.Windows.Forms.DataGridViewTextBoxColumn Color;
         //private System.Windows.Forms.DataGridViewCheckBoxColumn Background;
     }

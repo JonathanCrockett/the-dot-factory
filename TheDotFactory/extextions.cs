@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Drawing.Drawing2D;
 
 namespace TheDotFactory
 {
@@ -143,6 +144,61 @@ namespace TheDotFactory
             }
 
             return b;
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height with lo qualety(pixel by pixel).
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="faktor">The scaling faktor to scale with</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap ResizeImage(this Bitmap image, int faktor)
+        {
+            Size newSize = new Size(image.Size.Width * faktor, image.Height * faktor);
+
+            Rectangle destRect = new Rectangle(new Point(), newSize);
+
+            Bitmap destImage = new Bitmap(newSize.Width, newSize.Height);
+            Graphics g = Graphics.FromImage(destImage);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            for(int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    g.FillRectangle(new SolidBrush(image.GetPixel(x, y)), x * faktor, y * faktor, faktor, faktor);
+                }
+            }
+
+            return destImage;
+        }
+
+        /// <summary>
+        /// Creates a copy of the section of this Bitmap defined with a specified PixelFormat and default color when the rectangel reaches out og the image.
+        /// </summary>
+        /// <param name="rectangek">Defines the portion of this Bitmap to copy. Coordinates are relative to this Bitmap.</param>
+        /// <param name="format">The pixel format for the new Bitmap. This must specify a value that begins with Format.</param>
+        /// <param name="defaultColor">The color whitch is used to file the areas that are outside the image</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap Clone(this Bitmap image, Rectangle rectangel, PixelFormat format, Color defaultColor)
+        {
+            Bitmap destImage = new Bitmap(rectangel.Width, rectangel.Height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            for (int y = 0; y < destImage.Height; y++)
+            {
+                for (int x = 0; x < destImage.Width; x++)
+                {
+                    Color c;
+                    if (rectangel.X + x < image.Width && rectangel.Y + y < image.Height) c = image.GetPixel(rectangel.X + x, rectangel.Y + y);
+                    else c = defaultColor;
+                    destImage.SetPixel(x, y, c);
+                }
+            }
+
+            return destImage;
         }
         #endregion
 
