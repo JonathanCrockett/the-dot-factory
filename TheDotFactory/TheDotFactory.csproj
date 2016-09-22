@@ -76,9 +76,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIToolbox.CheckGroupBox">
-      <HintPath>..\CheckGroupBoxAndRadioGroupBox_1_1\CheckGroupBox\CheckGroupBox\bin\Release\UIToolbox.CheckGroupBox.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutForm.cs">
@@ -87,7 +84,13 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BitmapInfo.cs" />
+    <Compile Include="Border.cs" />
+    <Compile Include="CharacterGeneartionInfo.cs" />
     <Compile Include="CodePageInfo.cs" />
+    <Compile Include="ComboBoxItem.cs" />
+    <Compile Include="extextions.cs" />
+    <Compile Include="FontInfo.cs" />
     <Compile Include="InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -166,6 +169,17 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CheckGroupBoxAndRadioGroupBox_1_1\CheckGroupBox\CheckGroupBox\CheckGroupBox2008.csproj">
+      <Project>{d21f9fa7-e371-4c26-a227-5e1dfd875a2b}</Project>
+      <Name>CheckGroupBox2008</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="pyhtonStyle.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

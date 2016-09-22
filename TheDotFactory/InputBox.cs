@@ -1,17 +1,12 @@
-﻿using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace TheDotFactory
 {
     /// <summary>
     /// Summary description for InputBox.
     /// 
-    public class InputBoxDialog : System.Windows.Forms.Form
+    public class InputBoxDialog : Form
     {
-
         #region Windows Contols and Constructor
 
         private System.Windows.Forms.Label lblPrompt;

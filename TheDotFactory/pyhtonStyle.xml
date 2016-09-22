@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+  <style name="Blue" color="Blue"/>
+  <style name="Red" color="Red"/>
+  
+  <rule style="Blue">\b(and|as|assert|break|class|continue|def|del|elif|else|except|exec|finally|for|from|global|if|import|in|is|lambda|not|or|pass|print|raise|return|try|while|with|yield)\b</rule>  
+  <rule style="Red">[#]+.*</rule>
+</doc>

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace TheDotFactory
@@ -29,25 +24,23 @@ namespace TheDotFactory
             cbxPaddingVert.DataSource = Enum.GetNames(typeof(OutputConfiguration.PaddingRemoval));
             cbxCommentStyle.DataSource = Enum.GetNames(typeof(OutputConfiguration.CommentStyle));
             cbxBitLayout.DataSource = Enum.GetNames(typeof(OutputConfiguration.BitLayout));
-            cbxByteOrder.DataSource = Enum.GetNames(typeof(OutputConfiguration.ByteOrder));
             cbxByteFormat.DataSource = Enum.GetNames(typeof(OutputConfiguration.ByteFormat));
-            
-            // display string arrays
-            foreach (string s in OutputConfiguration.RotationDisplayString) cbxRotation.Items.Add(s);
-            foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxCharWidthFormat.Items.Add(s);
-            foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxCharHeightFormat.Items.Add(s);
-            foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxFontHeightFormat.Items.Add(s);
-            foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxImgWidthFormat.Items.Add(s);
-            foreach (string s in OutputConfiguration.DescriptorFormatDisplayString) cbxImgHeightFormat.Items.Add(s);
+            cbxRotation.DataSource = OutputConfiguration.Rotation.GetNames();
 
-            foreach (string s in CodePageInfo.GetEncoderNameList())
-                cbxCharacterEncoding.Items.Add(s);
+            // display string arrays
+            cbxCharWidthFormat.Items.AddRange(OutputConfiguration.DescriptorFormatDisplayString);
+            cbxCharHeightFormat.Items.AddRange(OutputConfiguration.DescriptorFormatDisplayString);
+            cbxFontHeightFormat.Items.AddRange(OutputConfiguration.DescriptorFormatDisplayString);
+            cbxImgWidthFormat.Items.AddRange(OutputConfiguration.DescriptorFormatDisplayString);
+            cbxImgHeightFormat.Items.AddRange(OutputConfiguration.DescriptorFormatDisplayString);
+
+            cbxCharacterEncoding.Items.AddRange(CodePageInfo.GetEncoderNameList());
 
             // add leading
             cbxByteLeadingChar.Items.Add(OutputConfiguration.ByteLeadingStringBinary);
             cbxByteLeadingChar.Items.Add(OutputConfiguration.ByteLeadingStringHex);
 
-            foreach (string s in OutputConfiguration.CommentVisualisatorChar) txtBmpVisualizerChar.Items.Add(s);
+            txtBmpVisualizerChar.Items.AddRange(OutputConfiguration.CommentVisualizerChar);
 
             // re-populate dropdown
             m_outputConfigurationManager.comboBoxPopulate(cbxOutputConfigurations);
@@ -64,7 +57,7 @@ namespace TheDotFactory
             cbxPaddingVert.SelectedIndex = (int)outputConfig.paddingRemovalVertical;
             cbxCommentStyle.SelectedIndex = (int)outputConfig.commentStyle;
             cbxBitLayout.SelectedIndex = (int)outputConfig.bitLayout;
-            cbxByteOrder.SelectedIndex = (int)outputConfig.byteOrder;
+            cbxByteOrderMsbFirst.Checked = outputConfig.byteOrderMsbFirst;
             cbxByteFormat.SelectedIndex = (int)outputConfig.byteFormat;
             cbxRotation.SelectedIndex = (int)outputConfig.rotation;
             cbxCharWidthFormat.SelectedIndex = (int)outputConfig.descCharWidth;
@@ -87,12 +80,12 @@ namespace TheDotFactory
             // load check boxes
             cbxFlipHoriz.Checked = outputConfig.flipHorizontal;
             cbxFlipVert.Checked = outputConfig.flipVertical;
-            cbxCommentVarName.Checked = outputConfig.commentVariableName;
-            cbxCommentCharVisual.Checked = outputConfig.commentCharVisualizer;
-            cbxCommentCharDesc.Checked = outputConfig.commentCharDescriptor;
+            cbxCommentVarName.Checked = outputConfig.addCommentVariableName;
+            cbxCommentCharVisual.Checked = outputConfig.addCommentCharVisualizer;
+            cbxCommentCharDesc.Checked = outputConfig.addCommentCharDescriptor;
             cbxGenerateSpaceBitmap.Checked = outputConfig.generateSpaceCharacterBitmap;
             cbxGenerateLookupArray.Checked = outputConfig.generateLookupArray;
-            txtBmpVisualizerChar.Text = outputConfig.bmpVisualizerChar + outputConfig.bmpVisualizerCharEmpty;
+            txtBmpVisualizerChar.Text = "" + outputConfig.bmpVisualizerChar + outputConfig.bmpVisualizerCharEmpty;
             cbxGenerateLookupBlocks.Checked = outputConfig.generateLookupBlocks;
             cbxCharacterEncoding.Text = CodePageInfo.GetCodepageName(outputConfig.CodePage);
             cbxAddCodePage.Checked = outputConfig.addCodePage;
@@ -114,9 +107,8 @@ namespace TheDotFactory
             outputConfig.paddingRemovalVertical = (OutputConfiguration.PaddingRemoval)Enum.Parse(typeof(OutputConfiguration.PaddingRemoval), cbxPaddingVert.Text);
             outputConfig.commentStyle = (OutputConfiguration.CommentStyle)Enum.Parse(typeof(OutputConfiguration.CommentStyle), cbxCommentStyle.Text);
             outputConfig.bitLayout = (OutputConfiguration.BitLayout)Enum.Parse(typeof(OutputConfiguration.BitLayout), cbxBitLayout.Text);
-            outputConfig.byteOrder = (OutputConfiguration.ByteOrder)Enum.Parse(typeof(OutputConfiguration.ByteOrder), cbxByteOrder.Text);
             outputConfig.byteFormat = (OutputConfiguration.ByteFormat)Enum.Parse(typeof(OutputConfiguration.ByteFormat), cbxByteFormat.Text);
-            outputConfig.rotation = (OutputConfiguration.Rotation)Array.IndexOf(OutputConfiguration.RotationDisplayString, cbxRotation.Text);
+            outputConfig.rotation = OutputConfiguration.Rotation.Parse(cbxRotation.Text);
             outputConfig.descCharWidth = (OutputConfiguration.DescriptorFormat)Array.IndexOf(OutputConfiguration.DescriptorFormatDisplayString, cbxCharWidthFormat.Text);
             outputConfig.descCharHeight = (OutputConfiguration.DescriptorFormat)Array.IndexOf(OutputConfiguration.DescriptorFormatDisplayString, cbxCharHeightFormat.Text);
             outputConfig.descFontHeight = (OutputConfiguration.DescriptorFormat)Array.IndexOf(OutputConfiguration.DescriptorFormatDisplayString, cbxFontHeightFormat.Text);
@@ -125,8 +117,8 @@ namespace TheDotFactory
 
             // text boxes
             outputConfig.byteLeadingString = cbxByteLeadingChar.Text;
-            outputConfig.spaceGenerationPixels = (int)System.Convert.ToInt32(txtSpacePixels.Text, 10);
-            outputConfig.lookupBlocksNewAfterCharCount = System.Convert.ToInt32(txtLookupBlocksNewAfterCharCount.Text, 10);
+            outputConfig.spaceGenerationPixels = int.Parse(txtSpacePixels.Text);
+            outputConfig.lookupBlocksNewAfterCharCount = int.Parse(txtLookupBlocksNewAfterCharCount.Text);
             outputConfig.varNfBitmaps = txtVarNfFontBitmaps.Text;
             outputConfig.varNfCharInfo = txtVarNfCharInfo.Text;
             outputConfig.varNfFontInfo = txtVarNfFontInfo.Text;
@@ -136,26 +128,21 @@ namespace TheDotFactory
             // load check boxes
             outputConfig.flipHorizontal = cbxFlipHoriz.Checked;
             outputConfig.flipVertical = cbxFlipVert.Checked;
-            outputConfig.commentVariableName = cbxCommentVarName.Checked;
-            outputConfig.commentCharVisualizer = cbxCommentCharVisual.Checked;
-            outputConfig.commentCharDescriptor = cbxCommentCharDesc.Checked;
+            outputConfig.addCommentVariableName = cbxCommentVarName.Checked;
+            outputConfig.addCommentCharVisualizer = cbxCommentCharVisual.Checked;
+            outputConfig.addCommentCharDescriptor = cbxCommentCharDesc.Checked;
             outputConfig.generateSpaceCharacterBitmap = cbxGenerateSpaceBitmap.Checked;
             outputConfig.generateLookupArray = cbxGenerateLookupArray.Checked;
-            if (txtBmpVisualizerChar.Text.Length >= 2)
-            {
-                outputConfig.bmpVisualizerChar = txtBmpVisualizerChar.Text.Substring(0, 1);
-                outputConfig.bmpVisualizerCharEmpty = txtBmpVisualizerChar.Text.Substring(1, 1);
-            }
-            else if (txtBmpVisualizerChar.Text.Length == 1)
-            {
-                outputConfig.bmpVisualizerChar = txtBmpVisualizerChar.Text;
-                outputConfig.bmpVisualizerCharEmpty = " ";
-            }
-            else
-            {
-                outputConfig.bmpVisualizerChar = "#";
-                outputConfig.bmpVisualizerCharEmpty = " ";
-            }
+            outputConfig.byteOrderMsbFirst = cbxByteOrderMsbFirst.Checked;
+
+            outputConfig.bmpVisualizerChar = (txtBmpVisualizerChar.Text.Length >= 1) ? 
+                    txtBmpVisualizerChar.Text[0] :
+                     OutputConfiguration.CommentVisualizerCharDefault;
+
+            outputConfig.bmpVisualizerCharEmpty = (txtBmpVisualizerChar.Text.Length >= 2) ? 
+                txtBmpVisualizerChar.Text[1] :
+                OutputConfiguration.CommendVisualizerCharEmptyDefault;
+
             outputConfig.CodePage = CodePageInfo.GetCodepage(cbxCharacterEncoding.Text);
             outputConfig.addCodePage = cbxAddCodePage.Checked;
             outputConfig.generateLookupBlocks = cbxGenerateLookupBlocks.Checked;
@@ -245,17 +232,20 @@ namespace TheDotFactory
         private void cbxByteFormat_TextChanged(object sender, EventArgs e)
         {
             // set leading string acccordingly
-            if (cbxByteFormat.SelectedIndex == (int)OutputConfiguration.ByteFormat.Hex)
+            switch((OutputConfiguration.ByteFormat)cbxByteFormat.SelectedIndex )
             {
-                // set hex leading only if set to binary
-                if (cbxByteLeadingChar.Text == OutputConfiguration.ByteLeadingStringBinary)
-                    cbxByteLeadingChar.Text = OutputConfiguration.ByteLeadingStringHex;
-            }
-            else
-            {
-                // set hex binary only if set to hex
-                if (cbxByteLeadingChar.Text == OutputConfiguration.ByteLeadingStringHex)
-                    cbxByteLeadingChar.Text = OutputConfiguration.ByteLeadingStringBinary;
+                case OutputConfiguration.ByteFormat.Hex:
+                    // set hex leading only if set to binary
+                    if (cbxByteLeadingChar.Text == OutputConfiguration.ByteLeadingStringBinary)
+                        cbxByteLeadingChar.Text = OutputConfiguration.ByteLeadingStringHex;
+                    break;
+                case OutputConfiguration.ByteFormat.Binary:
+                    // set hex binary only if set to hex
+                    if (cbxByteLeadingChar.Text == OutputConfiguration.ByteLeadingStringHex)
+                        cbxByteLeadingChar.Text = OutputConfiguration.ByteLeadingStringBinary;
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
         }
 

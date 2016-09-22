@@ -30,13 +30,13 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OutputConfigurationForm));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbxByteOrderMsbFirst = new System.Windows.Forms.CheckBox();
             this.label24 = new System.Windows.Forms.Label();
             this.cbxBitLayout = new System.Windows.Forms.ComboBox();
             this.cbxByteLeadingChar = new System.Windows.Forms.ComboBox();
             this.label20 = new System.Windows.Forms.Label();
             this.cbxByteFormat = new System.Windows.Forms.ComboBox();
             this.label18 = new System.Windows.Forms.Label();
-            this.cbxByteOrder = new System.Windows.Forms.ComboBox();
             this.label19 = new System.Windows.Forms.Label();
             this.gbxPadding = new System.Windows.Forms.GroupBox();
             this.cbxPaddingVert = new System.Windows.Forms.ComboBox();
@@ -109,13 +109,13 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.cbxByteOrderMsbFirst);
             this.groupBox3.Controls.Add(this.label24);
             this.groupBox3.Controls.Add(this.cbxBitLayout);
             this.groupBox3.Controls.Add(this.cbxByteLeadingChar);
             this.groupBox3.Controls.Add(this.label20);
             this.groupBox3.Controls.Add(this.cbxByteFormat);
             this.groupBox3.Controls.Add(this.label18);
-            this.groupBox3.Controls.Add(this.cbxByteOrder);
             this.groupBox3.Controls.Add(this.label19);
             this.groupBox3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox3.Location = new System.Drawing.Point(209, 156);
@@ -124,6 +124,17 @@
             this.groupBox3.TabIndex = 22;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Byte";
+            // 
+            // cbxByteOrderMsbFirst
+            // 
+            this.cbxByteOrderMsbFirst.AutoSize = true;
+            this.cbxByteOrderMsbFirst.Location = new System.Drawing.Point(70, 39);
+            this.cbxByteOrderMsbFirst.Name = "cbxByteOrderMsbFirst";
+            this.cbxByteOrderMsbFirst.Size = new System.Drawing.Size(74, 17);
+            this.cbxByteOrderMsbFirst.TabIndex = 45;
+            this.cbxByteOrderMsbFirst.Text = "MsbFirst";
+            this.cbxByteOrderMsbFirst.UseVisualStyleBackColor = true;
+            this.cbxByteOrderMsbFirst.CheckedChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
             // 
             // label24
             // 
@@ -189,18 +200,6 @@
             this.label18.Size = new System.Drawing.Size(42, 13);
             this.label18.TabIndex = 23;
             this.label18.Text = "Format:";
-            // 
-            // cbxByteOrder
-            // 
-            this.cbxByteOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxByteOrder.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cbxByteOrder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.cbxByteOrder.FormattingEnabled = true;
-            this.cbxByteOrder.Location = new System.Drawing.Point(69, 38);
-            this.cbxByteOrder.Name = "cbxByteOrder";
-            this.cbxByteOrder.Size = new System.Drawing.Size(112, 21);
-            this.cbxByteOrder.TabIndex = 22;
-            this.cbxByteOrder.SelectedIndexChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
             // 
             // label19
             // 
@@ -371,7 +370,7 @@
             // txtBmpVisualizerChar
             // 
             this.txtBmpVisualizerChar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.txtBmpVisualizerChar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBmpVisualizerChar.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBmpVisualizerChar.FormattingEnabled = true;
             this.txtBmpVisualizerChar.Location = new System.Drawing.Point(117, 36);
             this.txtBmpVisualizerChar.Name = "txtBmpVisualizerChar";
@@ -948,8 +947,6 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.ComboBox cbxByteFormat;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.ComboBox cbxByteOrder;
-        private System.Windows.Forms.Label label19;
         private System.Windows.Forms.GroupBox gbxPadding;
         private System.Windows.Forms.ComboBox cbxPaddingVert;
         private System.Windows.Forms.Label label17;
@@ -1012,5 +1009,7 @@
         private System.Windows.Forms.ComboBox cbxCharacterEncoding;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckBox cbxAddCodePage;
+        private System.Windows.Forms.CheckBox cbxByteOrderMsbFirst;
+        private System.Windows.Forms.Label label19;
     }
 }

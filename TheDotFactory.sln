@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheDotFactory", "TheDotFactory\TheDotFactory.csproj", "{03FBC09E-C0BB-4D1D-BFDE-79454C60D78C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckGroupBox2008", "CheckGroupBoxAndRadioGroupBox_1_1\CheckGroupBox\CheckGroupBox\CheckGroupBox2008.csproj", "{D21F9FA7-E371-4C26-A227-5E1DFD875A2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{03FBC09E-C0BB-4D1D-BFDE-79454C60D78C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03FBC09E-C0BB-4D1D-BFDE-79454C60D78C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03FBC09E-C0BB-4D1D-BFDE-79454C60D78C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D21F9FA7-E371-4C26-A227-5E1DFD875A2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21F9FA7-E371-4C26-A227-5E1DFD875A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21F9FA7-E371-4C26-A227-5E1DFD875A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21F9FA7-E371-4C26-A227-5E1DFD875A2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

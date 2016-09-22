@@ -651,6 +651,7 @@
             // 
             // txtOutputTextSource
             // 
+            this.txtOutputTextSource.AutoIndent = false;
             this.txtOutputTextSource.AutoScrollMinSize = new System.Drawing.Size(27, 14);
             this.txtOutputTextSource.BackBrush = null;
             this.txtOutputTextSource.ContextMenuStrip = this.ctxMenuSource;
@@ -659,9 +660,11 @@
             this.txtOutputTextSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtOutputTextSource.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtOutputTextSource.Language = FastColoredTextBoxNS.Language.CSharp;
+            this.txtOutputTextSource.LeftBracket = '(';
             this.txtOutputTextSource.Location = new System.Drawing.Point(3, 21);
             this.txtOutputTextSource.Name = "txtOutputTextSource";
             this.txtOutputTextSource.Paddings = new System.Windows.Forms.Padding(0);
+            this.txtOutputTextSource.RightBracket = ')';
             this.txtOutputTextSource.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.txtOutputTextSource.Size = new System.Drawing.Size(486, 445);
             this.txtOutputTextSource.TabIndex = 16;
