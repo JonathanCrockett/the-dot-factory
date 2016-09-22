@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OutputConfigurationForm));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cbxByteOrderMsbFirst = new System.Windows.Forms.CheckBox();
             this.label24 = new System.Windows.Forms.Label();
@@ -343,7 +342,7 @@
             // 
             this.btnSaveNewConfig.FlatAppearance.BorderSize = 0;
             this.btnSaveNewConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSaveNewConfig.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveNewConfig.Image")));
+            this.btnSaveNewConfig.Image = global::TheDotFactory.Properties.Resources.database_add;
             this.btnSaveNewConfig.Location = new System.Drawing.Point(617, 10);
             this.btnSaveNewConfig.Name = "btnSaveNewConfig";
             this.btnSaveNewConfig.Size = new System.Drawing.Size(26, 23);
@@ -439,7 +438,7 @@
             // btnApply
             // 
             this.btnApply.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnApply.Image = ((System.Drawing.Image)(resources.GetObject("btnApply.Image")));
+            this.btnApply.Image = global::TheDotFactory.Properties.Resources.accept;
             this.btnApply.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnApply.Location = new System.Drawing.Point(616, 439);
             this.btnApply.Name = "btnApply";
@@ -500,7 +499,7 @@
             // 
             this.btnDeleteConfig.FlatAppearance.BorderSize = 0;
             this.btnDeleteConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDeleteConfig.Image = ((System.Drawing.Image)(resources.GetObject("btnDeleteConfig.Image")));
+            this.btnDeleteConfig.Image = global::TheDotFactory.Properties.Resources.database_delete;
             this.btnDeleteConfig.Location = new System.Drawing.Point(649, 10);
             this.btnDeleteConfig.Name = "btnDeleteConfig";
             this.btnDeleteConfig.Size = new System.Drawing.Size(26, 23);
@@ -513,7 +512,7 @@
             this.btnUpdateConfig.Enabled = false;
             this.btnUpdateConfig.FlatAppearance.BorderSize = 0;
             this.btnUpdateConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUpdateConfig.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateConfig.Image")));
+            this.btnUpdateConfig.Image = global::TheDotFactory.Properties.Resources.database_edit;
             this.btnUpdateConfig.Location = new System.Drawing.Point(585, 10);
             this.btnUpdateConfig.Name = "btnUpdateConfig";
             this.btnUpdateConfig.Size = new System.Drawing.Size(26, 23);

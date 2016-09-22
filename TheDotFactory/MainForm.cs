@@ -37,17 +37,12 @@ namespace TheDotFactory
         // output configuration
         private OutputConfiguration m_outputConfig;
 
-        // contains all colors that are present in the image, colors which are value are True are handelt background colors
+        // contains all colors that are present in the image, colors which are value are True are handelt as background colors
         Dictionary<Color, bool> colorList = new Dictionary<Color, bool>();
+
         public MainForm()
         {
             InitializeComponent();
-
-            // set UI properties that the designer does not set correctly
-            // designer sets MinSize values before initializing the splitter distance which causes an exception
-            splitContainer1.SplitterDistance = 340;
-            splitContainer1.Panel1MinSize = 287;
-            splitContainer1.Panel2MinSize = 260;
         }
 
         #region event handler
@@ -365,24 +360,7 @@ namespace TheDotFactory
         private void updateSelectedFont(Font fnt)
         {
             // set text name in the text box
-            txtInputFont.Text = fnt.Name;
-
-            // add to text
-            txtInputFont.Text += " " + Math.Round(fnt.Size) + "pts";
-
-            // check if bold
-            if (fnt.Bold)
-            {
-                // add to text
-                txtInputFont.Text += " / Bold";
-            }
-
-            // check if italic
-            if (fnt.Italic)
-            {
-                // add to text
-                txtInputFont.Text += " / Italic";
-            }
+            txtInputFont.Text = FontDescriptor.getFontName(fnt);
 
             // set the font in the text box
             txtInputText.Font = (Font)fnt.Clone();
@@ -743,22 +721,5 @@ namespace TheDotFactory
         #region fontbitmap
 
         #endregion
-
-        private void txtOutputTextSource_TextChangedDelayed(object sender, FastColoredTextBoxNS.TextChangedEventArgs e)
-        {
-            //old edition
-            //Range range = e.ChangedRange;
-
-            //new edition
-            //FastColoredTextBoxNS.Range range = (sender as FastColoredTextBoxNS.FastColoredTextBox).Range;//or (sender as 
-                                                                      //FastColoredTextBox).Range
-
-            //clear style of changed range
-            //range.ClearStyle();
-            //comment highlighting
-            //range.SetStyle(GreenStyle, @"//.*$", RegexOptions.Multiline);
-            //range.SetStyle(pythonCommentStyle, @"(#)", RegexOptions.Singleline);
-            //range.SetStyle(GreenStyle, @"(/\*.*?\*/)|(.*\*/)", RegexOptions.Singleline | RegexOptions.RightToLeft);
-        }
     }
 }

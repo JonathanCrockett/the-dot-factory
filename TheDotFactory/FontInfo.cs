@@ -100,35 +100,31 @@ namespace TheDotFactory
         {
             StringBuilder sourceText = new StringBuilder();
             StringBuilder headerText = new StringBuilder();
-            //
-            // Character bitmaps
-            //
 
-            // according to config
             if (OutConfig.addCommentVariableName)
             {
                 // add source file header
-                sourceText.AppendFormat("{0}" + OutConfig.nl + "{1} Font data for {2} {3}pt" + OutConfig.nl + "{4}" + OutConfig.nl + OutConfig.nl,
-                                                    OutConfig.CommentStart, OutConfig.CommentBlockMiddle, Font.Name, Math.Round(Font.Size),
+                sourceText.AppendFormat("{0}" + OutConfig.nl + "{1} Font data for {2}" + OutConfig.nl + "{3}" + OutConfig.nl + OutConfig.nl,
+                                                    OutConfig.CommentStart,
+                                                    OutConfig.CommentBlockMiddle,
+                                                    getFontName(Font, false),
                                                     OutConfig.CommentBlockEnd);
 
-                // add header file header
-                headerText.AppendFormat("{0}Font data for {1} {2}pt{3}" + OutConfig.nl,
-                                                    OutConfig.CommentStart, Font.Name, Math.Round(Font.Size),
-                                                    OutConfig.CommentEnd);
-            }
-
-            // according to config
-            if (OutConfig.addCommentVariableName)
-            {
                 // add source header
-                sourceText.AppendFormat("{0}Character bitmaps for {1} {2}pt{3}" + OutConfig.nl,
-                                                    OutConfig.CommentStart, Font.Name,
-                                                    Math.Round(Font.Size), OutConfig.CommentEnd);
+                sourceText.AppendFormat("{0}Character bitmaps for {1} {2}" + OutConfig.nl,
+                                                    OutConfig.CommentStart,
+                                                    getFontName(Font, false),
+                                                    OutConfig.CommentEnd);
+
+                // add header file header
+                headerText.AppendFormat("{0}Font data for {1} {2}" + OutConfig.nl,
+                                                    OutConfig.CommentStart,
+                                                    getFontName(Font, false),
+                                                    OutConfig.CommentEnd);    
             }
 
             // get bitmap name
-            string charBitmapVarName = String.Format(OutConfig.varNfBitmaps, getFontName(Font)) + "[]";
+            string charBitmapVarName = String.Format(OutConfig.varNfBitmaps, getFontName(Font, true)) + "[]";
 
             // source var
             sourceText.AppendFormat("{0} = " + OutConfig.nl + "{{" + OutConfig.nl, charBitmapVarName);
@@ -174,14 +170,14 @@ namespace TheDotFactory
             if (OutConfig.addCommentVariableName)
             {
                 // result string
-                sourceText.AppendFormat("{0}Font information for {1} {2}pt{3}" + OutConfig.nl,
+                sourceText.AppendFormat("{0}Font information for {1} {2}" + OutConfig.nl,
                                                     OutConfig.CommentStart,
-                                                    Font.Name, Math.Round(Font.Size),
+                                                    getFontName(Font, false),
                                                     OutConfig.CommentEnd);
             }
 
             // character name
-            string fontInfoVarName = String.Format(OutConfig.varNfFontInfo, getFontName(Font));
+            string fontInfoVarName = String.Format(OutConfig.varNfFontInfo, getFontName(Font, true));
 
             // add character array for header
             headerText.AppendFormat("extern {0};" + OutConfig.nl, fontInfoVarName);
@@ -238,7 +234,7 @@ namespace TheDotFactory
                                               getCharacterDisplayString(CodePageInfo, LastChar),
                                               spaceCharacterPixelWidthString,
                                               getFontInfoDescriptorsString(blockLookupGenerated, OutConfig, Font),
-                                              String.Format(OutConfig.varNfBitmaps, getFontName(Font)).GetVariableNameFromExpression(),
+                                              String.Format(OutConfig.varNfBitmaps, getFontName(Font, true)).GetVariableNameFromExpression(),
                                               FirstChar,
                                               LastChar,
                                               fontCodePage);
@@ -252,7 +248,7 @@ namespace TheDotFactory
             else
             {
                 // add block lookup to header
-                headerText.AppendFormat("extern {0}[];" + OutConfig.nl, String.Format(OutConfig.varNfCharInfo, getFontName(Font)));
+                headerText.AppendFormat("extern {0}[];" + OutConfig.nl, String.Format(OutConfig.varNfCharInfo, getFontName(Font, true)));
             }
 
             TextSource = sourceText.ToString();
@@ -313,25 +309,36 @@ namespace TheDotFactory
 
                 // add to string
                 descriptorString += String.Format("\t{0}, {1} Character descriptor array{2}" + outConfig.nl,
-                                                    blockLookupGenerated ? "NULL" : String.Format(outConfig.varNfCharInfo, getFontName(font)).GetVariableNameFromExpression(),
+                                                    blockLookupGenerated ? "NULL" : String.Format(outConfig.varNfCharInfo, getFontName(font, true)).GetVariableNameFromExpression(),
                                                     outConfig.CommentStart, outConfig.CommentEnd);
             }
             else
             {
                 // add descriptor array
                 descriptorString += String.Format("\t{0}, {1} Character descriptor array{2}" + outConfig.nl,
-                                                    String.Format(outConfig.varNfCharInfo, getFontName(font)).GetVariableNameFromExpression(),
+                                                    String.Format(outConfig.varNfCharInfo, getFontName(font, true)).GetVariableNameFromExpression(),
                                                     outConfig.CommentStart, outConfig.CommentEnd);
             }
 
             // return the string
             return descriptorString;
         }
-        
+
         // get the font name and format it
-        private static string getFontName(Font font)
+        public static string getFontName(Font font, bool variabelName = false)
         {
-            return (font.Name + "_" + Math.Round(font.Size) + "pt").ScrubVariableName();
+            string space = (variabelName) ? "_" : " ";
+            string s;
+
+            s = string.Format("{0}{2}{1}pt", font.Name, Math.Round(font.Size), space);
+
+            if(font.Style != FontStyle.Regular)
+            {
+                s += space + font.Style.ToString();
+                if(variabelName) s = s.Replace(", ", "_");
+            }
+
+            return (variabelName) ? s.ScrubVariableName() : s;
         }
 
         #region Lookup
@@ -417,9 +424,10 @@ namespace TheDotFactory
                     string blockNumberString = String.Format("(block #{0})", Array.IndexOf(characterBlockList, block));
 
                     // result string
-                    textSource.AppendFormat("{0}Character descriptors for {1} {2}pt{3}{4}" + OutConfig.nl,
-                                                        OutConfig.CommentStart, Font.Name,
-                                                        Math.Round(Font.Size), multipleDescBlocksExist ? blockNumberString : "",
+                    textSource.AppendFormat("{0}Character descriptors for {1}{2}{3}" + OutConfig.nl,
+                                                        OutConfig.CommentStart,
+                                                        getFontName(Font, false), 
+                                                        multipleDescBlocksExist ? blockNumberString : "",
                                                         OutConfig.CommentEnd);
 
                     // describe character array
@@ -427,7 +435,7 @@ namespace TheDotFactory
                                                         OutConfig.CommentStart,
                                                         getCharacterDescName("width", OutConfig.descCharWidth),
                                                         getCharacterDescName("height", OutConfig.descCharHeight),
-                                                        getFontName(Font),
+                                                        getFontName(Font, true),
                                                         OutConfig.CommentEnd);
                 }
 
@@ -452,9 +460,10 @@ namespace TheDotFactory
                 if (OutConfig.addCommentVariableName)
                 {
                     // result string
-                    textSource.AppendFormat("{0}Block lookup array for {1} {2}pt {3}" + OutConfig.nl,
-                                                        OutConfig.CommentStart, Font.Name,
-                                                        Math.Round(Font.Size), OutConfig.CommentEnd);
+                    textSource.AppendFormat("{0}Block lookup array for {1} {2}" + OutConfig.nl,
+                                                        OutConfig.CommentStart,
+                                                        getFontName(Font, false),
+                                                        OutConfig.CommentEnd);
 
                     // describe character array
                     textSource.AppendFormat("{0}{{ start character, end character, ptr to descriptor block array }}{1}" + OutConfig.nl,
@@ -496,7 +505,7 @@ namespace TheDotFactory
             string blockIdString = String.Format("Block{0}", currentBlockIndex);
 
             // variable name
-            string variableName = String.Format(OutConfig.varNfCharInfo, getFontName(Font));
+            string variableName = String.Format(OutConfig.varNfCharInfo, getFontName(Font, true));
 
             // remove type unless required
             if (!includeTypeDefinition) variableName = variableName.GetVariableNameFromExpression();
@@ -532,7 +541,7 @@ namespace TheDotFactory
         private static string getCharacterDescriptorArrayLookupDisplayString(Font font)
         {
             // return the string
-            return String.Format("{0}BlockLookup", getFontName(font));
+            return String.Format("{0}BlockLookup", getFontName(font, true));
         }
 
         // get the display string for a character 

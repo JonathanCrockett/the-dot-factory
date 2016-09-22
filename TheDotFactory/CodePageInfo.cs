@@ -11,7 +11,7 @@ namespace TheDotFactory
 
         public CodePageInfo(int codepage)
         {
-            encoding = GetEncoding(codepage
+            encoding = GetEncoding(codepage);
         }
 
         public CodePageInfo(string codepage) : this ( GetCodepage(codepage))

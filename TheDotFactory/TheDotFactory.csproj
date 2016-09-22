@@ -180,6 +180,16 @@
     <Content Include="pyhtonStyle.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\cancel.png" />
+    <None Include="Resources\wrench.png" />
+    <None Include="Resources\lightning.png" />
+    <None Include="Resources\font.png" />
+    <None Include="Resources\folder.png" />
+    <None Include="Resources\database_edit.png" />
+    <None Include="Resources\database_delete.png" />
+    <None Include="Resources\database_add.png" />
+    <None Include="Resources\add.png" />
+    <None Include="Resources\accept.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
