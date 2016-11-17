@@ -89,8 +89,8 @@
     <Compile Include="CharacterGeneartionInfo.cs" />
     <Compile Include="CodePageInfo.cs" />
     <Compile Include="ComboBoxItem.cs" />
-    <Compile Include="extextions.cs" />
-    <Compile Include="FontInfo.cs" />
+    <Compile Include="extensions.cs" />
+    <Compile Include="FontDescriptor.cs" />
     <Compile Include="InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -137,7 +137,6 @@
     </Compile>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\CodePageInfo.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -192,7 +191,9 @@
     <None Include="Resources\add.png" />
     <None Include="Resources\accept.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

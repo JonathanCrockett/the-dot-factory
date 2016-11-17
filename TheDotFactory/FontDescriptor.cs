@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace TheDotFactory
 {
@@ -190,7 +191,7 @@ namespace TheDotFactory
             {
                 // convert the value
                 fontCharHeightString = String.Format("\t{0}, {1} Character height{2}" + OutConfig.nl,
-                                              OutConfig.descFontHeight.ConvertValueByDescriptorFormat(FixedAbsolutCharHeight),
+                                              MyExtensions.ConvertValueByDescriptorFormat(OutConfig.descFontHeight, FixedAbsolutCharHeight),
                                               OutConfig.CommentStart,
                                               OutConfig.CommentEnd);
             }
@@ -234,7 +235,7 @@ namespace TheDotFactory
                                               getCharacterDisplayString(CodePageInfo, LastChar),
                                               spaceCharacterPixelWidthString,
                                               getFontInfoDescriptorsString(blockLookupGenerated, OutConfig, Font),
-                                              String.Format(OutConfig.varNfBitmaps, getFontName(Font, true)).GetVariableNameFromExpression(),
+                                              MyExtensions.GetVariableNameFromExpression(String.Format(OutConfig.varNfBitmaps, getFontName(Font, true))),
                                               FirstChar,
                                               LastChar,
                                               fontCodePage);
@@ -309,14 +310,14 @@ namespace TheDotFactory
 
                 // add to string
                 descriptorString += String.Format("\t{0}, {1} Character descriptor array{2}" + outConfig.nl,
-                                                    blockLookupGenerated ? "NULL" : String.Format(outConfig.varNfCharInfo, getFontName(font, true)).GetVariableNameFromExpression(),
+                                                    blockLookupGenerated ? "NULL" : MyExtensions.GetVariableNameFromExpression(String.Format(outConfig.varNfCharInfo, getFontName(font, true))),
                                                     outConfig.CommentStart, outConfig.CommentEnd);
             }
             else
             {
                 // add descriptor array
                 descriptorString += String.Format("\t{0}, {1} Character descriptor array{2}" + outConfig.nl,
-                                                    String.Format(outConfig.varNfCharInfo, getFontName(font, true)).GetVariableNameFromExpression(),
+                                                    MyExtensions.GetVariableNameFromExpression(String.Format(outConfig.varNfCharInfo, getFontName(font, true))),
                                                     outConfig.CommentStart, outConfig.CommentEnd);
             }
 
@@ -338,7 +339,7 @@ namespace TheDotFactory
                 if(variabelName) s = s.Replace(", ", "_");
             }
 
-            return (variabelName) ? s.ScrubVariableName() : s;
+            return (variabelName) ? MyExtensions.ScrubVariableName(s) : s;
         }
 
         #region Lookup
@@ -508,7 +509,7 @@ namespace TheDotFactory
             string variableName = String.Format(OutConfig.varNfCharInfo, getFontName(Font, true));
 
             // remove type unless required
-            if (!includeTypeDefinition) variableName = variableName.GetVariableNameFromExpression();
+            if (!includeTypeDefinition) variableName = MyExtensions.GetVariableNameFromExpression(variableName);
 
             // return the block name
             return String.Format("{0}{1}{2}",

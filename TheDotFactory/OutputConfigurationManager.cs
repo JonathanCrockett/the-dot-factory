@@ -5,6 +5,8 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace TheDotFactory
 {

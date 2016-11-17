@@ -10,10 +10,10 @@ using System.Drawing.Drawing2D;
 
 namespace TheDotFactory
 {
-    static class MyExtnxtions
+    static class MyExtensions
     {
         #region Bitmap
-        public static int[] ToArgbArray(this Bitmap bmp)
+        public static int[] ToArgbArray(Bitmap bmp)
         {
             int[] Pixels;
             BitmapData bd;
@@ -22,7 +22,7 @@ namespace TheDotFactory
             if (bmp == null) throw new ArgumentNullException("bmp");
             if (bmp.PixelFormat != PixelFormat.Format32bppArgb)
             {
-                copy = bmp.ChangePixelFormat(PixelFormat.Format32bppArgb);
+                copy = ChangePixelFormat(bmp, PixelFormat.Format32bppArgb);
             }
             else copy = bmp;
 
@@ -38,7 +38,7 @@ namespace TheDotFactory
             return Pixels;
         }
 
-        public static Bitmap ToBitmap(this int[] ArgbPixels, Size size)
+        public static Bitmap ToBitmap(int[] ArgbPixels, Size size)
         {
             BitmapData bd;
             Bitmap bmp;
@@ -63,24 +63,24 @@ namespace TheDotFactory
         /// <param name="bmp">Die Bitmap die verändert werden soll.</param>
         /// <param name="format">Das neu anzuwendende Pixelformat.</param>
         /// <returns>Die Bitmap mit dem neuen PixelFormat</returns>
-        public static Bitmap ChangePixelFormat(this Bitmap bmp, PixelFormat format)
+        public static Bitmap ChangePixelFormat(Bitmap bmp, PixelFormat format)
         {
             return bmp.Clone(new Rectangle(0, 0, bmp.Width, bmp.Height), format);
         }
 
-        public static Color[] GetColorList(this Bitmap bmp)
+        public static Color[] GetColorList(Bitmap bmp)
         {
-            return bmp.ToArgbArray().Distinct().Select<int, Color>(x => Color.FromArgb(x)).ToArray();
+            return ToArgbArray(bmp).Distinct().Select<int, Color>(x => Color.FromArgb(x)).ToArray();
         }
 
-        public static Border GetBorders(this Bitmap bmp, Color borderColor)
+        public static Border GetBorders(Bitmap bmp, Color borderColor)
         {
             return GetBorders(bmp, new Color[] { borderColor });
         }
 
-        public static Border GetBorders(this Bitmap bmp, Color[] borderColorList)
+        public static Border GetBorders(Bitmap bmp, Color[] borderColorList)
         {
-            int[] pixel = bmp.ToArgbArray();
+            int[] pixel = ToArgbArray(bmp);
             Border b = new Border();
             int width = bmp.Width, height = bmp.Height;
             int[] borderColorListInt = borderColorList.Select<Color, int>(p => p.ToArgb()).ToArray();
@@ -147,13 +147,15 @@ namespace TheDotFactory
         }
 
         /// <summary>
-        /// Resize the image to the specified width and height with lo qualety(pixel by pixel).
+        /// Resize the image to the specified width and height with low quality(pixel by pixel).
         /// </summary>
         /// <param name="image">The image to resize.</param>
         /// <param name="faktor">The scaling faktor to scale with</param>
         /// <returns>The resized image.</returns>
-        public static Bitmap ResizeImage(this Bitmap image, int faktor)
+        public static Bitmap ResizeImage(Bitmap image, int faktor)
         {
+            if (faktor <= 0) throw new ArgumentException();
+
             Size newSize = new Size(image.Size.Width * faktor, image.Height * faktor);
 
             Rectangle destRect = new Rectangle(new Point(), newSize);
@@ -181,7 +183,7 @@ namespace TheDotFactory
         /// <param name="format">The pixel format for the new Bitmap. This must specify a value that begins with Format.</param>
         /// <param name="defaultColor">The color whitch is used to file the areas that are outside the image</param>
         /// <returns>The resized image.</returns>
-        public static Bitmap Clone(this Bitmap image, Rectangle rectangel, PixelFormat format, Color defaultColor)
+        public static Bitmap Clone(Bitmap image, Rectangle rectangel, PixelFormat format, Color defaultColor)
         {
             Bitmap destImage = new Bitmap(rectangel.Width, rectangel.Height);
 
@@ -204,7 +206,7 @@ namespace TheDotFactory
 
         #region enum types
         // convert bits to bytes according to desc format
-        public static int ConvertValueByDescriptorFormat(this OutputConfiguration.DescriptorFormat descFormat, int valueInBits)
+        public static int ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat descFormat, int valueInBits)
         {
             // according to format
             switch(descFormat)
@@ -228,7 +230,7 @@ namespace TheDotFactory
         #region string
         // make 'name' suitable as a variable name, starting with '_'
         // or a letter and containing only letters, digits, and '_'
-        public static string ScrubVariableName(this string name)
+        public static string ScrubVariableName(string name)
         {
             // scrub invalid characters from the font name
             StringBuilder outName = new StringBuilder();
@@ -252,7 +254,7 @@ namespace TheDotFactory
         // get only the variable name from an expression in a specific format
         // e.g. input: const far unsigned int my_font[] = ; 
         //      output: my_font[]
-        public static string GetVariableNameFromExpression(this string expression)
+        public static string GetVariableNameFromExpression(string expression)
         {
             // iterator
             int charIndex = 0;
@@ -305,7 +307,7 @@ namespace TheDotFactory
         }
         #endregion
 
-        public static TKey[] GetEnabledKeys<TKey>(this Dictionary<TKey, bool> dic)
+        public static TKey[] GetEnabledKeys<TKey>(Dictionary<TKey, bool> dic)
         {
             return dic.Aggregate<KeyValuePair<TKey, bool>, List<TKey>>(
                     new List<TKey>(),
@@ -316,7 +318,7 @@ namespace TheDotFactory
                     }).ToArray();
         }
 
-        public static TKey[] GetDiabeldKeys<TKey>(this Dictionary<TKey, bool> dic)
+        public static TKey[] GetDiabeldKeys<TKey>(Dictionary<TKey, bool> dic)
         {
             return dic.Aggregate<KeyValuePair<TKey, bool>, List<TKey>>(
                     new List<TKey>(),

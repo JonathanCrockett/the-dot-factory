@@ -25,7 +25,7 @@ namespace TheDotFactory
         {
             OutConfig = outConfig;
             Original = bmp;
-            OriginalBorder = Original.GetBorders(colorList.GetEnabledKeys<Color>());
+            OriginalBorder = Border.GetBorders(Original, MyExtensions.GetEnabledKeys<Color>(colorList));
             ColorList = colorList;
         }
 
@@ -33,8 +33,8 @@ namespace TheDotFactory
         {
             OutConfig = outConfig;
             Original = bmp;
-            OriginalBorder = Original.GetBorders(borderColor);
-            ColorList = Original.GetColorList().Aggregate (new Dictionary<Color, bool>(), (dic, c) => { dic.Add(c, c.ToArgb() == borderColor.ToArgb()); return dic; } );
+            OriginalBorder = Border.GetBorders(Original, borderColor);
+            ColorList = MyExtensions.GetColorList(Original).Aggregate (new Dictionary<Color, bool>(), (dic, c) => { dic.Add(c, c.ToArgb() == borderColor.ToArgb()); return dic; } );
 
         }
 
@@ -133,7 +133,7 @@ namespace TheDotFactory
         // create the page array
         public void GeneratePageArray()
         {
-            int[] pixels = BitmapToGenerate.ToArgbArray();
+            int[] pixels = MyExtensions.ToArgbArray(BitmapToGenerate);
             int width = BitmapToGenerate.Width, height = BitmapToGenerate.Height;
             int black = Color.Black.ToArgb(), white = Color.White.ToArgb();
             Dictionary<int, List<byte>> dpages = new Dictionary<int, List<byte>>();

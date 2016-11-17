@@ -116,7 +116,7 @@ namespace TheDotFactory
                      case OutputConfiguration.DescriptorFormat.DisplayInBits:
                      case OutputConfiguration.DescriptorFormat.DisplayInBytes:
                             // add comma and return
-                            return descFormat.ConvertValueByDescriptorFormat(valueInBits) + ", ";
+                            return MyExtensions.ConvertValueByDescriptorFormat(descFormat, valueInBits) + ", ";
                      default:
                          throw new NotImplementedException();
                  }

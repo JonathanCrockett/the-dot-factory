@@ -186,7 +186,7 @@ namespace TheDotFactory
             if (dlgOpenFile.ShowDialog() != DialogResult.Cancel)
             {
                 if (m_currentLoadedBitmap != null) m_currentLoadedBitmap.Dispose();
-                m_currentLoadedBitmap = new Bitmap(dlgOpenFile.FileName).ChangePixelFormat(PixelFormat.Format32bppArgb);
+                m_currentLoadedBitmap = MyExtensions.ChangePixelFormat(new Bitmap(dlgOpenFile.FileName), PixelFormat.Format32bppArgb);
 
                 // set the path
                 txtImagePath.Text = dlgOpenFile.FileName;
@@ -195,7 +195,7 @@ namespace TheDotFactory
                 txtImageName.Text = Path.GetFileNameWithoutExtension(dlgOpenFile.FileName);
 
                 //
-                colorList = m_currentLoadedBitmap.GetColorList().ToDictionary<Color, Color, bool>(x => x, x => false);
+                colorList = MyExtensions.GetColorList(m_currentLoadedBitmap).ToDictionary<Color, Color, bool>(x => x, x => false);
                 colorList[colorList.ElementAt(0).Key] = true;
 
                 if(colorList.Count > 16)
@@ -561,9 +561,9 @@ namespace TheDotFactory
 
                 Rectangle r = new Rectangle(p, new Size(w, h));
                 Color c;
-                if (colorList.ContainsValue(true)) c = colorList.GetEnabledKeys()[0];
+                if (colorList.ContainsValue(true)) c = MyExtensions.GetEnabledKeys(colorList)[0];
                 else c = Color.Transparent;
-                Bitmap character = m_currentLoadedBitmap.Clone(r, PixelFormat.Format32bppArgb, c); ;
+                Bitmap character = MyExtensions.Clone(m_currentLoadedBitmap, r, PixelFormat.Format32bppArgb, c); ;
 
                 Size newSize = r.Size;
                 int faktor = 1;
@@ -576,12 +576,12 @@ namespace TheDotFactory
                 }
 
                 //convert to black white image
-                character = character.ToArgbArray().Select(argb =>
+                character = MyExtensions.ToBitmap(MyExtensions.ToArgbArray(character).Select(argb =>
                 {
                     return colorList[Color.FromArgb(argb)] ? Color.Black.ToArgb() : Color.White.ToArgb();
-                }).ToArray().ToBitmap(r.Size);
+                }).ToArray(), r.Size);
 
-                pictureBoxInputImageFontCharacterPreview.Image = character.ResizeImage(faktor);
+                pictureBoxInputImageFontCharacterPreview.Image = MyExtensions.ResizeImage(character, faktor);
                 pictureBoxInputImageFontCharacterPreview.Size = newSize;
             }
         }
@@ -605,8 +605,8 @@ namespace TheDotFactory
                 return;
             }
 
-            imageName = txtImageName.Text.ScrubVariableName();
-            backgroundColors = colorList.GetEnabledKeys<Color>();            
+            imageName = MyExtensions.ScrubVariableName(txtImageName.Text);
+            backgroundColors = MyExtensions.GetEnabledKeys<Color>(colorList);            
 
             // check if bitmap is assigned
             if (m_currentLoadedBitmap != null)
@@ -657,7 +657,7 @@ namespace TheDotFactory
                 bi.GeneratePageArray();
 
                 // assign pages for fully populated 8 bits
-                int pagesPerRow = OutputConfiguration.DescriptorFormat.DisplayInBytes.ConvertValueByDescriptorFormat(bi.BitmapToGenerate.Width);
+                int pagesPerRow = MyExtensions.ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bi.BitmapToGenerate.Width);
 
                 // now convert to string
                 bi.GenerateCharacterDataDescriptorAndVisulazer();
@@ -711,7 +711,7 @@ namespace TheDotFactory
                             return string.Format(format,
                                 m_outputConfig.CommentStart,
                                 m_outputConfig.CommentEnd,
-                                OutputConfiguration.DescriptorFormat.DisplayInBytes.ConvertValueByDescriptorFormat(bi.BitmapToGenerate.Height),
+                                MyExtensions.ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bi.BitmapToGenerate.Height),
                                 "Image height in bytes (pages)",
                                 m_outputConfig.nl);
                         case OutputConfiguration.DescriptorFormat.DisplayInBits:
@@ -745,7 +745,7 @@ namespace TheDotFactory
                                                   imageInfoVarName,
                                                   getImageWidthString(),
                                                   getImageHeigtString(),
-                                                  bitmapVarName.GetVariableNameFromExpression());
+                                                  MyExtensions.GetVariableNameFromExpression(bitmapVarName));
 
             }
         }
@@ -887,8 +887,8 @@ namespace TheDotFactory
                 return;
             }
 
-            imageName = txtImageName.Text.ScrubVariableName();
-            backgroundColors = colorList.GetEnabledKeys<Color>();
+            imageName = MyExtensions.ScrubVariableName(txtImageName.Text);
+            backgroundColors = MyExtensions.GetEnabledKeys<Color>(colorList);
 
             // check if bitmap is assigned
             if (m_currentLoadedBitmap != null)
@@ -942,7 +942,7 @@ namespace TheDotFactory
                 bi.GeneratePageArray();
 
                 // assign pages for fully populated 8 bits
-                int pagesPerRow = OutputConfiguration.DescriptorFormat.DisplayInBytes.ConvertValueByDescriptorFormat(bi.BitmapToGenerate.Width);
+                int pagesPerRow = MyExtensions.ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bi.BitmapToGenerate.Width);
 
                 // now convert to string
                 bi.GenerateCharacterDataDescriptorAndVisulazer();
@@ -996,7 +996,7 @@ namespace TheDotFactory
                             return string.Format(format,
                                 m_outputConfig.CommentStart,
                                 m_outputConfig.CommentEnd,
-                                OutputConfiguration.DescriptorFormat.DisplayInBytes.ConvertValueByDescriptorFormat(bi.BitmapToGenerate.Height),
+                                MyExtensions.ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bi.BitmapToGenerate.Height),
                                 "Image height in bytes (pages)",
                                 m_outputConfig.nl);
                         case OutputConfiguration.DescriptorFormat.DisplayInBits:
@@ -1030,7 +1030,7 @@ namespace TheDotFactory
                                                   imageInfoVarName,
                                                   getImageWidthString(),
                                                   getImageHeigtString(),
-                                                  bitmapVarName.GetVariableNameFromExpression());
+                                                  MyExtensions.GetVariableNameFromExpression(bitmapVarName));
 
             }
         }
@@ -1061,5 +1061,9 @@ namespace TheDotFactory
             UpdateInputImageFont(sender, e);
             textBoxInputImageCharacterPos.Text = hScrollBarInputImageCharacterPos.Value.ToString();
         }
+
+        #region
+
+        #endregion
     }
 }

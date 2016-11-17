@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 
 namespace TheDotFactory
 {
@@ -100,6 +101,79 @@ namespace TheDotFactory
         public bool IsValid()
         {
             return _bottom >= 0 && _top >= 0 && _left >= 0 && _right >= 0;
+        }
+
+        public static Border GetBorders(Bitmap bmp, Color borderColor)
+        {
+            return GetBorders(bmp, new Color[] { borderColor });
+        }
+
+        public static Border GetBorders(Bitmap bmp, Color[] borderColorList)
+        {
+            int[] pixel = MyExtensions.ToArgbArray(bmp);
+            Border b = new Border();
+            int width = bmp.Width, height = bmp.Height;
+            int[] borderColorListInt = borderColorList.Select<Color, int>(p => p.ToArgb()).ToArray();
+
+            Func<int, int, int> getPixel = delegate (int x, int y)
+            {
+                return pixel[y * width + x];
+            };
+
+            // returns whether a bitmap column is empty (empty means all is border color)
+            Func<int, bool> columnIsEmpty = delegate (int column)
+            {
+                // for each row in the column
+                for (int row = 0; row < height; ++row)
+                {
+                    // is the pixel black?
+                    if (!borderColorListInt.Contains(getPixel(column, row)))
+                    {
+                        // found. column is not empty
+                        return false;
+                    }
+                }
+
+                // column is empty
+                return true;
+            };
+
+            // returns whether a bitmap row is empty (empty means all is border color)
+            Func<int, bool> rowIsEmpty = delegate (int row)
+            {
+                // for each column in the row
+                for (int column = 0; column < width; ++column)
+                {
+                    // is the pixel black?
+                    if (!borderColorListInt.Contains(getPixel(column, row)))
+                    {
+                        // found. row is not empty
+                        return false;
+                    }
+                }
+
+                // row is empty
+                return true;
+            };
+
+            for (b.Left = 0; b.Left < width; ++b.Left)
+            {
+                if (!columnIsEmpty(b.Left)) break;
+            }
+            for (b.Right = width - 1; b.Right >= 0; --b.Right)
+            {
+                if (!columnIsEmpty(b.Right)) break;
+            }
+            for (b.Top = 0; b.Top < height; ++b.Top)
+            {
+                if (!rowIsEmpty(b.Top)) break;
+            }
+            for (b.Bottom = height - 1; b.Bottom >= 0; --b.Bottom)
+            {
+                if (!rowIsEmpty(b.Bottom)) break;
+            }
+
+            return b;
         }
     }
 }
