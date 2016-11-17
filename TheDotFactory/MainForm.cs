@@ -14,30 +14,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using System.Collections;
-using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace TheDotFactory
 {
     public partial class MainForm : Form
     {
-        // formatting strings
-        public const string HeaderStringColumnStart = "\t0b";
-        public const string HeaderStringColumnMid = ", 0b";
-        public const string BitString1 = "1";
-        public const string BitString0 = "0";
-        private static String nl = Environment.NewLine;
-
-        // application version
-        public const string ApplicationVersion = "0.1.5";
-
         // current loaded bitmap
         private Bitmap m_currentLoadedBitmap = null;
 
@@ -47,218 +37,24 @@ namespace TheDotFactory
         // output configuration
         private OutputConfiguration m_outputConfig;
 
-        // info per font
-        public class FontInfo
-        {
-            public int                          charHeight;
-            public char                         startChar;
-            public char                         endChar;
-            public CharacterGenerationInfo[]    characters;
-            public Font                         font;
-            public string                       generatedChars;
-        }
+        // contains all colors that are present in the image, colors which are value are True are handelt as background colors
+        Dictionary<Color, bool> colorList = new Dictionary<Color, bool>();
 
-        // to allow mapping string/value
-        class ComboBoxItem
-        {
-            public string name;
-            public string value;
-
-            // ctor
-            public ComboBoxItem(string name, string value)
-            {
-                this.name = name;
-                this.value = value;
-            }
-
-            // override ToString() function
-            public override string ToString()
-            {
-                // use name
-                return this.name;
-            }
-        }
-
-        // a bitmap border conta
-        class BitmapBorder
-        {
-            public int bottomY = 0;
-            public int rightX = 0;
-            public int topY = int.MaxValue;
-            public int leftX = int.MaxValue;
-        }
-
-        // character generation information
-        public class CharacterGenerationInfo
-        {
-            // pointer the font info
-            public FontInfo fontInfo;
-            
-            // the character
-            public char character;
-
-            // the original bitmap
-            public Bitmap bitmapOriginal;
-            
-            // the bitmap to generate into a string (flipped, trimmed - if applicable)
-            public Bitmap bitmapToGenerate;
-
-            // value of pages (vertical 8 bits), in serial order from top of bitmap
-            public ArrayList pages;
-
-            // character size
-            public int width;
-            public int height;
-            
-            // offset into total array
-            public int offsetInBytes;
-        }
-
-        // holds a range of chars
-        public class CharacterDescriptorArrayBlock
-        {
-            // characters
-            public ArrayList characters;
-
-            // holds a range of chars
-            public class Character
-            {
-                public FontInfo font;
-                public char character;
-                public int height;
-                public int width;
-                public int offset;
-            }
-        }
-        
-        // strings for comments
-        string m_commentStartString = "";
-        string m_commentEndString = "";
-        string m_commentBlockMiddleString = "";
-        string m_commentBlockEndString = "";
+        bool updateBitmapAllowed = false;
 
         public MainForm()
         {
             InitializeComponent();
-
-            // set UI properties that the designer does not set correctly
-            // designer sets MinSize values before initializing the splitter distance which causes an exception
-            splitContainer1.SplitterDistance = 340;
-            splitContainer1.Panel1MinSize = 287;
-            splitContainer1.Panel2MinSize = 260;
         }
 
-        // force a redraw on size changed
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            Refresh();
-        }
-
-        // update input font
-        private void updateSelectedFont(Font fnt)
-        {
-            // set text name in the text box
-            txtInputFont.Text = fnt.Name;
-
-            // add to text
-            txtInputFont.Text += " " + Math.Round(fnt.Size) + "pts";
-
-            // check if bold
-            if (fnt.Bold)
-            {
-                // add to text
-                txtInputFont.Text += " / Bold";
-            }
-
-            // check if italic
-            if (fnt.Italic)
-            {
-                // add to text
-                txtInputFont.Text += " / Italic";
-            }
-
-            // set the font in the text box
-            txtInputText.Font = (Font)fnt.Clone();
-
-            // save into settings
-            Properties.Settings.Default.InputFont = fnt;
-            Properties.Settings.Default.Save();
-        }
-
-        private void btnFontSelect_Click(object sender, EventArgs e)
-        {
-            // set focus somewhere else
-            label1.Focus();
-            
-            // open font chooser dialog
-            if (fontDlgInputFont.ShowDialog(this) == DialogResult.OK)
-            {
-                updateSelectedFont(fontDlgInputFont.Font);
-            }
-        }
-
-        // populate preformatted text
-        private void populateTextInsertCheckbox()
-        {
-            string allEnglish = "", numbers = "", letters = "", uppercaseLetters = "", lowercaseLetters = "", symbols = "";
-
-            // generate characters
-            for (char character = ' '; character < 127; ++character)
-            {
-                // add to all
-                allEnglish += character;
-
-                // classify letter
-                if (Char.IsNumber(character)) numbers += character;
-                else if (Char.IsSymbol(character)) symbols += character;
-                else if (Char.IsLetter(character) && Char.IsLower(character)) { letters += character; lowercaseLetters += character; }
-                else if (Char.IsLetter(character) && !Char.IsLower(character)) { letters += character; uppercaseLetters += character; }
-            }
-
-            string allEuropean = allEnglish, extraPunctuations = "", extraSymbols = "", extraNumbers = "";
-            for( char character = (char) 128; character <= 255; ++character )
-            {
-                if( Char.IsLetter( character ) )
-                {
-                    allEuropean += character;
-                }
-                else if( Char.IsPunctuation( character ) )
-                {
-                    extraPunctuations += character;
-                }
-                else if( Char.IsSymbol( character ) )
-                {
-                    extraSymbols += character;
-                }
-                else if( Char.IsNumber( character ) )
-                {
-                    extraNumbers += character;
-                }
-            }
-
-            // add items
-            cbxTextInsert.Items.Add( new ComboBoxItem( "All European", allEuropean ) );
-            cbxTextInsert.Items.Add( new ComboBoxItem( "All English", allEnglish ) );
-            cbxTextInsert.Items.Add(new ComboBoxItem("Numbers (0-9)", numbers));
-            cbxTextInsert.Items.Add(new ComboBoxItem("Letters (A-z)", letters));
-            cbxTextInsert.Items.Add(new ComboBoxItem("Lowercase letters (a-z)", lowercaseLetters));
-            cbxTextInsert.Items.Add(new ComboBoxItem("Uppercase letters (A-Z)", uppercaseLetters));
-            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Punctuations", extraPunctuations ) );
-            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Symbols", extraSymbols ) );
-            cbxTextInsert.Items.Add( new ComboBoxItem( "Extra Numbers", extraNumbers ) );
-
-            // use first
-            cbxTextInsert.SelectedIndex = 0;
-        }
-
+        #region event handler
         private void Form1_Load(object sender, EventArgs e)
         {
             // use double buffering
             DoubleBuffered = true;
 
             // set version
-            Text = String.Format("The Dot Factory v.{0}", ApplicationVersion);
+            Text = String.Format("The Dot Factory v.{0}", Application.ProductVersion);
 
             // set input box
             txtInputText.Text = Properties.Settings.Default.InputText;
@@ -270,7 +66,7 @@ namespace TheDotFactory
             m_outputConfigurationManager.loadFromFile("OutputConfigs.xml");
 
             // update the dropdown
-            m_outputConfigurationManager.comboboxPopulate(cbxOutputConfiguration);
+            m_outputConfigurationManager.comboBoxPopulate(cbxOutputConfiguration);
 
             // get saved output config index
             int lastUsedOutputConfigurationIndex = Properties.Settings.Default.OutputConfigIndex;
@@ -291,1597 +87,31 @@ namespace TheDotFactory
                 m_outputConfig = m_outputConfigurationManager.workingOutputConfiguration;
             }
 
-            // update comment strings
-            updateCommentStrings();
-
             // set checkbox stuff
             populateTextInsertCheckbox();
+
+            populateComboBoxInputImageCodepage();
 
             // apply font to all appropriate places
             updateSelectedFont(Properties.Settings.Default.InputFont);
         }
 
-        // try to parse character range
-        bool characterRangePointParse(string rangePointString, ref int rangePoint)
+        // force a redraw on size changed
+        protected override void OnSizeChanged(EventArgs e)
         {
-            // trim the string
-            rangePointString = rangePointString.Trim();
-
-            // try to convert
-            try
-            {
-                // check if 0x is start of range
-                if (rangePointString.Substring(0, 2) == "0x")
-                {
-                    // remove 0x
-                    rangePointString = rangePointString.Substring(2, rangePointString.Length - 2);
-
-                    // do the parse
-                    rangePoint = Int32.Parse(rangePointString, System.Globalization.NumberStyles.HexNumber);
-                }
-                else
-                {
-                    // do the parse
-                    rangePoint = Int32.Parse(rangePointString);
-                }
-            }
-            catch
-            {
-                // error converting
-                return false;
-            }
-
-            // success
-            return true;
+            base.OnSizeChanged(e);
+            this.Refresh();
         }
 
-        // expand and remove character ranges ( look for << x - y >> )
-        void expandAndRemoveCharacterRanges(ref string inputString)
+        private void btnFontSelect_Click(object sender, EventArgs e)
         {
-            // create the search pattern
-            //String searchPattern = @"<<.*-.*>>";
-            String searchPattern = @"<<(?<rangeStart>.*?)-(?<rangeEnd>.*?)>>";
+            // set focus somewhere else
+            label1.Focus();
 
-            // create the regex
-            Regex regex = new Regex(searchPattern, RegexOptions.Multiline);
-
-            // get matches
-            MatchCollection regexMatches = regex.Matches(inputString);
-
-            // holds the number of characters removed
-            int charactersRemoved = 0;
-
-            // for each match
-            foreach (Match regexMatch in regexMatches)
+            // open font chooser dialog
+            if (fontDlgInputFont.ShowDialog(this) == DialogResult.OK)
             {
-                // get range start and end
-                int rangeStart = 0, rangeEnd = 0;
-                
-                // try to parse ranges
-                if (characterRangePointParse(regexMatch.Groups["rangeStart"].Value, ref rangeStart) &&
-                    characterRangePointParse(regexMatch.Groups["rangeEnd"].Value, ref rangeEnd))
-                {
-                    // remove this from the string
-                    inputString = inputString.Remove(regexMatch.Index - charactersRemoved, regexMatch.Length);
-
-                    // save the number of chars removed so that we can fixup index (the index
-                    // of the match changes as we remove characters)
-                    charactersRemoved += regexMatch.Length;
-
-                    // create a string from these values
-                    for (int charIndex = rangeStart; charIndex <= rangeEnd; ++charIndex)
-                    {
-                        // shove this character to a unicode char container
-                        char unicodeChar = (char)charIndex;
-
-                        // add this to the string
-                        inputString += unicodeChar;
-                    }
-                }
-            }
-        }
-
-        // get the characters we need to generate
-        string getCharactersToGenerate()
-        {
-            string inputText = txtInputText.Text;
-
-            //
-            // Expand and remove all ranges from the input text (look for << x - y >>
-            //
-
-            // espand the ranges into the input text
-            expandAndRemoveCharacterRanges(ref inputText);
-            
-            //
-            // iterate through the inputted text and shove to sorted string, removing all duplicates
-            //
-
-            // sorted list for insertion/duplication removal
-            SortedList<char, char> characterList = new SortedList<char, char>();
-
-            // iterate over the characters in the textbox
-            for (int charIndex = 0; charIndex < inputText.Length; ++charIndex)
-            {
-                // get teh char
-                char insertionCandidateChar = inputText[charIndex];
-
-                // insert the char, if not already in the list and if not space ()
-                if (!characterList.ContainsKey(insertionCandidateChar))
-                {
-                    // check if space character
-                    if (insertionCandidateChar == ' ' && !m_outputConfig.generateSpaceCharacterBitmap)
-                    {
-                        // skip - space is not encoded rather generated dynamically by the driver
-                        continue;
-                    }
-
-                    // dont generate newlines
-                    if (insertionCandidateChar == '\n' || insertionCandidateChar == '\r')
-                    {
-                        // no such characters
-                        continue;
-                    }
-
-                    // not in list, add
-                    characterList.Add(inputText[charIndex], ' ');
-                }
-            }
-
-            // now output the sorted list to a string
-            string characterListString = "";
-
-            // iterate over the sorted characters to create the string
-            foreach (char characterKey in characterList.Keys)
-            {
-                // add to string
-                characterListString += characterKey;
-            }
-
-            // return the character
-            return characterListString;
-        }
-
-        // convert a letter to bitmap
-        private void convertCharacterToBitmap(char character, Font font, out Bitmap outputBitmap, Rectangle largestBitmap)
-        {
-            // get the string
-            string letterString = character.ToString();
-
-            // create bitmap, sized to the correct size
-            outputBitmap = new Bitmap((int)largestBitmap.Width, (int)largestBitmap.Height);
-
-            // create grahpics entity for drawing
-            Graphics gfx = Graphics.FromImage(outputBitmap);
-
-            // disable anti alias
-            gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-
-            // draw centered text
-            Rectangle bitmapRect = new System.Drawing.Rectangle(0, 0, outputBitmap.Width, outputBitmap.Height);
-
-            // Set format of string.
-            StringFormat drawFormat = new StringFormat();
-            drawFormat.Alignment = StringAlignment.Center;
-            
-            // draw the character
-            gfx.FillRectangle(Brushes.White, bitmapRect);
-            gfx.DrawString(letterString, font, Brushes.Black, bitmapRect, drawFormat);
-        }
-
-        // returns whether a bitmap column is empty (empty means all is back color)
-        private bool bitmapColumnIsEmpty(Bitmap bitmap, int column)
-        {
-            // for each row in the column
-            for (int row = 0; row < bitmap.Height; ++row)
-            {
-                // is the pixel black?
-                if (bitmap.GetPixel(column, row).ToArgb() == Color.Black.ToArgb())
-                {
-                    // found. column is not empty
-                    return false;
-                }
-            }
-
-            // column is empty
-            return true;
-        }
-
-        // returns whether a bitmap row is empty (empty means all is back color)
-        private bool bitmapRowIsEmpty(Bitmap bitmap, int row)
-        {
-            // for each column in the row
-            for (int column = 0; column < bitmap.Width; ++column)
-            {
-                // is the pixel black?
-                if (bitmap.GetPixel(column, row).ToArgb() == Color.Black.ToArgb())
-                {
-                    // found. column is not empty
-                    return false;
-                }
-            }
-
-            // column is empty
-            return true;
-        }
-
-        // get the bitmaps border - that is where the black parts start
-        private bool getBitmapBorder(Bitmap bitmap, BitmapBorder border)
-        {
-            // search for first column (x) from the left to contain data
-            for (border.leftX = 0; border.leftX < bitmap.Width; ++border.leftX)
-            {
-                // if found first column from the left, stop looking
-                if (!bitmapColumnIsEmpty(bitmap, border.leftX)) break;
-            }
-
-            // search for first column (x) from the right to contain data
-            for (border.rightX = bitmap.Width - 1; border.rightX >= 0; --border.rightX)
-            {
-                // if found first column from the left, stop looking
-                if (!bitmapColumnIsEmpty(bitmap, border.rightX)) break;
-            }
-
-            // search for first row (y) from the top to contain data
-            for (border.topY = 0; border.topY < bitmap.Height; ++border.topY)
-            {
-                // if found first column from the left, stop looking
-                if (!bitmapRowIsEmpty(bitmap, border.topY)) break;
-            }
-
-            // search for first row (y) from the bottom to contain data
-            for (border.bottomY = bitmap.Height - 1; border.bottomY >= 0; --border.bottomY)
-            {
-                // if found first column from the left, stop looking
-                if (!bitmapRowIsEmpty(bitmap, border.bottomY)) break;
-            }
-
-            // check if the bitmap contains any black pixels
-            if (border.rightX == -1)
-            {
-                // no pixels were found
-                return false;
-            }
-            else
-            {
-                // at least one black pixel was found
-                return true;
-            }
-        }
-
-        // iterate through the original bitmaps and find the tightest common border
-        private void findTightestCommonBitmapBorder(CharacterGenerationInfo[] charInfoArray,
-                                                    ref BitmapBorder tightestBorder)
-        {
-            // iterate through bitmaps
-            for (int charIdx = 0; charIdx < charInfoArray.Length; ++charIdx)
-            {
-                // create a border
-                BitmapBorder bitmapBorder = new BitmapBorder();
-
-                // get the bitmaps border
-                getBitmapBorder(charInfoArray[charIdx].bitmapOriginal, bitmapBorder);
-
-                // check if we need to loosen up the tightest border
-                tightestBorder.leftX = Math.Min(bitmapBorder.leftX, tightestBorder.leftX);
-                tightestBorder.topY = Math.Min(bitmapBorder.topY, tightestBorder.topY);
-                tightestBorder.rightX = Math.Max(bitmapBorder.rightX, tightestBorder.rightX);
-                tightestBorder.bottomY = Math.Max(bitmapBorder.bottomY, tightestBorder.bottomY);
-
-            }
-        }
-
-        // get rotate flip type according to config
-        private RotateFlipType getOutputRotateFlipType()
-        {
-            bool fx = m_outputConfig.flipHorizontal;
-            bool fy = m_outputConfig.flipVertical;
-            OutputConfiguration.Rotation rot = m_outputConfig.rotation;
-
-            // zero degree rotation
-            if (rot == OutputConfiguration.Rotation.RotateZero)
-            {
-                // return according to flip
-                if (!fx && !fy) return RotateFlipType.RotateNoneFlipNone;
-                if (fx && !fy) return RotateFlipType.RotateNoneFlipX;
-                if (!fx && fy) return RotateFlipType.RotateNoneFlipY;
-                if (fx && fy) return RotateFlipType.RotateNoneFlipXY;
-            }
-
-            // 90 degree rotation
-            if (rot == OutputConfiguration.Rotation.RotateNinety)
-            {
-                // return according to flip
-                if (!fx && !fy) return RotateFlipType.Rotate90FlipNone;
-                if (fx && !fy) return RotateFlipType.Rotate90FlipX;
-                if (!fx && fy) return RotateFlipType.Rotate90FlipY;
-                if (fx && fy) return RotateFlipType.Rotate90FlipXY;
-            }
-
-            // 180 degree rotation
-            if (rot == OutputConfiguration.Rotation.RotateOneEighty)
-            {
-                // return according to flip
-                if (!fx && !fy) return RotateFlipType.Rotate180FlipNone;
-                if (fx && !fy) return RotateFlipType.Rotate180FlipX;
-                if (!fx && fy) return RotateFlipType.Rotate180FlipY;
-                if (fx && fy) return RotateFlipType.Rotate180FlipXY;
-            }
-
-            // 270 degree rotation
-            if (rot == OutputConfiguration.Rotation.RotateTwoSeventy)
-            {
-                // return according to flip
-                if (!fx && !fy) return RotateFlipType.Rotate270FlipNone;
-                if (fx && !fy) return RotateFlipType.Rotate270FlipX;
-                if (!fx && fy) return RotateFlipType.Rotate270FlipY;
-                if (fx && fy) return RotateFlipType.Rotate270FlipXY;
-            }
-
-            // unknown case, but just return no flip
-            return RotateFlipType.RotateNoneFlipNone;
-        }
-
-        // generate the bitmap we will then use to convert to string (remove pad, flip)
-        private bool manipulateBitmap(Bitmap bitmapOriginal, 
-                                      BitmapBorder tightestCommonBorder,
-                                      out Bitmap bitmapManipulated,
-                                      int minWidth, int minHeight)
-        {
-            //
-            // First, crop
-            //
-
-            // get bitmap border - this sets teh crop rectangle to per bitmap, essentially
-            BitmapBorder bitmapCropBorder = new BitmapBorder();
-            if (getBitmapBorder(bitmapOriginal, bitmapCropBorder) == false && minWidth == 0 && minHeight == 0)
-            {
-                // no data
-                bitmapManipulated = null;
-
-                // bitmap contains no data
-                return false;
-            }
-
-            // check that width exceeds minimum
-            if (bitmapCropBorder.rightX - bitmapCropBorder.leftX + 1 < 0)
-            {
-                // replace
-                bitmapCropBorder.leftX = 0;
-                bitmapCropBorder.rightX = minWidth - 1;
-            }
-
-            // check that height exceeds minimum
-            if (bitmapCropBorder.bottomY - bitmapCropBorder.topY + 1 < 0)
-            {
-                // replace
-                bitmapCropBorder.topY = 0;
-                bitmapCropBorder.bottomY = minHeight - 1;
-            }
-
-            // should we crop hotizontally according to common
-            if (m_outputConfig.paddingRemovalHorizontal == OutputConfiguration.PaddingRemoval.Fixed)
-            {
-                // cropped Y is according to common
-                bitmapCropBorder.topY = tightestCommonBorder.topY;
-                bitmapCropBorder.bottomY = tightestCommonBorder.bottomY;
-            }
-            // check if no horizontal crop is required
-            else if (m_outputConfig.paddingRemovalHorizontal == OutputConfiguration.PaddingRemoval.None)
-            {
-                // set y to actual max border of bitmap
-                bitmapCropBorder.topY = 0;
-                bitmapCropBorder.bottomY = bitmapOriginal.Height - 1;
-            }
-
-            // should we crop vertically according to common
-            if (m_outputConfig.paddingRemovalVertical == OutputConfiguration.PaddingRemoval.Fixed)
-            {
-                // cropped X is according to common
-                bitmapCropBorder.leftX = tightestCommonBorder.leftX;
-                bitmapCropBorder.rightX = tightestCommonBorder.rightX;
-            }
-            // check if no vertical crop is required
-            else if (m_outputConfig.paddingRemovalVertical == OutputConfiguration.PaddingRemoval.None)
-            {
-                // set x to actual max border of bitmap
-                bitmapCropBorder.leftX = 0;
-                bitmapCropBorder.rightX = bitmapOriginal.Width - 1;
-            }
-
-            // now copy the output bitmap, cropped as required, to a temporary bitmap
-            Rectangle rect = new Rectangle(bitmapCropBorder.leftX, 
-                                            bitmapCropBorder.topY,
-                                            bitmapCropBorder.rightX - bitmapCropBorder.leftX + 1,
-                                            bitmapCropBorder.bottomY - bitmapCropBorder.topY + 1);
-
-            // clone the cropped bitmap into the generated one
-            bitmapManipulated = bitmapOriginal.Clone(rect, bitmapOriginal.PixelFormat);
-
-            // get rotate type
-            RotateFlipType flipType = getOutputRotateFlipType();
-            
-            // flip the cropped bitmap
-            bitmapManipulated.RotateFlip(flipType);
-
-            // bitmap contains data
-            return true;
-        }
-
-        // create the page array
-        private void convertBitmapToPageArray(Bitmap bitmapToGenerate, out ArrayList pages)
-        {
-            // create pages
-            pages = new ArrayList();
-
-            // for each row
-            for (int row = 0; row < bitmapToGenerate.Height; row++)
-            {
-                // current byte value
-                byte currentValue = 0, bitsRead = 0;
-
-                // for each column
-                for (int column = 0; column < bitmapToGenerate.Width; ++column) 
-                {
-                    // is pixel set?
-                    if( bitmapToGenerate.GetPixel(column, row).GetBrightness() < 0.5 )
-                    {
-                        // set the appropriate bit in the page
-                        if (m_outputConfig.byteOrder == OutputConfiguration.ByteOrder.MsbFirst) currentValue |= (byte)(1 << (7 - bitsRead));
-                        else currentValue |= (byte)(1 << bitsRead);
-                    }
-
-                    // increment number of bits read
-                    ++bitsRead;
-
-                    // have we filled a page?
-                    if (bitsRead == 8)
-                    {
-                        // add byte to page array
-                        pages.Add(currentValue);
-
-                        // zero out current value
-                        currentValue = 0;
-
-                        // zero out bits read
-                        bitsRead = 0;
-                    }
-                }
-
-                // if we have bits left, add it as is
-                if (bitsRead != 0) pages.Add(currentValue);
-            }
-
-            // transpose the pages if column major data is requested
-            if (m_outputConfig.bitLayout == OutputConfiguration.BitLayout.ColumnMajor)
-            {
-                transposePageArray(bitmapToGenerate.Width, bitmapToGenerate.Height, pages, out pages);
-            }
-        }
-
-        // get absolute height/width of characters
-        private void getAbsoluteCharacterDimensions(ref Bitmap charBitmap, ref int width, ref int height)
-        {
-            // check if bitmap exists, otherwise set as zero
-            if (charBitmap == null)
-            {
-                // zero height
-                width = 0;
-                height = 0;
-            }
-            else
-            {
-                // get the absolute font character height. Depends on rotation
-                if (m_outputConfig.rotation == OutputConfiguration.Rotation.RotateZero ||
-                    m_outputConfig.rotation == OutputConfiguration.Rotation.RotateOneEighty)
-                {
-                    // if char is not rotated or rotated 180deg, its height is the actual height
-                    height = charBitmap.Height;
-                    width = charBitmap.Width;
-                }
-                else
-                {
-                    // if char is rotated by 90 or 270, its height is the width of the rotated bitmap
-                    height = charBitmap.Width;
-                    width = charBitmap.Height;
-                }
-            }
-        }
-
-        // get font info from string
-        private void populateFontInfoFromCharacters(ref FontInfo fontInfo)
-        {
-            // do nothing if no chars defined
-            if (fontInfo.characters.Length == 0) return;
-            
-            // total offset
-            int charByteOffset = 0;
-            int dummy = 0;
-
-            // set start char
-            fontInfo.startChar = (char)0xFFFF;
-            fontInfo.endChar = ' ';
-
-            // the fixed absolute character height
-            // int fixedAbsoluteCharHeight;
-            getAbsoluteCharacterDimensions(ref fontInfo.characters[0].bitmapToGenerate, ref dummy, ref fontInfo.charHeight);
-                
-            // iterate through letter string
-            for (int charIdx = 0; charIdx < fontInfo.characters.Length; ++charIdx)
-            {
-                // skip empty bitmaps
-                if (fontInfo.characters[charIdx].bitmapToGenerate == null) continue;
-
-                // get char
-                char currentChar = fontInfo.characters[charIdx].character;
-
-                // is this character smaller than start char?
-                if (currentChar < fontInfo.startChar) fontInfo.startChar = currentChar;
-
-                // is this character bigger than end char?
-                if (currentChar > fontInfo.endChar) fontInfo.endChar = currentChar;
-
-                // populate number of rows
-                getAbsoluteCharacterDimensions(ref fontInfo.characters[charIdx].bitmapToGenerate, 
-                                                ref fontInfo.characters[charIdx].width,
-                                                ref fontInfo.characters[charIdx].height); 
-
-                // populate offset of character
-                fontInfo.characters[charIdx].offsetInBytes = charByteOffset;
-
-                // increment byte offset
-                charByteOffset += fontInfo.characters[charIdx].pages.Count;
-            }
-        }
-
-        // get widest bitmap
-        Rectangle getLargestBitmapFromCharInfo(CharacterGenerationInfo[] charInfoArray)
-        {
-            // largest rect
-            Rectangle largestRect = new Rectangle(0, 0, 0, 0);
-
-            // iterate through chars
-            for (int charIdx = 0; charIdx < charInfoArray.Length; ++charIdx)
-            {
-                // get the string of the characer
-                string letterString = charInfoArray[charIdx].character.ToString();
-                
-                // measure the size of teh character in pixels
-                Size stringSize = TextRenderer.MeasureText(letterString, charInfoArray[charIdx].fontInfo.font);
-
-                // check if larger
-                largestRect.Height = Math.Max(largestRect.Height, stringSize.Height);
-                largestRect.Width = Math.Max(largestRect.Width, stringSize.Width);
-            }
-
-            // return largest
-            return largestRect;
-        }
-
-        // populate the font info
-        private FontInfo populateFontInfo(Font font)
-        {
-            // the font information
-            FontInfo fontInfo = new FontInfo();
-
-            // get teh characters we need to generate from the input text, removing duplicates
-            fontInfo.generatedChars = getCharactersToGenerate();
-
-            // set font into into
-            fontInfo.font = font;
-
-            // array holding all bitmaps and info per character
-            fontInfo.characters = new CharacterGenerationInfo[fontInfo.generatedChars.Length];
-
-            //
-            // init char infos
-            //
-            for (int charIdx = 0; charIdx < fontInfo.generatedChars.Length; ++charIdx)
-            {
-                // create char info entity
-                fontInfo.characters[charIdx] = new CharacterGenerationInfo();
-
-                // point back to teh font
-                fontInfo.characters[charIdx].fontInfo = fontInfo;
-
-                // set the character
-                fontInfo.characters[charIdx].character = fontInfo.generatedChars[charIdx];
-            }
-            
-            //
-            // Find the widest bitmap size we are going to draw
-            //
-            Rectangle largestBitmap = getLargestBitmapFromCharInfo(fontInfo.characters);
-            
-            //
-            // create bitmaps per characater
-            //
-
-            // iterate over characters
-            for (int charIdx = 0; charIdx < fontInfo.generatedChars.Length; ++charIdx)
-            {
-                // generate the original bitmap for the character
-                convertCharacterToBitmap(fontInfo.generatedChars[charIdx], 
-                                         font, 
-                                         out fontInfo.characters[charIdx].bitmapOriginal, largestBitmap);
-
-                // save
-                // fontInfo.characters[charIdx].bitmapOriginal.Save(String.Format("C:/bms/{0}.bmp", fontInfo.characters[charIdx].character));
-            }
-
-            //
-            // iterate through all bitmaps and find the tightest common border. only perform
-            // this if the configuration specifies
-            //
-
-            // this will contain the values of the tightest border around the characters
-            BitmapBorder tightestCommonBorder = new BitmapBorder();
-
-            // only perform if padding type specifies
-            if (m_outputConfig.paddingRemovalHorizontal == OutputConfiguration.PaddingRemoval.Fixed ||
-                m_outputConfig.paddingRemovalVertical == OutputConfiguration.PaddingRemoval.Fixed)
-            {
-                // find the common tightest border
-                findTightestCommonBitmapBorder(fontInfo.characters, ref tightestCommonBorder);
-            }
-
-            //
-            // iterate thruogh all bitmaps and generate the bitmap we will convert to string
-            // this means performing all manipulation (pad remove, flip)
-            //
-
-            // iterate over characters
-            for (int charIdx = 0; charIdx < fontInfo.generatedChars.Length; ++charIdx)
-            {
-                // generate the original bitmap for the character
-                manipulateBitmap(fontInfo.characters[charIdx].bitmapOriginal,
-                                 tightestCommonBorder,
-                                 out fontInfo.characters[charIdx].bitmapToGenerate,
-                                 m_outputConfig.spaceGenerationPixels,
-                                 fontInfo.characters[charIdx].bitmapOriginal.Height);
-
-                // for debugging
-                // fontInfo.characters[charIdx].bitmapToGenerate.Save(String.Format("C:/bms/{0}_cropped.bmp", fontInfo.characters[charIdx].character));
-            }
-
-            //
-            // iterate through all characters and create the page array
-            //
-
-            // iterate over characters
-            for (int charIdx = 0; charIdx < fontInfo.generatedChars.Length; ++charIdx)
-            {
-                // check if bitmap exists
-                if (fontInfo.characters[charIdx].bitmapToGenerate != null)
-                {
-                    // create the page array for the character
-                    convertBitmapToPageArray(fontInfo.characters[charIdx].bitmapToGenerate, out fontInfo.characters[charIdx].pages);
-                }
-            }
-
-            // populate font info
-            populateFontInfoFromCharacters(ref fontInfo);
-
-            // return the font info
-            return fontInfo;
-        }
-
-        // generate string from character info
-        private string generateStringFromPageArray(int width, int height, ArrayList pages)
-        {
-            // generate the data rows
-            string [] data;
-            generateData(width, height, pages, m_outputConfig.bitLayout, out data);
-
-            // generate the visualizer
-            string[] visualizer;
-            generateVisualizer(width, height, pages, m_outputConfig.bitLayout, out visualizer);
-
-            // build the result string
-            StringBuilder resultString = new StringBuilder();
-
-            // output row major data
-            if (m_outputConfig.bitLayout == OutputConfiguration.BitLayout.RowMajor)
-            {
-                // the visualizer is drawn after the data on the same rows, so they must have the same length
-                System.Diagnostics.Debug.Assert(data.Length == visualizer.Length);
-
-                // output the data and visualizer together
-                if (m_outputConfig.lineWrap == OutputConfiguration.LineWrap.AtColumn)
-                {
-                    // one line per row
-                    for (int row = 0; row != data.Length; ++row)
-                    {
-                        resultString.Append("\t").Append(data[row]).Append(visualizer[row]).Append(nl);
-                    }
-                }
-                else if (m_outputConfig.lineWrap == OutputConfiguration.LineWrap.AtBitmap)
-                {
-                    // one line per bitmap
-                    resultString.Append("\t");
-                    for (int row = 0; row != data.Length; ++row)
-                    {
-                        resultString.Append(data[row]);
-                    }
-                    resultString.Append(nl);
-                }
-            }
-
-            // output column major data
-            else if (m_outputConfig.bitLayout == OutputConfiguration.BitLayout.ColumnMajor)
-            {
-                // output the visualizer
-                for (int row = 0; row != visualizer.Length; ++row)
-                {
-                    resultString.Append("\t").Append(visualizer[row]).Append(nl);
-                }
-
-                // output the data
-                if (m_outputConfig.lineWrap == OutputConfiguration.LineWrap.AtColumn)
-                {
-                    // one line per row
-                    for (int row = 0; row != data.Length; ++row)
-                    {
-                        resultString.Append("\t").Append(data[row]).Append(nl);
-                    }
-                }
-                else if (m_outputConfig.lineWrap == OutputConfiguration.LineWrap.AtBitmap)
-                {
-                    // one line per bitmap
-                    resultString.Append("\t");
-                    for (int row = 0; row != data.Length; ++row)
-                    {
-                        resultString.Append(data[row]);
-                    }
-                    resultString.Append(nl);
-                }
-            }
-
-            // return the result
-            return resultString.ToString();
-        }
-
-        // generate an array of column major pages from row major pages
-        private void transposePageArray(int width, int height, ArrayList rowMajorPages, out ArrayList colMajorPages)
-        {
-            // column major data has a byte for each column representing 8 rows
-            int rowMajorPagesPerRow = (width + 7)/8;
-            int colMajorPagesPerRow = width;
-            int colMajorRowCount    = (height + 7)/8;
-
-            // create an array of pages filled with zeros for the column major data
-            colMajorPages = new ArrayList(colMajorPagesPerRow * colMajorRowCount);
-            for (int i = 0; i != colMajorPagesPerRow * colMajorRowCount; ++i)
-                colMajorPages.Add((byte)0);
-
-            // generate the column major data
-            for (int row = 0; row != height; ++row)
-            {
-                for (int col = 0; col != width; ++col)
-                {
-                    // get the byte containing the bit we want
-                    int srcIdx = row * rowMajorPagesPerRow + (col/8);
-                    int page = (byte)rowMajorPages[srcIdx];
-
-                    // get the bit mask for the bit we want
-                    int bitMask = getBitMask(7 - (col % 8));
-
-                    // set the bit in the column major data
-                    if ((page & bitMask) != 0)
-                    {
-                        int dstIdx = (row/8) * colMajorPagesPerRow + col;
-                        int p = (byte)colMajorPages[dstIdx];
-                        colMajorPages[dstIdx] = (byte)(p | getBitMask(row % 8));
-                    }
-                }
-            }
-        }
-
-        // builds a string array of the data in 'pages'
-        private void generateData(int width, int height, ArrayList pages, OutputConfiguration.BitLayout layout, out string[] data)
-        {
-            int colCount = (layout == OutputConfiguration.BitLayout.RowMajor) ? (width + 7)/8: width;
-            int rowCount = (layout == OutputConfiguration.BitLayout.RowMajor) ? height : (height + 7)/8;
-
-            data = new string[rowCount];
-
-            // iterator over rows
-            for (int row = 0; row != rowCount; ++row)
-            {
-                data[row] = "";
-
-                // iterator over columns
-                for (int col = 0; col != colCount; ++col)
-                {
-                    // get the byte to output
-                    int page = (byte)pages[row * colCount + col];
-
-                    // add leading character
-                    data[row] += m_outputConfig.byteLeadingString;
-
-                    // check format
-                    if (m_outputConfig.byteFormat == OutputConfiguration.ByteFormat.Hex)
-                    {
-                        // convert byte to hex
-                        data[row] += page.ToString("X").PadLeft(2, '0');
-                    }
-                    else
-                    {
-                        // convert byte to binary
-                        data[row] += Convert.ToString(page, 2).PadLeft(8, '0');
-                    }
-
-                    // add comma
-                    data[row] += ", ";
-                }
-            }
-        }
-
-        // builds a string array visualization of 'pages'
-        private void generateVisualizer(int width, int height, ArrayList pages, OutputConfiguration.BitLayout layout, out string[] visualizer)
-        {
-            visualizer = new string[height];
-
-            // the number of pages per row in 'pages'
-            int colCount = (layout == OutputConfiguration.BitLayout.RowMajor) ? (width + 7)/8: width;
-            int rowCount = (layout == OutputConfiguration.BitLayout.RowMajor) ? height : (height + 7)/8;
-
-            // iterator over rows
-            for (int row = 0; row != height; ++row)
-            {
-                // each row is started with a line comment
-                visualizer[row] = "// ";
-                
-                // iterator over columns
-                for (int col = 0; col != width; ++col)
-                {
-                    // get the byte containing the bit we want
-                    int page = (layout == OutputConfiguration.BitLayout.RowMajor)
-                        ? (byte)pages[row * colCount + (col/8)]
-                        : (byte)pages[(row/8) * colCount + col];
-
-                    // make a mask to extract the bit we want
-                    int bitMask = (layout == OutputConfiguration.BitLayout.RowMajor)
-                        ? getBitMask(7 - (col % 8))
-                        : getBitMask(row % 8);
-
-                    // check if bit is set
-                    visualizer[row] += (bitMask & page) != 0 ? m_outputConfig.bmpVisualizerChar : " ";
-                }
-            }
-
-            // for debugging
-            //foreach (var s in visualizer)
-            //  System.Diagnostics.Debug.WriteLine(s);
-        }
-
-        // return a bitMask to pick out the 'bitIndex'th bit allowing for byteOrder
-        // MsbFirst: bitIndex = 0 = 0x01, bitIndex = 7 = 0x80
-        // LsbFirst: bitIndex = 0 = 0x80, bitIndex = 7 = 0x01
-        private int getBitMask(int bitIndex)
-        {
-            return m_outputConfig.byteOrder == OutputConfiguration.ByteOrder.MsbFirst
-                ? 0x01 << bitIndex
-                : 0x80 >> bitIndex;
-        }
-
-        // make 'name' suitable as a variable name, starting with '_'
-        // or a letter and containing only letters, digits, and '_'
-        private string scrubVariableName(string name)
-        {
-            // scrub invalid characters from the font name
-            StringBuilder outName = new StringBuilder();
-            foreach (char ch in name)
-            {
-                if (Char.IsLetterOrDigit(ch) || ch == '_')
-                    outName.Append(ch);
-            }
-
-            // prepend '_' if the first character is a number
-            if (Char.IsDigit(outName[0]))
-                outName.Insert(0, '_');
-
-            // convert the first character to lower case
-            outName[0] = Char.ToLower(outName[0]);
-
-            // return name
-            return outName.ToString();
-        }
-
-        // get the font name and format it
-        private string getFontName(ref Font font)
-        {
-            return scrubVariableName(font.Name + "_" + Math.Round(font.Size) + "pt");
-        }
-
-        // convert bits to bytes according to desc format
-        private int convertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat descFormat, int valueInBits)
-        {
-            // according to format
-            if (descFormat == OutputConfiguration.DescriptorFormat.DisplayInBytes)
-            {
-                // get value in bytes
-                int valueInBytes = valueInBits / 8;
-                if (valueInBits % 8 != 0) valueInBytes++;
-
-                // set into string
-                return valueInBytes;
-            }
-            else
-            {
-                // no conversion required
-                return valueInBits;
-            }
-        }
-
-        // get the character descriptor string
-        private string getCharacterDescString(OutputConfiguration.DescriptorFormat descFormat, int valueInBits)
-        {
-            // don't display
-            if (descFormat == OutputConfiguration.DescriptorFormat.DontDisplay) return "";
-
-            // add comma and return
-            return String.Format("{0}, ", convertValueByDescriptorFormat(descFormat, valueInBits));
-        }
-
-        // get teh character descriptor string
-        string getCharacterDescName(string name, OutputConfiguration.DescriptorFormat descFormat)
-        {
-            // don't display
-            if (descFormat == OutputConfiguration.DescriptorFormat.DontDisplay) return "";
-
-            // create result string
-            string descFormatName = "";
-
-            // set value
-            if (descFormat == OutputConfiguration.DescriptorFormat.DisplayInBits) descFormatName = "bits";
-            if (descFormat == OutputConfiguration.DescriptorFormat.DisplayInBytes) descFormatName = "bytes";
-
-            // add comma and return
-            return String.Format("[Char {0} in {1}], ", name, descFormatName);
-        }
-
-        // get only the variable name from an expression in a specific format
-        // e.g. input: const far unsigned int my_font[] = ; 
-        //      output: my_font[]
-        private string getVariableNameFromExpression(string expression)
-        {
-            // iterator
-            int charIndex = 0;
-
-            // invalid format string
-            const string invalidFormatString = "##Invalid format##";
-
-            //
-            // Strip array parenthesis
-            //
-
-            // search for '[number, zero or more] '
-            const string arrayRegexString = @"\[[0-9]*\]";
-
-            // modify the expression
-            expression = Regex.Replace(expression, arrayRegexString, "");
-
-            //
-            // Find the string between '=' and a space, trimming spaces from end
-            //
-
-            // start at the end and look for the letter or number
-            for (charIndex = expression.Length - 1; charIndex != 1; --charIndex)
-            {
-                // find the last character of the variable name
-                if (expression[charIndex] != '=' && expression[charIndex] != ' ') break;
-            }
-
-            // check that its valid
-            if (charIndex == 0) return invalidFormatString;
-
-            // save this index
-            int lastVariableNameCharIndex = charIndex;
-
-            // continue looking for a space
-            for (charIndex = lastVariableNameCharIndex; charIndex != 0; --charIndex)
-            {
-                // find the last character of the variable name
-                if (expression[charIndex] == ' ') break;
-            }
-
-            // check that its valid
-            if (charIndex == 0) return invalidFormatString;
-
-            // save this index as well
-            int firstVariableNameCharIndex = charIndex + 1;
-
-            // return the substring
-            return expression.Substring(firstVariableNameCharIndex, lastVariableNameCharIndex - firstVariableNameCharIndex + 1);
-        }
-
-        // add a character to teh current char descriptor array
-        private void charDescArrayAddCharacter(CharacterDescriptorArrayBlock desciptorBlock,
-                                               FontInfo fontInfo, 
-                                               char character,
-                                               int width, int height, int offset)
-        {
-            // create character descriptor
-            CharacterDescriptorArrayBlock.Character charDescriptor = new CharacterDescriptorArrayBlock.Character();
-                charDescriptor.character = character;
-                charDescriptor.font = fontInfo;
-                charDescriptor.height = height;
-                charDescriptor.width = width;
-                charDescriptor.offset = offset;
-
-            // shove this character to the descriptor block
-            desciptorBlock.characters.Add(charDescriptor);
-        }
-
-        // gnereate a list of blocks describing the characters
-        private void generateCharacterDescriptorBlockList(FontInfo fontInfo, ref ArrayList characterBlockList)
-        {
-            char currentCharacter, previousCharacter = '\0';
-
-            // initialize first block
-            CharacterDescriptorArrayBlock characterBlock = null;
-
-            // get the difference between two characters required to create a new group
-            int differenceBetweenCharsForNewGroup = m_outputConfig.generateLookupBlocks ?
-                    m_outputConfig.lookupBlocksNewAfterCharCount : int.MaxValue;
-
-            // iterate over characters, saving previous character each time
-            for (int charIndex = 0;
-                 charIndex < fontInfo.characters.Length;
-                 ++charIndex)
-            {
-                // get character
-                currentCharacter = fontInfo.characters[charIndex].character;
-
-                // check if this character is too far from the previous character and it isn't the first char
-                if (currentCharacter - previousCharacter < differenceBetweenCharsForNewGroup && previousCharacter != '\0')
-                {
-                    // it may not be far enough to generate a new group but it still may be non-sequential
-                    // in this case we need to generate place holders
-                    for (char sequentialCharIndex = (char)(previousCharacter + 1);
-                            sequentialCharIndex < currentCharacter;
-                            ++sequentialCharIndex)
-                    {
-                        // add the character placeholder to the current char block
-                        charDescArrayAddCharacter(characterBlock, fontInfo, sequentialCharIndex, 0, 0, 0);
-                    }
-
-                    // fall through and add to current block
-                }
-                else
-                {
-                    // done with current block, add to list (null is for first character which hasn't
-                    // created a group yet)
-                    if (characterBlock != null) characterBlockList.Add(characterBlock);
-
-                    // create new block
-                    characterBlock = new CharacterDescriptorArrayBlock();
-                    characterBlock.characters = new ArrayList();
-                }
-
-                // add to current block
-                charDescArrayAddCharacter(characterBlock, fontInfo, currentCharacter,
-                                          fontInfo.characters[charIndex].width,
-                                          fontInfo.characters[charIndex].height,
-                                          fontInfo.characters[charIndex].offsetInBytes);
-
-                // save previous char
-                previousCharacter = currentCharacter;
-            }
-
-            // done; add current block to list
-            characterBlockList.Add(characterBlock);
-        }
-
-        // get character descriptor array block name
-        private string charDescArrayGetBlockName(FontInfo fontInfo, int currentBlockIndex, 
-                                                 bool includeTypeDefinition, bool includeBlockIndex)
-        {
-            // get block id
-            string blockIdString = String.Format("Block{0}", currentBlockIndex);
-
-            // variable name
-            string variableName = String.Format(m_outputConfig.varNfCharInfo, getFontName(ref fontInfo.font));
-
-            // remove type unless required
-            if (!includeTypeDefinition) variableName = getVariableNameFromExpression(variableName);
-
-            // return the block name
-            return String.Format("{0}{1}{2}",
-                                    variableName,
-                                    includeBlockIndex ? blockIdString : "",
-                                    includeTypeDefinition ? "[]" : "");
-        }
-
-        // get the display string for a character (ASCII is displayed as 'x', non-ASCII as numeric)
-        private string getCharacterDisplayString(char character)
-        {
-            // ASCII?
-            if (character < 255)
-            {
-                // as character
-                return String.Format("'{0}'", character);
-            }
-            else
-            {
-                // display as number
-                int numericValue = (int)character;
-                
-                // return string
-                return numericValue.ToString();
-            }
-        }
-        
-        // generate source/header strings from a block list
-        private void generateStringsFromCharacterDescriptorBlockList(FontInfo fontInfo, ArrayList characterBlockList,
-                                                                     ref string resultTextSource, ref string resultTextHeader,
-                                                                     ref bool blockLookupGenerated)
-        {
-            // get wheter there are multiple block lsits
-            bool multipleDescBlocksExist = characterBlockList.Count > 1;
-
-            // set whether we'll generate lookups
-            blockLookupGenerated = multipleDescBlocksExist;
-
-            //
-            // Generate descriptor arrays
-            //
-
-            // iterate over blocks
-            foreach (CharacterDescriptorArrayBlock block in characterBlockList)
-            {
-                // according to config
-                if (m_outputConfig.commentVariableName)
-                {
-                    string blockNumberString = String.Format("(block #{0})", characterBlockList.IndexOf(block));
-
-                    // result string
-                    resultTextSource += String.Format("{0}Character descriptors for {1} {2}pt{3}{4}" + nl,
-                                                        m_commentStartString, fontInfo.font.Name,
-                                                        Math.Round(fontInfo.font.Size), multipleDescBlocksExist ? blockNumberString : "",
-                                                        m_commentEndString);
-
-                    // describe character array
-                    resultTextSource += String.Format("{0}{{ {1}{2}[Offset into {3}CharBitmaps in bytes] }}{4}" + nl,
-                                                        m_commentStartString,
-                                                        getCharacterDescName("width", m_outputConfig.descCharWidth),
-                                                        getCharacterDescName("height", m_outputConfig.descCharHeight),
-                                                        getFontName(ref fontInfo.font),
-                                                        m_commentEndString);
-                }
-
-                // output block header
-                resultTextSource += String.Format("{0} = "+ nl+"{{" + nl, charDescArrayGetBlockName(fontInfo, characterBlockList.IndexOf(block), true, multipleDescBlocksExist));
-
-                // iterate characters
-                foreach (CharacterDescriptorArrayBlock.Character character in block.characters)
-                {
-                    // add character
-                    resultTextSource += String.Format("\t{{{0}{1}{2}}}, \t\t{3}{4}{5}" + nl,
-                                                    getCharacterDescString(m_outputConfig.descCharWidth, character.width),
-                                                    getCharacterDescString(m_outputConfig.descCharHeight, character.height),
-                                                    character.offset,
-                                                    m_commentStartString,
-                                                    character.character == '\\' ? "\\ (backslash)" : new string(character.character, 1),
-                                                    m_commentEndString + " ");
-                }
-
-                // terminate current block
-                resultTextSource += "};" + nl + nl;
-            }
-
-            //
-            // Generate block lookup 
-            //
-
-            // if there is more than one block, we need to generate a block lookup
-            if (multipleDescBlocksExist)
-            {
-                // start with comment, if required
-                if (m_outputConfig.commentVariableName)
-                {
-                    // result string
-                    resultTextSource += String.Format("{0}Block lookup array for {1} {2}pt {3}" + nl,
-                                                        m_commentStartString, fontInfo.font.Name,
-                                                        Math.Round(fontInfo.font.Size), m_commentEndString);
-
-                    // describe character array
-                    resultTextSource += String.Format("{0}{{ start character, end character, ptr to descriptor block array }}{1}" + nl,
-                                                        m_commentStartString,
-                                                        m_commentEndString);
-                }
-
-                // format the block lookup header
-                resultTextSource += String.Format("const FONT_CHAR_INFO_LOOKUP {0}[] = " + nl+"{{" + nl, 
-                                                    getCharacterDescriptorArrayLookupDisplayString(fontInfo));
-
-                // iterate
-                foreach (CharacterDescriptorArrayBlock block in characterBlockList)
-                {
-                    // get first/last chars
-                    CharacterDescriptorArrayBlock.Character firstChar = (CharacterDescriptorArrayBlock.Character)block.characters[0],
-                                                            lastChar = (CharacterDescriptorArrayBlock.Character)block.characters[block.characters.Count - 1];
-
-                    // create current block description
-                    resultTextSource += String.Format("\t{{{0}, {1}, &{2}}}," + nl,
-                                                                getCharacterDisplayString(firstChar.character),
-                                                                getCharacterDisplayString(lastChar.character),
-                                                                charDescArrayGetBlockName(fontInfo, characterBlockList.IndexOf(block), false, true));
-                }
-
-                // terminate block lookup
-                resultTextSource += "};" + nl + nl;
-            }
-        }
-
-        //
-        private string getCharacterDescriptorArrayLookupDisplayString(FontInfo fontInfo)
-        {
-            // return the string
-            return String.Format("{0}BlockLookup", getFontName(ref fontInfo.font));
-        }
-        
-        // generate lookup array
-        private void generateCharacterDescriptorArray(FontInfo fontInfo, ref string resultTextSource, 
-                                                        ref string resultTextHeader, ref bool blockLookupGenerated)
-        {
-            // check if required by configuration
-            if (m_outputConfig.generateLookupArray)
-            {
-                ArrayList characterBlockList = new ArrayList();
-
-                // populate list of blocks
-                generateCharacterDescriptorBlockList(fontInfo, ref characterBlockList);
-
-                // generate strings from block list
-                generateStringsFromCharacterDescriptorBlockList(fontInfo, characterBlockList, ref resultTextSource, 
-                                                                ref resultTextHeader, ref blockLookupGenerated);
-            }
-        }
-
-        // generate the strings
-        private void generateStringsFromFontInfo(FontInfo fontInfo, ref string resultTextSource, ref string resultTextHeader)
-        {
-            //
-            // Character bitmaps
-            //
-
-            // according to config
-            if (m_outputConfig.commentVariableName)
-            {
-                // add source header
-                resultTextSource += String.Format("{0}Character bitmaps for {1} {2}pt{3}" + nl,
-                                                    m_commentStartString, fontInfo.font.Name,
-                                                    Math.Round(fontInfo.font.Size), m_commentEndString);
-            }
-
-            // get bitmap name
-            string charBitmapVarName = String.Format(m_outputConfig.varNfBitmaps, getFontName(ref fontInfo.font)) + "[]";
-
-            // header var
-            //resultTextHeader += String.Format("extern {0};" + nl, charBitmapVarName);
-
-            // source var
-            resultTextSource += String.Format("{0} = " + nl+"{{" + nl, charBitmapVarName);
-
-            // iterate through letters
-            for (int charIdx = 0; charIdx < fontInfo.characters.Length; ++charIdx)
-            {
-                // skip empty bitmaps
-                if (fontInfo.characters[charIdx].bitmapToGenerate == null) continue;
-
-                // according to config
-                if (m_outputConfig.commentCharDescriptor)
-                {
-                    // output character header
-                    resultTextSource += String.Format("\t{0}@{1} '{2}' ({3} pixels wide){4}" + nl,
-                                                        m_commentStartString,
-                                                        fontInfo.characters[charIdx].offsetInBytes,
-                                                        fontInfo.characters[charIdx].character,
-                                                        fontInfo.characters[charIdx].width,
-                                                        m_commentEndString);
-                }
-
-                // now add letter array
-                var charInfo = fontInfo.characters[charIdx];
-                var bitmap = fontInfo.characters[charIdx].bitmapToGenerate;
-                resultTextSource += generateStringFromPageArray(bitmap.Width, bitmap.Height, charInfo.pages);
-
-                // space out
-                if (charIdx != fontInfo.characters.Length - 1 && m_outputConfig.commentCharDescriptor)
-                {
-                    // space between chars
-                    resultTextSource += nl;
-                }
-            }
-
-            // space out
-            resultTextSource += "};" + nl + nl;
-
-            //
-            // Charater descriptor
-            //
-
-            // whether or not block lookup was generated
-            bool blockLookupGenerated = false;
-
-            // generate the lookup array
-            generateCharacterDescriptorArray(fontInfo, ref resultTextSource, ref resultTextHeader, ref blockLookupGenerated);
-
-            //
-            // Font descriptor
-            //
-            
-            // according to config
-            if (m_outputConfig.commentVariableName)
-            {
-                // result string
-                resultTextSource += String.Format("{0}Font information for {1} {2}pt{3}" + nl,
-                                                    m_commentStartString,
-                                                    fontInfo.font.Name, Math.Round(fontInfo.font.Size),
-                                                    m_commentEndString);
-            }
-
-            // character name
-            string fontInfoVarName = String.Format(m_outputConfig.varNfFontInfo, getFontName(ref fontInfo.font));
-
-            // add character array for header
-            resultTextHeader += String.Format("extern {0};" + nl, fontInfoVarName);
-
-            // the font character height
-            string fontCharHeightString = "", spaceCharacterPixelWidthString = "";
-            
-            // get character height sstring - displayed according to output configuration
-            if (m_outputConfig.descFontHeight != OutputConfiguration.DescriptorFormat.DontDisplay)
-            {
-                // convert the value
-                fontCharHeightString = String.Format("\t{0}, {1} Character height{2}" + nl,
-                                              convertValueByDescriptorFormat(m_outputConfig.descFontHeight, fontInfo.charHeight),
-                                              m_commentStartString,
-                                              m_commentEndString);
-            }
-
-            // get space char width, if it is up to driver to generate
-            if (!m_outputConfig.generateSpaceCharacterBitmap)
-            {
-                // convert the value
-                spaceCharacterPixelWidthString = String.Format("\t{0}, {1} Width, in pixels, of space character{2}" + nl,
-                                                                m_outputConfig.spaceGenerationPixels,
-                                                                m_commentStartString,
-                                                                m_commentEndString);
-            }
-
-            // font info
-            resultTextSource += String.Format("{2} =" + nl+"{{" + nl +
-                                              "{3}" +
-                                              "\t{4}, {0} Start character{1}" + nl +
-                                              "\t{5}, {0} End character{1}" + nl +
-                                              "{6}" +
-                                              "{7}" +
-                                              "\t{8}, {0} Character bitmap array{1}" + nl +
-                                              "}};" + nl,
-                                              m_commentStartString,
-                                              m_commentEndString,
-                                              fontInfoVarName,
-                                              fontCharHeightString,
-                                              getCharacterDisplayString(fontInfo.startChar),
-                                              getCharacterDisplayString(fontInfo.endChar),
-                                              spaceCharacterPixelWidthString,
-                                              getFontInfoDescriptorsString(fontInfo, blockLookupGenerated),
-                                              getVariableNameFromExpression(String.Format(m_outputConfig.varNfBitmaps, getFontName(ref fontInfo.font))));
-
-            // add the appropriate entity to the header
-            if (blockLookupGenerated)
-            {
-                // add block lookup to header
-                resultTextHeader += String.Format("extern const FONT_CHAR_INFO_LOOKUP {0}[];" + nl, getCharacterDescriptorArrayLookupDisplayString(fontInfo));
-            }
-            else
-            {
-                // add block lookup to header
-                resultTextHeader += String.Format("extern {0}[];" + nl, String.Format(m_outputConfig.varNfCharInfo, getFontName(ref fontInfo.font)));
-            }
-        }
-    
-        // get the descriptors
-        private string getFontInfoDescriptorsString(FontInfo fontInfo, bool blockLookupGenerated)
-        {
-            string descriptorString = "";
-
-            // if a lookup arrays are required, point to it
-            if (m_outputConfig.generateLookupBlocks)
-            {
-                // add to string
-                descriptorString += String.Format("\t{0}, {1} Character block lookup{2}" + nl,
-                                                    blockLookupGenerated ? getCharacterDescriptorArrayLookupDisplayString(fontInfo) : "NULL", 
-                                                    m_commentStartString, m_commentEndString);
-
-                // add to string
-                descriptorString += String.Format("\t{0}, {1} Character descriptor array{2}" + nl,
-                                                    blockLookupGenerated ? "NULL" : getVariableNameFromExpression(String.Format(m_outputConfig.varNfCharInfo, getFontName(ref fontInfo.font))),
-                                                    m_commentStartString, m_commentEndString);
-            }
-            else
-            {
-                // add descriptor array
-                descriptorString += String.Format("\t{0}, {1} Character descriptor array{2}" + nl, 
-                                                    getVariableNameFromExpression(String.Format(m_outputConfig.varNfCharInfo, getFontName(ref fontInfo.font))), 
-                                                    m_commentStartString, m_commentEndString);
-            }
-
-            // return the string
-            return descriptorString;
-        }
-		
-
-        // generate the required output for text
-        private void generateOutputForFont(Font font, ref string resultTextSource, ref string resultTextHeader)
-        {
-            // do nothing if no chars defined
-            if (txtInputText.Text.Length == 0) return;
-            
-            // according to config
-            if (m_outputConfig.commentVariableName)
-            {
-                // add source file header
-                resultTextSource += String.Format("{0}" + nl+"{1} Font data for {2} {3}pt" + nl+"{4}" + nl + nl,
-                                                    m_commentStartString, m_commentBlockMiddleString, font.Name, Math.Round(font.Size),
-                                                    m_commentBlockEndString);
-
-                // add header file header
-                resultTextHeader += String.Format("{0}Font data for {1} {2}pt{3}" + nl,
-                                                    m_commentStartString, font.Name, Math.Round(font.Size),
-                                                    m_commentEndString);
-            }
-
-            // populate the font info
-            FontInfo fontInfo = populateFontInfo(font);
-            
-            // We now have all information required per font and per character. 
-            // time to generate the string
-            generateStringsFromFontInfo(fontInfo, ref resultTextSource, ref resultTextHeader);
-        }
-
-        // generate the required output for image
-        private void generateOutputForImage(ref Bitmap bitmapOriginal, ref string resultTextSource, ref string resultTextHeader)
-        {
-            // the name of the bitmap
-            string imageName = scrubVariableName(txtImageName.Text);
-
-            // check if bitmap is assigned
-            if (m_currentLoadedBitmap != null)
-            {
-                //
-                // Bitmap manipulation
-                //
-
-                // get bitmap border
-                BitmapBorder bitmapBorder = new BitmapBorder();
-                getBitmapBorder(bitmapOriginal, bitmapBorder);
-
-                // manipulate the bitmap
-                Bitmap bitmapManipulated;
-
-                // try to manipulate the bitmap
-                if (!manipulateBitmap(bitmapOriginal, bitmapBorder, out bitmapManipulated, 0, 0))
-                {
-                    // show error
-                    MessageBox.Show("No black pixels found in bitmap (currently only monochrome bitmaps supported)",
-                                    "Can't convert bitmap",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
-
-                    // stop here, failed to manipulate the bitmap for whatever reason
-                    return;
-                }
-
-                // for debugging
-                // bitmapManipulated.Save(String.Format("C:/bms/manip.bmp"));
-
-                // according to config
-                if (m_outputConfig.commentVariableName)
-                {
-                    // add source file header
-                    resultTextSource += String.Format("{0}" + nl+"{1} Image data for {2}" + nl+"{3}" + nl + nl,
-                                                        m_commentStartString, m_commentBlockMiddleString, imageName,
-                                                        m_commentBlockEndString);
-
-                    // add header file header
-                    resultTextHeader += String.Format("{0}Bitmap info for {1}{2}" + nl,
-                                                        m_commentStartString, imageName,
-                                                        m_commentEndString);
-                }
-
-                // bitmap varname
-                string bitmapVarName = String.Format(m_outputConfig.varNfImageBitmap, imageName) + "[]";
-
-                // add to header
-                //resultTextHeader += String.Format("extern {0};" + nl, bitmapVarName);
-
-                // add to source
-                resultTextSource += String.Format("{0} =" + nl+"{{" + nl, bitmapVarName);
-
-                //
-                // Bitmap to string
-                //
-
-                // page array
-                ArrayList pages;
-
-                // first convert to pages
-                convertBitmapToPageArray(bitmapManipulated, out pages);
-
-                // assign pages for fully populated 8 bits
-                int pagesPerRow = convertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bitmapManipulated.Width);
-
-                // now convert to string
-                resultTextSource += generateStringFromPageArray(bitmapManipulated.Width, bitmapManipulated.Height, pages);
-
-                // close
-                resultTextSource += String.Format("}};" + nl + nl);
-
-                // according to config
-                if (m_outputConfig.commentVariableName)
-                {
-                    // set sizes comment
-                    resultTextSource += String.Format("{0}Bitmap sizes for {1}{2}" + nl,
-                                                        m_commentStartString, imageName, m_commentEndString);
-                }
-
-                int imageWidth;
-                string imageWidthComment;
-                // display width in bytes?
-                if (m_outputConfig.descImgWidth == OutputConfiguration.DescriptorFormat.DisplayInBytes)
-                {
-                    // in pages
-                    imageWidth = pagesPerRow;
-                    imageWidthComment = "Image width in bytes (pages)";
-                }
-                else
-                {
-                    // in pixels
-                    imageWidth = bitmapManipulated.Width;
-                    imageWidthComment = "Image width in pixels";
-                }
-
-                int imageHeight;
-                string imageHeightComment;
-                // display height in bytes?
-                if (m_outputConfig.descImgHeight == OutputConfiguration.DescriptorFormat.DisplayInBytes)
-                {
-                    // in pages
-                    imageHeight = convertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bitmapManipulated.Height);
-                    imageHeightComment = "Image height in bytes (pages)";
-                }
-                else
-                {
-                    // in pixels
-                    imageHeight = bitmapManipulated.Height;
-                    imageHeightComment = "Image height in pixels";
-                }
-
-                // get var name
-                string imageInfoVarName = String.Format(m_outputConfig.varNfImageInfo, imageName);
-
-                // image info header
-                resultTextHeader += String.Format("extern {0};" + nl, imageInfoVarName);
-
-                // image info source
-                resultTextSource += String.Format("{2} =" + nl + "{{" + nl +
-                                                  "\t{3}, {0} {4}{1}" + nl +
-                                                  "\t{5}, {0} {6}{1}" + nl +
-                                                  "\t{7}, {0} Image bitmap array{1}" + nl +
-                                                  "}};" + nl,
-                                                  m_commentStartString,
-                                                  m_commentEndString,
-                                                  imageInfoVarName,
-                                                  imageWidth,
-                                                  imageWidthComment,
-                                                  imageHeight,
-                                                  imageHeightComment,
-                                                  getVariableNameFromExpression(bitmapVarName));
-
+                updateSelectedFont(fontDlgInputFont.Font);
             }
         }
 
@@ -1889,152 +119,105 @@ namespace TheDotFactory
         {
             // set focus somewhere else
             label1.Focus();
-            
+
+            FastColoredTextBoxNS.SyntaxDescriptor pytonSyntax = new FastColoredTextBoxNS.SyntaxDescriptor();
+
+            pytonSyntax.leftBracket = '(';
+            pytonSyntax.rightBracket = ')';
+
             // save default input text
             Properties.Settings.Default.InputText = txtInputText.Text;
             Properties.Settings.Default.Save();
 
-            // will hold the resutl string            
-            string resultStringSource = "";
-            string resultStringHeader = "";
+            // will hold the resutl string
+            StringBuilder textSource = new StringBuilder();
+            StringBuilder textHeader = new StringBuilder();
 
             // check which tab is active
             if (tcInput.SelectedTab.Text == "Text")
             {
                 // generate output text
-                generateOutputForFont(fontDlgInputFont.Font, ref resultStringSource, ref resultStringHeader);
+                generateOutputForFont(m_outputConfig, fontDlgInputFont.Font, txtInputText.Text,  textSource, textHeader);
             }
-            else
+            else if (tcInput.SelectedTab.Text == "Image")
             {
                 // generate output bitmap
-                generateOutputForImage(ref m_currentLoadedBitmap, ref resultStringSource, ref resultStringHeader);
+                if (checkGroupBoxFontImage.Checked)
+                {
+                    int codepage = 0;
+
+                    TryParseCodePageString(comboBoxInputImageCodepage.Text, out codepage);
+
+                    Size tileSize = new Size((int)numericUpDownInputImageTileSizeX.Value, (int)numericUpDownInputImageTileSizeY.Value);
+
+                    generateOutputForFontImage(m_outputConfig, colorList, tileSize, codepage, m_currentLoadedBitmap, textSource, textHeader);
+                }
+                else generateOutputForImage(m_outputConfig, colorList, m_currentLoadedBitmap, textSource, textHeader);
+            }
+            else throw new Exception("Unknowen tabpage");
+
+            switch(m_outputConfig.commentStyle)
+            {
+                case OutputConfiguration.CommentStyle.C:
+                case OutputConfiguration.CommentStyle.Cpp:
+                    txtOutputTextSource.Language = FastColoredTextBoxNS.Language.CSharp;
+                    txtOutputTextHeader.Language = FastColoredTextBoxNS.Language.CSharp;
+                    break;
+                case OutputConfiguration.CommentStyle.Python:
+                    txtOutputTextHeader.DescriptionFile = "pyhtonStyle.xml";
+                    txtOutputTextSource.DescriptionFile = "pyhtonStyle.xml";
+                    txtOutputTextSource.Language = FastColoredTextBoxNS.Language.Custom;
+                    txtOutputTextHeader.Language = FastColoredTextBoxNS.Language.Custom;
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
 
-            // color code the strings and output
-            outputSyntaxColoredString(resultStringSource, ref txtOutputTextSource);
-            outputSyntaxColoredString(resultStringHeader, ref txtOutputTextHeader);
+            txtOutputTextSource.Text = textSource.ToString();
+            txtOutputTextHeader.Text = textHeader.ToString();
         }
 
         private void btnBitmapLoad_Click(object sender, EventArgs e)
         {
             // set filter
-            dlgOpenFile.Filter = "Image Files (*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
+            dlgOpenFile.Filter = string.Format("Image Files ({0})|{0}", "*.jpg; *.jpeg; *.gif; *.bmp; *.png");
 
             // open the dialog
             if (dlgOpenFile.ShowDialog() != DialogResult.Cancel)
             {
-                // load the bitmap
-                m_currentLoadedBitmap = new Bitmap(dlgOpenFile.FileName);
-
-                // try to open the bitmap
-                pbxBitmap.Image = m_currentLoadedBitmap;
+                if (m_currentLoadedBitmap != null) m_currentLoadedBitmap.Dispose();
+                m_currentLoadedBitmap = MyExtensions.ChangePixelFormat(new Bitmap(dlgOpenFile.FileName), PixelFormat.Format32bppArgb);
 
                 // set the path
                 txtImagePath.Text = dlgOpenFile.FileName;
 
                 // guess a name
                 txtImageName.Text = Path.GetFileNameWithoutExtension(dlgOpenFile.FileName);
-            }
-        }
 
-        // parse the output text line
-        void outputSyntaxColoredString(string outputString, ref RichTextBox outputTextBox)
-        {
-            // clear the current text
-            outputTextBox.Text = "";
-            
-            String [] lines = outputString.Split(new string[] {nl}, StringSplitOptions.None);
+                //
+                colorList = MyExtensions.GetColorList(m_currentLoadedBitmap).ToDictionary<Color, Color, bool>(x => x, x => false);
+                colorList[colorList.ElementAt(0).Key] = true;
 
-            // for now don't syntax color for more than 2000 lines
-            if (lines.Length > 1500)
-            {
-                // just set text
-                outputTextBox.Text = outputString;
-                return;
-            }
-
-            Font fRegular = new Font("Courier New", 10, FontStyle.Regular);
-            Font fBold = new Font("Courier New", 10, FontStyle.Bold);
-            String[] keywords = { "uint_8", "const", "extern", "char", "unsigned", "int", "short", "long" };
-            Regex re = new Regex(@"([ \t{}();])");
-
-            // iterate over the richtext box and color it
-            foreach (string line in lines)
-            {
-                String[] tokens = re.Split(line);
-
-                // for each found token
-                foreach (string token in tokens)
+                if(colorList.Count > 16)
                 {
-                    // Set the token's default color and font.
-                    outputTextBox.SelectionColor = Color.Black;
-                    outputTextBox.SelectionFont = fRegular;
-
-                    // Check for a comment.
-                    if (token == "//" || token.StartsWith("//"))
-                    {
-                        // Find the start of the comment and then extract the whole comment.
-                        int index = line.IndexOf("//");
-                        string comment = line.Substring(index, line.Length - index);
-                        outputTextBox.SelectionColor = Color.Green;
-                        outputTextBox.SelectionFont = fRegular;
-                        outputTextBox.SelectedText = comment;
-                        break;
-                    }
-
-                    // Check for a comment. TODO: terminate coloring
-                    if (token == "/*" || token.StartsWith("/*"))
-                    {
-                        // Find the start of the comment and then extract the whole comment.
-                        int index = line.IndexOf("/*");
-                        string comment = line.Substring(index, line.Length - index);
-                        outputTextBox.SelectionColor = Color.Green;
-                        outputTextBox.SelectionFont = fRegular;
-                        outputTextBox.SelectedText = comment;
-                        break;
-                    }
-
-                    // Check for a comment. TODO: terminate coloring
-                    if (token == "**" || token.StartsWith("**"))
-                    {
-                        // Find the start of the comment and then extract the whole comment.
-                        int index = line.IndexOf("**");
-                        string comment = line.Substring(index, line.Length - index);
-                        outputTextBox.SelectionColor = Color.Green;
-                        outputTextBox.SelectionFont = fRegular;
-                        outputTextBox.SelectedText = comment;
-                        break;
-                    }
-
-                    // Check for a comment. TODO: terminate coloring
-                    if (token == "*/" || token.StartsWith("*/"))
-                    {
-                        // Find the start of the comment and then extract the whole comment.
-                        int index = line.IndexOf("*/");
-                        string comment = line.Substring(index, line.Length - index);
-                        outputTextBox.SelectionColor = Color.Green;
-                        outputTextBox.SelectionFont = fRegular;
-                        outputTextBox.SelectedText = comment;
-                        break;
-                    }
-
-                    // Check whether the token is a keyword. 
-                    
-                    for (int i = 0; i < keywords.Length; i++)
-                    {
-                        if (keywords[i] == token)
-                        {
-                            // Apply alternative color and font to highlight keyword.
-                            outputTextBox.SelectionColor = Color.Blue;
-                            outputTextBox.SelectionFont = fBold;
-                            break;
-                        }
-                    }
-
-                    // set the token text
-                    outputTextBox.SelectedText = token;
+                    MessageBox.Show("Convert the image into black/white in a proper image processing program, to get better results.");
                 }
-                outputTextBox.SelectedText = nl;
+
+                dataGridViewBackgroundColor.RowCount = colorList.Count;
+                dataGridViewBackgroundColor.Refresh();
+
+                // Set picterbox background
+                pbxBitmap.BackColor = GetBackColorForPicturbox();
+
+                Size sz = DetectTileSize();
+
+                updateBitmapAllowed = false;
+                numericUpDownInputImageTilesPerLine.Value = 16;
+                numericUpDownInputImageTileSizeX.Value = sz.Width;
+                numericUpDownInputImageTileSizeY.Value = sz.Height;
+                updateBitmapAllowed = true;
+
+                UpdateInputImageFont(sender, e);
             }
         }
 
@@ -2068,27 +251,7 @@ namespace TheDotFactory
             // show teh about form
             about.Show();
         }
-        
-        // set comment strings according to config
-        private void updateCommentStrings()
-        {
-            if (m_outputConfig.commentStyle == OutputConfiguration.CommentStyle.Cpp)
-            {
-                // strings for comments
-                m_commentStartString = "// ";
-                m_commentBlockEndString = m_commentBlockMiddleString = m_commentStartString;
-                m_commentEndString = "";
-            }
-            else
-            {
-                // strings for comments
-                m_commentStartString = "/* ";
-                m_commentBlockMiddleString = "** ";
-                m_commentEndString = " */";
-                m_commentBlockEndString = "*/";
-            }
-        }
-        
+
         private void btnOutputConfig_Click(object sender, EventArgs e)
         {
             // no focus
@@ -2096,25 +259,18 @@ namespace TheDotFactory
 
             // get it
             OutputConfigurationForm outputConfigForm = new OutputConfigurationForm(ref m_outputConfigurationManager);
-            
+
             // get the oc
             int selectedConfigurationIndex = outputConfigForm.getOutputConfiguration(cbxOutputConfiguration.SelectedIndex);
 
             // update the dropdown
-            m_outputConfigurationManager.comboboxPopulate(cbxOutputConfiguration);
+            m_outputConfigurationManager.comboBoxPopulate(cbxOutputConfiguration);
 
             // get working configuration
             m_outputConfig = m_outputConfigurationManager.workingOutputConfiguration;
 
             // set selected index
             cbxOutputConfiguration.SelectedIndex = selectedConfigurationIndex;
-
-            // update comment strings according to conifg
-            updateCommentStrings();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
         }
 
         private void cbxOutputConfiguration_SelectedIndexChanged(object sender, EventArgs e)
@@ -2131,11 +287,6 @@ namespace TheDotFactory
 
             // save
             Properties.Settings.Default.Save();
-        }
-
-        private void button4_Click_1(object sender, EventArgs e)
-        {
-            
         }
 
         private void tsmCopySource_Click(object sender, EventArgs e)
@@ -2158,11 +309,6 @@ namespace TheDotFactory
             }
         }
 
-        private void ctxMenuHeader_Opening(object sender, CancelEventArgs e)
-        {
-
-        }
-
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // zero out file name
@@ -2175,9 +321,749 @@ namespace TheDotFactory
                 string moduleName = dlgSaveAs.FileName;
 
                 // save the text
-                txtOutputTextSource.SaveFile(String.Format("{0}.c", moduleName), RichTextBoxStreamType.PlainText);
-                txtOutputTextHeader.SaveFile(String.Format("{0}.h", moduleName), RichTextBoxStreamType.PlainText);
+                txtOutputTextSource.SaveToFile(String.Format("{0}.c", moduleName), Encoding.UTF8);
+                txtOutputTextHeader.SaveToFile(String.Format("{0}.h", moduleName), Encoding.UTF8);
             }
         }
+
+        private void buttonImageColorInvert_Click(object sender, EventArgs e)
+        {
+            colorList = colorList.ToDictionary(p => p.Key, p => !p.Value);
+            dataGridViewBackgroundColor.Refresh();
+            updateBitmapPreview();
+        }
+
+        private void buttonImageColorAuto_Click(object sender, EventArgs e)
+        {
+            float avg = 0;
+
+            if (colorList.Count <= 0) return;
+
+            avg = colorList.Average(x => x.Key.GetBrightness());
+
+            colorList = colorList.ToDictionary(p => p.Key, p => p.Key.GetBrightness() >= avg);
+
+            dataGridViewBackgroundColor.Refresh();
+            updateBitmapPreview();
+        }
+
+        #region dataGridViewBackgroundColor
+        private void dataGridViewBackgroundColor_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+                e.Value = colorList.ElementAt(e.RowIndex).Value;
+            else if (e.ColumnIndex == 1)
+            {
+                Color c = colorList.ElementAt(e.RowIndex).Key;
+                e.Value = c;
+                dataGridViewBackgroundColor[e.ColumnIndex, e.RowIndex].Style.BackColor = c;
+                dataGridViewBackgroundColor[e.ColumnIndex, e.RowIndex].Style.ForeColor = (c.GetBrightness() < 0.5) ? Color.White : Color.Black;
+            }
+        }
+
+        private void dataGridViewBackgroundColor_CellValuePushed(object sender, DataGridViewCellValueEventArgs e)
+        {
+            if (e.ColumnIndex == 0)
+            {
+                colorList[dataGridViewBackgroundColor[1, e.RowIndex].Style.BackColor]
+                    = (bool)dataGridViewBackgroundColor[0, e.RowIndex].EditedFormattedValue;
+                updateBitmapPreview();
+
+            }
+        }
+
+        private void dataGridViewBackgroundColor_CurrentCellDirtyStateChanged_1(object sender, EventArgs e)
+        {
+            dataGridViewBackgroundColor.EndEdit();
+        }
+        #endregion
+        #endregion
+
+        #region form helper funktions
+        // update input font
+        private void updateSelectedFont(Font fnt)
+        {
+            // set text name in the text box
+            txtInputFont.Text = FontDescriptor.getFontName(fnt);
+
+            // set the font in the text box
+            txtInputText.Font = (Font)fnt.Clone();
+
+            // save into settings
+            Properties.Settings.Default.InputFont = fnt;
+            Properties.Settings.Default.Save();
+        }
+
+        // populate preformatted text
+        private void populateTextInsertCheckbox()
+        {
+            string allEnglish = "", numbers = "", letters = "", uppercaseLetters = "", lowercaseLetters = "", symbols = "";
+
+            // generate characters
+            for (char character = ' '; character < 127; ++character)
+            {
+                // add to all
+                allEnglish += character;
+
+                // classify letter
+                if (Char.IsNumber(character)) numbers += character;
+                else if (Char.IsSymbol(character)) symbols += character;
+                else if (Char.IsLetter(character) && Char.IsLower(character)) { letters += character; lowercaseLetters += character; }
+                else if (Char.IsLetter(character) && !Char.IsLower(character)) { letters += character; uppercaseLetters += character; }
+            }
+
+            string allEuropean = allEnglish, extraPunctuations = "", extraSymbols = "", extraNumbers = "";
+
+            for (char character = (char)129; character <= 255; ++character)
+            {
+                if (Char.IsLetter(character)) allEuropean += character;
+                if (Char.IsPunctuation(character)) extraPunctuations += character;
+                if (Char.IsSymbol(character)) extraSymbols += character;
+                if (Char.IsNumber(character)) extraNumbers += character;
+            }
+
+            // add items
+            cbxTextInsert.Items.Add(new ComboBoxItem("All European", allEuropean));
+            cbxTextInsert.Items.Add(new ComboBoxItem("All English(ASCCI)", allEnglish));
+            cbxTextInsert.Items.Add(new ComboBoxItem("Numbers (0-9)", numbers));
+            cbxTextInsert.Items.Add(new ComboBoxItem("Letters (A-z)", letters));
+            cbxTextInsert.Items.Add(new ComboBoxItem("Lowercase letters (a-z)", lowercaseLetters));
+            cbxTextInsert.Items.Add(new ComboBoxItem("Uppercase letters (A-Z)", uppercaseLetters));
+            cbxTextInsert.Items.Add(new ComboBoxItem("Extra Punctuations", extraPunctuations));
+            cbxTextInsert.Items.Add(new ComboBoxItem("Extra Symbols", extraSymbols));
+            cbxTextInsert.Items.Add(new ComboBoxItem("Extra Numbers", extraNumbers));
+
+            foreach (string s in CodePageInfo.GetEncoderNameList())
+            {
+                if(s.ToLower() != "us-ascii"
+                    //&& s.ToLower() != "utf-16"
+                    )
+                cbxTextInsert.Items.Add(new ComboBoxItem(s, new string(new CodePageInfo(s).GetAllValidCharacter())));
+            }
+
+            // select the first
+            cbxTextInsert.SelectedIndex = 0;
+        }
+        
+        // Gussing the best background color
+        private Color GetBackColorForPicturbox()
+        {
+            return colorList.Keys.Aggregate<Color, List<Color>, Color>(new List<Color>(),
+                    (list, c) =>
+                    {
+                        if (c.A == 0) list.Add(c);
+                        return list;
+                    }, list =>
+                    {
+                        if (list.Count > 0)
+                        {
+                            return Color.FromArgb(255, list[0]);
+                        }
+
+                        return Color.White;
+                    });
+        }
+
+        private void populateComboBoxInputImageCodepage()
+        {
+            comboBoxInputImageCodepage.Items.Clear();
+            comboBoxInputImageCodepage.Items.AddRange(Encoding.GetEncodings().Select( e => e.GetEncoding().WebName  ).ToArray());
+        }
+
+        private bool TryParseCodePageString(string s, out int codepage)
+        {
+            if (int.TryParse(s, out codepage)) return true;
+
+            try
+            {
+                codepage = Encoding.GetEncoding(s.TrimEnd('\t')).CodePage;
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private Size DetectTileSize()
+        {
+            if(m_currentLoadedBitmap != null)
+            {
+                return new Size(m_currentLoadedBitmap.Width / 16, m_currentLoadedBitmap.Height / 16);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        private void updateBitmap()
+        {
+            if (!updateBitmapAllowed) return;
+
+            int w = (int)numericUpDownInputImageTileSizeX.Value;
+            int h = (int)numericUpDownInputImageTileSizeY.Value;
+            int tilesPerLine = (int)numericUpDownInputImageTilesPerLine.Value;
+            Size sz = new Size(Math.Max(m_currentLoadedBitmap.Width, w * tilesPerLine), Math.Max(m_currentLoadedBitmap.Height, (h * ((256 / tilesPerLine) + ((256 % tilesPerLine != 0) ? 1 : 0)) )));
+            Bitmap bmp = new Bitmap(sz.Width, sz.Height);
+            Graphics g = Graphics.FromImage(bmp);
+
+            g.DrawImage(m_currentLoadedBitmap, 0,0, m_currentLoadedBitmap.Width, m_currentLoadedBitmap.Height);
+
+            if (checkGroupBoxFontImage.Checked)
+            {
+                if (checkBoxInputImageOverlay.Checked)
+                { 
+                    Color c = Color.FromArgb(64, Color.Black);
+                    Color d = Color.FromArgb(64, Color.Magenta);
+                    Brush b = new SolidBrush(c);
+                    Brush m = new SolidBrush(d);
+
+                    int x, y;
+
+                    for (y = 0, x = 0; y * h < sz.Height && y * tilesPerLine <= 256; y++)
+                    {
+                        for (x = 0; x < tilesPerLine && y * tilesPerLine + x <= 256; x++)
+                        {
+                            if ((y % 2 != 0) != (x % 2 != 0))
+                            {
+                                g.FillRectangle(b, x * w, y * h, w, h);
+                            }
+                            else
+                            {
+                                g.FillRectangle(m, x * w, y * h, w, h);
+                            }
+                        }
+                    }
+                }
+
+                Point p = new Point(hScrollBarInputImageCharacterPos.Value % tilesPerLine * w, hScrollBarInputImageCharacterPos.Value / tilesPerLine * h);
+
+                Rectangle r = new Rectangle(p, new Size(w, h));
+
+                g.DrawRectangle(Pens.Black, r);
+            }
+
+            pbxBitmap.Image = bmp;
+            pbxBitmap.Size = bmp.Size;
+        }
+
+        private void updateBitmapPreview()
+        {
+            if (checkGroupBoxFontImage.Checked && m_currentLoadedBitmap != null)
+            {
+                int w = (int)numericUpDownInputImageTileSizeX.Value;
+                int h = (int)numericUpDownInputImageTileSizeY.Value;
+                int tilesPerLine = (int)numericUpDownInputImageTilesPerLine.Value;
+
+                Point p = new Point(hScrollBarInputImageCharacterPos.Value % tilesPerLine * w, hScrollBarInputImageCharacterPos.Value / tilesPerLine * h);
+
+                Rectangle r = new Rectangle(p, new Size(w, h));
+                Color c;
+                if (colorList.ContainsValue(true)) c = MyExtensions.GetEnabledKeys(colorList)[0];
+                else c = Color.Transparent;
+                Bitmap character = MyExtensions.Clone(m_currentLoadedBitmap, r, PixelFormat.Format32bppArgb, c); ;
+
+                Size newSize = r.Size;
+                int faktor = 1;
+
+                while (newSize.Height <= 32)
+                {
+                    newSize.Height *= 2;
+                    newSize.Width *= 2;
+                    faktor *= 2;
+                }
+
+                //convert to black white image
+                character = MyExtensions.ToBitmap(MyExtensions.ToArgbArray(character).Select(argb =>
+                {
+                    return colorList[Color.FromArgb(argb)] ? Color.Black.ToArgb() : Color.White.ToArgb();
+                }).ToArray(), r.Size);
+
+                pictureBoxInputImageFontCharacterPreview.Image = MyExtensions.ResizeImage(character, faktor);
+                pictureBoxInputImageFontCharacterPreview.Size = newSize;
+            }
+        }
+        #endregion
+
+        #region Image
+        // generate the required output for image
+        private void generateOutputForImage(OutputConfiguration outConfig, Dictionary<Color, bool> colorList, Bitmap bitmapOriginal, StringBuilder textSource, StringBuilder textHeader)
+        {
+            // the name of the bitmap
+            string imageName;
+            Color[] backgroundColors;
+            BitmapInfo bi;
+
+            textSource.Clear();
+            textHeader.Clear();
+
+            if (bitmapOriginal == null || txtImageName.Text == "")
+            {
+                textSource.Append("No image found ");
+                return;
+            }
+
+            imageName = MyExtensions.ScrubVariableName(txtImageName.Text);
+            backgroundColors = MyExtensions.GetEnabledKeys<Color>(colorList);            
+
+            // check if bitmap is assigned
+            if (m_currentLoadedBitmap != null)
+            {
+                //
+                // Bitmap manipulation
+                //
+                bi = new BitmapInfo(m_outputConfig, m_currentLoadedBitmap, colorList);
+
+                // try to manipulate the bitmap
+
+                if (!bi.GenerateManipulatetBitmap(bi.OriginalBorder))
+                {
+                    // show error
+                    MessageBox.Show("No blackground pixels found in bitmap",
+                                    "Can't convert bitmap",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+
+                    // stop here, failed to manipulate the bitmap for whatever reason
+                    return;
+                }
+
+                // according to config
+                if (m_outputConfig.addCommentVariableName)
+                {
+                    // add source file header
+                    textSource.AppendFormat("{0}" + m_outputConfig.nl + "{1} Image data for {2}" + m_outputConfig.nl + "{3}" + m_outputConfig.nl + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, m_outputConfig.CommentBlockMiddle, imageName,
+                                                        m_outputConfig.CommentBlockEnd);
+
+                    // add header file header
+                    textHeader.AppendFormat("{0}Bitmap info for {1}{2}" + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, imageName,
+                                                        m_outputConfig.CommentEnd);
+                }
+
+                // bitmap varname
+                string bitmapVarName = String.Format(m_outputConfig.varNfImageBitmap, imageName) + "[]";
+
+                // add to source
+                textSource.AppendFormat("{0} =" + m_outputConfig.nl + "{{" + m_outputConfig.nl, bitmapVarName);
+
+                //
+                // Bitmap to string
+                //
+                // page array
+                bi.GeneratePageArray();
+
+                // assign pages for fully populated 8 bits
+                int pagesPerRow = MyExtensions.ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bi.BitmapToGenerate.Width);
+
+                // now convert to string
+                bi.GenerateCharacterDataDescriptorAndVisulazer();
+                textSource.Append(bi.Descriptor);
+
+                // close
+                textSource.AppendFormat("}};" + m_outputConfig.nl + m_outputConfig.nl);
+
+                // according to config
+                if (m_outputConfig.addCommentVariableName)
+                {
+                    // set sizes comment
+                    textSource.AppendFormat("{0}Bitmap sizes for {1}{2}" + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, imageName, m_outputConfig.CommentEnd);
+                }
+
+                Func<string> getImageWidthString = () =>
+                {
+                    const string format = "\t{2}, {0} {3}{1}{4}";
+                    // display width in bytes?
+                    switch (m_outputConfig.descImgWidth)
+                    {
+                        case OutputConfiguration.DescriptorFormat.DisplayInBytes:
+                            return string.Format(format ,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                pagesPerRow,
+                                "Image width in bytes (pages)",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DisplayInBits:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                bi.BitmapToGenerate.Width,
+                                "Image width in pixels",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                            return "";
+                        default:
+                            throw new NotImplementedException();
+                    }
+                };
+
+                Func<string> getImageHeigtString = () =>
+                {
+                    const string format = "\t{2}, {0} {3}{1}{4}";
+
+                    switch (m_outputConfig.descImgHeight)
+                    {
+                        case OutputConfiguration.DescriptorFormat.DisplayInBytes:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                MyExtensions.ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bi.BitmapToGenerate.Height),
+                                "Image height in bytes (pages)",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DisplayInBits:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                bi.BitmapToGenerate.Height,
+                                "Image height in pixels",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                            return "";
+                        default:
+                            throw new NotImplementedException();
+                    }
+                };
+
+                // get var name
+                string imageInfoVarName = String.Format(m_outputConfig.varNfImageInfo, imageName);
+
+                // image info header
+                textHeader.AppendFormat("extern {0};" + m_outputConfig.nl, imageInfoVarName);
+
+                // image info source
+                textSource.AppendFormat("{2} =" + m_outputConfig.nl + "{{" + m_outputConfig.nl +
+                                                  "{3}" +
+                                                  "{4}" +
+                                                  "\t{5}, {0} Image bitmap array{1}" + m_outputConfig.nl +
+                                                  "}};" + m_outputConfig.nl,
+                                                  m_outputConfig.CommentStart,
+                                                  m_outputConfig.CommentEnd,
+                                                  imageInfoVarName,
+                                                  getImageWidthString(),
+                                                  getImageHeigtString(),
+                                                  MyExtensions.GetVariableNameFromExpression(bitmapVarName));
+
+            }
+        }
+        #endregion
+
+        #region Font
+        // generate the required output for text
+        private static void generateOutputForFont(OutputConfiguration outConfig, Font font, string inputText, StringBuilder textSource, StringBuilder textHeader)
+        {
+            char[] charactersToGenerate;
+
+            // get the characters we need to generate from the input text, removing duplicates
+            charactersToGenerate = getCharactersToGenerate(inputText, outConfig.CodePage, outConfig.generateSpaceCharacterBitmap);
+
+            // do nothing if no chars defined
+            if (charactersToGenerate.Length == 0)
+            {
+                textSource.Clear().Append("No Characters to generate");
+                textHeader.Clear();
+                return;
+            }
+
+            FontDescriptor fontInfo = new FontDescriptor(outConfig, charactersToGenerate, font);
+
+            textSource.Append(fontInfo.TextSource);
+            textHeader.Append(fontInfo.TextHeader);
+        }
+
+        // get the characters we need to generate
+        private static char[] getCharactersToGenerate(string inputText, int codePage, bool generateSpace)
+        {
+            CodePageInfo cpi = new CodePageInfo(codePage);
+
+            // Expand and remove all ranges from the input text (look for << x - y >>
+            // expand the ranges into the input text
+            inputText = expandAndRemoveCharacterRanges(inputText, codePage);
+
+            List<char> characterList = new List<char>();
+            List<char> CodePageCharacterList = new List<char>(cpi.GetAllValidCharacter());
+
+            // iterate over the characters in the textbox
+            characterList = inputText.Aggregate<char, List<char>>(new List<char>(), (list, c) =>
+                {
+                    if (c == ' ' && !generateSpace) { } // skip - space is not encoded rather generated dynamically by the driver
+                    else if (c == '\n' || c == '\r' || c == '\t') { } // dont generate newlines or tab
+                    else list.Add(c);
+                    return list;
+                });
+
+            // remove dublicats and sort
+            // remove all charaters not includet in codepage and return
+            return CodePageCharacterList                
+                .Intersect(characterList)
+                .Distinct()
+                .OrderBy(p => cpi.GetOffsetFromCharacter(p))
+                .ToArray();
+        }
+
+        // expand and remove character ranges ( look for << x - y >> )
+        private static string expandAndRemoveCharacterRanges(string s, int codePage)
+        {
+            // create the search pattern
+            //String searchPattern = @"<<.*-.*>>";
+            String searchPattern = @"<<(?<rangeStart>.*?)-(?<rangeEnd>.*?)>>";
+
+            // create the regex
+            Regex regex = new Regex(searchPattern, RegexOptions.Multiline);
+
+            // get matches
+            MatchCollection regexMatches = regex.Matches(s.Replace(" ", ""));
+
+            // holds the number of characters removed
+            int charactersRemoved = 0;
+
+            CodePageInfo cp = new CodePageInfo(codePage);
+
+            // for each match
+            foreach (Match regexMatch in regexMatches)
+            {
+                // get range start and end
+                int rangeStart = 0, rangeEnd = 0;
+
+                // try to parse ranges
+                if (TryParseCharacterRangePoint(regexMatch.Groups["rangeStart"].Value, out rangeStart) &&
+                    TryParseCharacterRangePoint(regexMatch.Groups["rangeEnd"].Value, out rangeEnd))
+                {
+                    // remove this from the string
+                    s = s.Remove(regexMatch.Index - charactersRemoved, regexMatch.Length);
+
+                    // save the number of chars removed so that we can fixup index (the index
+                    // of the match changes as we remove characters)
+                    charactersRemoved += regexMatch.Length;
+
+                    // create a string from these values
+                    for (int charIndex = rangeStart; charIndex <= rangeEnd; ++charIndex)
+                    {
+                        // shove this character to a encodet char container
+                        char unicodeChar = cp.GetCharacterFromOffset(charIndex);
+
+                        // add this to the string
+                        s += unicodeChar;
+                    }
+                }
+            }
+
+            return s;
+        }
+       
+        // try to parse character range
+        private static bool TryParseCharacterRangePoint(string s, out int value)
+        {
+            if (s.StartsWith("0x"))
+                return int.TryParse(s.Substring(2), NumberStyles.HexNumber, CultureInfo.CurrentCulture, out value);
+            else
+                return int.TryParse(s, out value);
+        }
+        #endregion
+
+        #region fontbitmap
+        private void generateOutputForFontImage(OutputConfiguration outConfig, 
+            Dictionary<Color, bool> colorList, 
+            Size tileSize, 
+            int codepage, 
+            Bitmap bitmapOriginal, 
+            StringBuilder textSource,
+            StringBuilder textHeader)
+        {
+            // the name of the bitmap
+            string imageName;
+            Color[] backgroundColors;
+            BitmapInfo bi;
+
+            textSource.Clear();
+            textHeader.Clear();
+
+            if (bitmapOriginal == null || txtImageName.Text == "")
+            {
+                textSource.Append("No image found ");
+                return;
+            }
+
+            imageName = MyExtensions.ScrubVariableName(txtImageName.Text);
+            backgroundColors = MyExtensions.GetEnabledKeys<Color>(colorList);
+
+            // check if bitmap is assigned
+            if (m_currentLoadedBitmap != null)
+            {
+                //
+                // Bitmap manipulation
+                //
+                bi = new BitmapInfo(m_outputConfig, m_currentLoadedBitmap, colorList);
+
+                // try to manipulate the bitmap
+
+                if (!bi.GenerateManipulatetBitmap(bi.OriginalBorder))
+                {
+                    // show error
+                    MessageBox.Show("No blackground pixels found in bitmap",
+                                    "Can't convert bitmap",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+
+                    // stop here, failed to manipulate the bitmap for whatever reason
+                    return;
+                }
+
+                // according to config
+                if (m_outputConfig.addCommentVariableName)
+                {
+                    // add source file header
+                    textSource.AppendFormat("{0}" + m_outputConfig.nl + "{1} Image data for {2}" + m_outputConfig.nl + "{3}" + m_outputConfig.nl + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, 
+                                                        m_outputConfig.CommentBlockMiddle, 
+                                                        imageName,
+                                                        m_outputConfig.CommentBlockEnd);
+
+                    // add header file header
+                    textHeader.AppendFormat("{0}Bitmap info for {1}{2}" + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, 
+                                                        imageName,
+                                                        m_outputConfig.CommentEnd);
+                }
+
+                // bitmap varname
+                string bitmapVarName = String.Format(m_outputConfig.varNfImageBitmap, imageName) + "[]";
+
+                // add to source
+                textSource.AppendFormat("{0} =" + m_outputConfig.nl + "{{" + m_outputConfig.nl, bitmapVarName);
+
+                //
+                // Bitmap to string
+                //
+                // page array
+                bi.GeneratePageArray();
+
+                // assign pages for fully populated 8 bits
+                int pagesPerRow = MyExtensions.ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bi.BitmapToGenerate.Width);
+
+                // now convert to string
+                bi.GenerateCharacterDataDescriptorAndVisulazer();
+                textSource.Append(bi.Descriptor);
+
+                // close
+                textSource.AppendFormat("}};" + m_outputConfig.nl + m_outputConfig.nl);
+
+                // according to config
+                if (m_outputConfig.addCommentVariableName)
+                {
+                    // set sizes comment
+                    textSource.AppendFormat("{0}Bitmap sizes for {1}{2}" + m_outputConfig.nl,
+                                                        m_outputConfig.CommentStart, imageName, m_outputConfig.CommentEnd);
+                }
+
+                Func<string> getImageWidthString = () =>
+                {
+                    const string format = "\t{2}, {0} {3}{1}{4}";
+                    // display width in bytes?
+                    switch (m_outputConfig.descImgWidth)
+                    {
+                        case OutputConfiguration.DescriptorFormat.DisplayInBytes:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                pagesPerRow,
+                                "Image width in bytes (pages)",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DisplayInBits:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                bi.BitmapToGenerate.Width,
+                                "Image width in pixels",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                            return "";
+                        default:
+                            throw new NotImplementedException();
+                    }
+                };
+
+                Func<string> getImageHeigtString = () =>
+                {
+                    const string format = "\t{2}, {0} {3}{1}{4}";
+
+                    switch (m_outputConfig.descImgHeight)
+                    {
+                        case OutputConfiguration.DescriptorFormat.DisplayInBytes:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                MyExtensions.ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat.DisplayInBytes, bi.BitmapToGenerate.Height),
+                                "Image height in bytes (pages)",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DisplayInBits:
+                            return string.Format(format,
+                                m_outputConfig.CommentStart,
+                                m_outputConfig.CommentEnd,
+                                bi.BitmapToGenerate.Height,
+                                "Image height in pixels",
+                                m_outputConfig.nl);
+                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                            return "";
+                        default:
+                            throw new NotImplementedException();
+                    }
+                };
+
+                // get var name
+                string imageInfoVarName = String.Format(m_outputConfig.varNfImageInfo, imageName);
+
+                // image info header
+                textHeader.AppendFormat("extern {0};" + m_outputConfig.nl, imageInfoVarName);
+
+                // image info source
+                textSource.AppendFormat("{2} =" + m_outputConfig.nl + "{{" + m_outputConfig.nl +
+                                                  "{3}" +
+                                                  "{4}" +
+                                                  "\t{5}, {0} Image bitmap array{1}" + m_outputConfig.nl +
+                                                  "}};" + m_outputConfig.nl,
+                                                  m_outputConfig.CommentStart,
+                                                  m_outputConfig.CommentEnd,
+                                                  imageInfoVarName,
+                                                  getImageWidthString(),
+                                                  getImageHeigtString(),
+                                                  MyExtensions.GetVariableNameFromExpression(bitmapVarName));
+
+            }
+        }
+
+        #endregion
+
+        private void UpdateInputImageFont(object sender, EventArgs e)
+        {
+            updateBitmap();
+            updateBitmapPreview();
+        }
+
+        private void pbxBitmap_MouseClick(object sender, MouseEventArgs e)
+        {
+            Point p = e.Location;
+            int w = (int)numericUpDownInputImageTileSizeX.Value;
+            int h = (int)numericUpDownInputImageTileSizeY.Value;
+            int tilesPerLine = (int)numericUpDownInputImageTilesPerLine.Value;
+
+            p.X -= p.X % w;
+            p.Y -= p.Y % h;
+
+            hScrollBarInputImageCharacterPos.Value = p.Y * tilesPerLine / h + p.X / w;
+        }
+
+        private void hScrollBarInputImageCharacterPos_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateInputImageFont(sender, e);
+            textBoxInputImageCharacterPos.Text = hScrollBarInputImageCharacterPos.Value.ToString();
+        }
+
+        #region
+
+        #endregion
     }
 }

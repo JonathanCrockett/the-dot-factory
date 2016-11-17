@@ -33,7 +33,11 @@ namespace TheDotFactory
         private void AboutForm_Load(object sender, EventArgs e)
         {
             // set text
-            lblAppName.Text = String.Format("The Dot Factory (v.{0})", MainForm.ApplicationVersion);
+            lblAppName.Text = String.Format("The Dot Factory (v.{0})", Application.ProductVersion);
+            //center it
+            lblAppName.Left = (this.Width - lblAppName.Width) / 2;
+            labelCopyright.Left = (this.Width - labelCopyright.Width) / 2;
+            labelGPL.Left = (this.Width - labelGPL.Width) / 2;
         }
 
         private void linkIcons_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -59,5 +63,15 @@ namespace TheDotFactory
             // open
             System.Diagnostics.Process.Start("https://github.com/psryland");
         }
-   }
+
+        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            
+        }
+
+        private void linkLabelCheckGroupBox_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.codeproject.com/Articles/32780/CheckGroupBox-and-RadioGroupBox");
+        }
+    }
 }
