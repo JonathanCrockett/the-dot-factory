@@ -43,7 +43,8 @@ namespace TheDotFactory
         {
             None,               // no padding removal
             Tighest,            // remove padding as much as possible, per bitmap
-            Fixed               // remove padding as much as the bitmap with least padding
+            Fixed,              // remove padding as much as the bitmap with least padding
+            Clipped             // Clip if possible
         }
 
         // Line wrap
@@ -152,7 +153,7 @@ namespace TheDotFactory
                         if (!flipX && !flipY) return RotateFlipType.Rotate90FlipNone;
                         else if (flipX && !flipY) return RotateFlipType.Rotate90FlipX;
                         else if (!flipX && flipY) return RotateFlipType.Rotate90FlipY;
-                        else// if (flipX && flipY) 
+                        else// if (flipX && flipY)
                             return RotateFlipType.Rotate90FlipXY;
                     case rotationEnm.RotateOneEighty:
                         // return according to flip
@@ -166,14 +167,14 @@ namespace TheDotFactory
                         if (!flipX && !flipY) return RotateFlipType.Rotate270FlipNone;
                         else if (flipX && !flipY) return RotateFlipType.Rotate270FlipX;
                         else if (!flipX && flipY) return RotateFlipType.Rotate270FlipY;
-                        else //if (flipX && flipY) 
+                        else //if (flipX && flipY)
                             return RotateFlipType.Rotate270FlipXY;
                     default:
                         throw new NotImplementedException();
                 }
             }
 
-            public RotateFlipType GetRotateFlipType(bool flipHorizontal, bool flipVertical) 
+            public RotateFlipType GetRotateFlipType(bool flipHorizontal, bool flipVertical)
             {
                 return GetRotateFlipType(this, flipHorizontal, flipVertical);
             }
@@ -195,7 +196,7 @@ namespace TheDotFactory
                 }
             }
         }
-        
+
         // rotation
         public enum DescriptorFormat
         {
@@ -255,6 +256,8 @@ namespace TheDotFactory
         // padding removal
         public PaddingRemoval paddingRemovalHorizontal = PaddingRemoval.Fixed;
         public PaddingRemoval paddingRemovalVertical = PaddingRemoval.Tighest;
+        public int clippingHoriz = 16;
+        public int clippingVert = 16;
 
         // line wrap
         public LineWrap lineWrap = LineWrap.AtColumn;
@@ -380,7 +383,7 @@ namespace TheDotFactory
                 m_outputConfigurationList.RemoveAt(configIdxToRemove);
             }
         }
-        
+
         // get number of configurations
         public int configurationCountGet()
         {
@@ -401,10 +404,10 @@ namespace TheDotFactory
             // create serailizer and text writer
             XmlSerializer serializer = new XmlSerializer(m_outputConfigurationList.GetType());
             TextWriter textWriter = new StreamWriter(fileName);
-            
+
             // serialize to xml
             serializer.Serialize(textWriter, m_outputConfigurationList);
-            
+
             // close and flush the stream
             textWriter.Close();
         }
@@ -460,7 +463,7 @@ namespace TheDotFactory
             }
         }
 
-        // a working copy configuration, used for when there are no presets and 
+        // a working copy configuration, used for when there are no presets and
         // during editing
         public OutputConfiguration workingOutputConfiguration = new OutputConfiguration();
 

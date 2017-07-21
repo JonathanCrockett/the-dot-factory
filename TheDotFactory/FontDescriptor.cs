@@ -59,7 +59,9 @@ namespace TheDotFactory
 
             // only perform if padding type specifies
             if (OutConfig.paddingRemovalHorizontal == OutputConfiguration.PaddingRemoval.Fixed ||
-                OutConfig.paddingRemovalVertical == OutputConfiguration.PaddingRemoval.Fixed)
+                OutConfig.paddingRemovalVertical == OutputConfiguration.PaddingRemoval.Fixed ||
+                OutConfig.paddingRemovalHorizontal == OutputConfiguration.PaddingRemoval.Clipped ||
+                OutConfig.paddingRemovalVertical == OutputConfiguration.PaddingRemoval.Clipped)
             {
                 // find the common tightest border
                 tightestCommonBorder = Characters.ToList().
@@ -73,7 +75,6 @@ namespace TheDotFactory
                                 p1.Bottom > p2.Bottom ? p1.Bottom : p2.Bottom)
                             );
             }
-
             //
             // iterate thruogh all bitmaps and generate the bitmap we will convert to string
             // this means performing all manipulation (pad remove, flip)
@@ -95,7 +96,7 @@ namespace TheDotFactory
 
             GenerateStringsFromFontInfo();
         }
-        
+
         // generate the strings
         private void GenerateStringsFromFontInfo()
         {
@@ -121,7 +122,7 @@ namespace TheDotFactory
                 headerText.AppendFormat("{0}Font data for {1} {2}" + OutConfig.nl,
                                                     OutConfig.CommentStart,
                                                     getFontName(Font, false),
-                                                    OutConfig.CommentEnd);    
+                                                    OutConfig.CommentEnd);
             }
 
             // get bitmap name
@@ -427,7 +428,7 @@ namespace TheDotFactory
                     // result string
                     textSource.AppendFormat("{0}Character descriptors for {1}{2}{3}" + OutConfig.nl,
                                                         OutConfig.CommentStart,
-                                                        getFontName(Font, false), 
+                                                        getFontName(Font, false),
                                                         multipleDescBlocksExist ? blockNumberString : "",
                                                         OutConfig.CommentEnd);
 
@@ -451,7 +452,7 @@ namespace TheDotFactory
             }
 
             //
-            // Generate block lookup 
+            // Generate block lookup
             //
 
             // if there is more than one block, we need to generate a block lookup
@@ -545,7 +546,7 @@ namespace TheDotFactory
             return String.Format("{0}BlockLookup", getFontName(font, true));
         }
 
-        // get the display string for a character 
+        // get the display string for a character
         private static string getCharacterDisplayString(CodePageInfo codePage, char character)
         {
             // return string

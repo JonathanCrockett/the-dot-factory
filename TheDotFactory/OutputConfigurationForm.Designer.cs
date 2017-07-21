@@ -38,6 +38,8 @@
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.gbxPadding = new System.Windows.Forms.GroupBox();
+            this.tbWidth = new System.Windows.Forms.TextBox();
+            this.tbHeight = new System.Windows.Forms.TextBox();
             this.cbxPaddingVert = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
             this.cbxPaddingHoriz = new System.Windows.Forms.ComboBox();
@@ -119,7 +121,7 @@
             this.groupBox3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox3.Location = new System.Drawing.Point(209, 156);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(228, 113);
+            this.groupBox3.Size = new System.Drawing.Size(271, 113);
             this.groupBox3.TabIndex = 22;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Byte";
@@ -212,6 +214,8 @@
             // 
             // gbxPadding
             // 
+            this.gbxPadding.Controls.Add(this.tbWidth);
+            this.gbxPadding.Controls.Add(this.tbHeight);
             this.gbxPadding.Controls.Add(this.cbxPaddingVert);
             this.gbxPadding.Controls.Add(this.label17);
             this.gbxPadding.Controls.Add(this.cbxPaddingHoriz);
@@ -219,10 +223,28 @@
             this.gbxPadding.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbxPadding.Location = new System.Drawing.Point(125, 58);
             this.gbxPadding.Name = "gbxPadding";
-            this.gbxPadding.Size = new System.Drawing.Size(194, 92);
+            this.gbxPadding.Size = new System.Drawing.Size(237, 92);
             this.gbxPadding.TabIndex = 21;
             this.gbxPadding.TabStop = false;
             this.gbxPadding.Text = "Padding Removal";
+            // 
+            // tbWidth
+            // 
+            this.tbWidth.Location = new System.Drawing.Point(182, 54);
+            this.tbWidth.Name = "tbWidth";
+            this.tbWidth.Size = new System.Drawing.Size(46, 21);
+            this.tbWidth.TabIndex = 26;
+            this.tbWidth.Text = "16";
+            this.tbWidth.TextChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
+            // 
+            // tbHeight
+            // 
+            this.tbHeight.Location = new System.Drawing.Point(182, 28);
+            this.tbHeight.Name = "tbHeight";
+            this.tbHeight.Size = new System.Drawing.Size(46, 21);
+            this.tbHeight.TabIndex = 25;
+            this.tbHeight.Text = "16";
+            this.tbHeight.TextChanged += new System.EventHandler(this.onOutputConfigurationFormChange);
             // 
             // cbxPaddingVert
             // 
@@ -454,7 +476,7 @@
             this.groupBox5.Controls.Add(this.rbnLineWrapAtBitmap);
             this.groupBox5.Controls.Add(this.rbnLineWrapAtColumn);
             this.groupBox5.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox5.Location = new System.Drawing.Point(325, 58);
+            this.groupBox5.Location = new System.Drawing.Point(368, 58);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(112, 92);
             this.groupBox5.TabIndex = 41;
@@ -536,7 +558,7 @@
             this.groupBox2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(18, 275);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(419, 162);
+            this.groupBox2.Size = new System.Drawing.Size(462, 162);
             this.groupBox2.TabIndex = 47;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Variable name format where {0} is the font/image name";
@@ -650,7 +672,7 @@
             this.cbxCharacterEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxCharacterEncoding.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.cbxCharacterEncoding.FormattingEnabled = true;
-            this.cbxCharacterEncoding.Location = new System.Drawing.Point(554, 381);
+            this.cbxCharacterEncoding.Location = new System.Drawing.Point(600, 377);
             this.cbxCharacterEncoding.Name = "cbxCharacterEncoding";
             this.cbxCharacterEncoding.Size = new System.Drawing.Size(92, 21);
             this.cbxCharacterEncoding.TabIndex = 51;
@@ -659,7 +681,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(448, 384);
+            this.label14.Location = new System.Drawing.Point(486, 385);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(100, 13);
             this.label14.TabIndex = 52;
@@ -669,7 +691,7 @@
             // 
             this.cbxGenerateSpaceBitmap.AutoSize = true;
             this.cbxGenerateSpaceBitmap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxGenerateSpaceBitmap.Location = new System.Drawing.Point(458, 313);
+            this.cbxGenerateSpaceBitmap.Location = new System.Drawing.Point(489, 313);
             this.cbxGenerateSpaceBitmap.Name = "cbxGenerateSpaceBitmap";
             this.cbxGenerateSpaceBitmap.Size = new System.Drawing.Size(136, 17);
             this.cbxGenerateSpaceBitmap.TabIndex = 50;
@@ -681,7 +703,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label6.Location = new System.Drawing.Point(501, 339);
+            this.label6.Location = new System.Drawing.Point(539, 339);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(104, 13);
             this.label6.TabIndex = 49;
@@ -690,7 +712,7 @@
             // txtSpacePixels
             // 
             this.txtSpacePixels.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSpacePixels.Location = new System.Drawing.Point(455, 336);
+            this.txtSpacePixels.Location = new System.Drawing.Point(489, 336);
             this.txtSpacePixels.Name = "txtSpacePixels";
             this.txtSpacePixels.Size = new System.Drawing.Size(36, 21);
             this.txtSpacePixels.TabIndex = 48;
@@ -713,7 +735,7 @@
             this.cbxGenerateLookupArray.Controls.Add(this.cbxCharWidthFormat);
             this.cbxGenerateLookupArray.Controls.Add(this.label5);
             this.cbxGenerateLookupArray.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxGenerateLookupArray.Location = new System.Drawing.Point(443, 58);
+            this.cbxGenerateLookupArray.Location = new System.Drawing.Point(489, 58);
             this.cbxGenerateLookupArray.Name = "cbxGenerateLookupArray";
             this.cbxGenerateLookupArray.Size = new System.Drawing.Size(237, 249);
             this.cbxGenerateLookupArray.TabIndex = 43;
@@ -881,7 +903,7 @@
             // 
             this.cbxAddCodePage.AutoSize = true;
             this.cbxAddCodePage.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxAddCodePage.Location = new System.Drawing.Point(453, 407);
+            this.cbxAddCodePage.Location = new System.Drawing.Point(489, 407);
             this.cbxAddCodePage.Name = "cbxAddCodePage";
             this.cbxAddCodePage.Size = new System.Drawing.Size(197, 17);
             this.cbxAddCodePage.TabIndex = 65;
@@ -893,7 +915,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(694, 474);
+            this.ClientSize = new System.Drawing.Size(738, 474);
             this.Controls.Add(this.cbxAddCodePage);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label14);
@@ -1010,5 +1032,7 @@
         private System.Windows.Forms.CheckBox cbxAddCodePage;
         private System.Windows.Forms.CheckBox cbxByteOrderMsbFirst;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox tbWidth;
+        private System.Windows.Forms.TextBox tbHeight;
     }
 }

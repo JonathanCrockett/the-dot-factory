@@ -12,13 +12,13 @@ namespace TheDotFactory
         byte[] Pages;                                           // value of pages (vertical 8 bits), in serial order from top of bitmap
         public Border OriginalBorder { get; private set; }
         public Bitmap BitmapToGenerate { get; private set; }    // the bitmap to generate into a string (flipped, trimmed - if applicable)
-        
+
         public int PagesLength { get { return Pages.Length; } }
         public string[] Data { get; private set; }              // holding the datatabel of the character
         public string[] Visualizer { get; private set; }        // holding the visualizer string
         public string Descriptor { get; private set; }
         public Dictionary<Color, bool> ColorList { get; private set; }
-        public Size Size { get; private set; }                  // size of the bitmap to generate 
+        public Size Size { get; private set; }                  // size of the bitmap to generate
         public OutputConfiguration OutConfig { get; private set; }
 
         public BitmapInfo(OutputConfiguration outConfig, Bitmap bmp, Dictionary<Color, bool> colorList)
@@ -75,9 +75,24 @@ namespace TheDotFactory
             }
 
             // should we crop hotizontally according to common
-            switch(OutConfig.paddingRemovalHorizontal)
-            { 
-               case OutputConfiguration.PaddingRemoval.Fixed:
+            switch (OutConfig.paddingRemovalHorizontal)
+            {
+                case OutputConfiguration.PaddingRemoval.Clipped:
+                    while ((bitmapCropBorder.Right - bitmapCropBorder.Left) < (OutConfig.clippingHoriz - 1))
+                    {
+                        if (bitmapCropBorder.Left > 0)
+                        {
+                            bitmapCropBorder.Left--;
+                        }
+                        else if (bitmapCropBorder.Right < bitmapCropBorder.Size.Width - 1)
+                        {
+                            bitmapCropBorder.Right++;
+                        }
+                        else break;
+                    }
+                    break;
+                case OutputConfiguration.PaddingRemoval.Fixed:
+
                     // cropped Y is according to common
                     bitmapCropBorder.Top = tightestCommonBorder.Top;
                     bitmapCropBorder.Bottom = tightestCommonBorder.Bottom;
@@ -96,7 +111,22 @@ namespace TheDotFactory
             // should we crop vertically according to common
             switch(OutConfig.paddingRemovalVertical)
             {
+                case OutputConfiguration.PaddingRemoval.Clipped:
+                    while ((bitmapCropBorder.Bottom - bitmapCropBorder.Top) < (OutConfig.clippingVert - 1))
+                    {
+                        if (bitmapCropBorder.Top > 0)
+                        {
+                            bitmapCropBorder.Top--;
+                        }
+                        else if (bitmapCropBorder.Bottom < bitmapCropBorder.Size.Height - 1)
+                        {
+                            bitmapCropBorder.Bottom++;
+                        }
+                        else break;
+                    }
+                    break;
                 case OutputConfiguration.PaddingRemoval.Fixed:
+
                     // cropped X is according to common
                     bitmapCropBorder.Left = tightestCommonBorder.Left;
                     bitmapCropBorder.Right = tightestCommonBorder.Right;
@@ -178,7 +208,7 @@ namespace TheDotFactory
                         // zero out bits read
                         bitsRead = 0;
                     }
-                    
+
                 }
                 // if we have bits left, add it as is
                 if (bitsRead != 0) dpages[row].Add(currentValue);
@@ -316,7 +346,7 @@ namespace TheDotFactory
                             }
                             break;
                         case OutputConfiguration.LineWrap.AtBitmap:
-                            // one line per bitmap                    
+                            // one line per bitmap
                             if (OutConfig.addCommentCharVisualizer)
                             {
                                 for (int row = 0; row != Visualizer.Length; ++row)
