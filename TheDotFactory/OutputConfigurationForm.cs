@@ -51,7 +51,7 @@ namespace TheDotFactory
         {
             // set flag
             m_loadingOutputConfigurationToForm = true;
-            
+
             // load combo boxes
             cbxPaddingHoriz.SelectedIndex = (int)outputConfig.paddingRemovalHorizontal;
             cbxPaddingVert.SelectedIndex = (int)outputConfig.paddingRemovalVertical;
@@ -91,7 +91,7 @@ namespace TheDotFactory
             cbxAddCodePage.Checked = outputConfig.addCodePage;
 
             // radio buttons
-            // -- wrap          
+            // -- wrap
             rbnLineWrapAtColumn.Checked = (outputConfig.lineWrap == OutputConfiguration.LineWrap.AtColumn);
             rbnLineWrapAtBitmap.Checked = !rbnLineWrapAtColumn.Checked;
 
@@ -105,6 +105,8 @@ namespace TheDotFactory
             // load combo boxes
             outputConfig.paddingRemovalHorizontal = (OutputConfiguration.PaddingRemoval)Enum.Parse(typeof(OutputConfiguration.PaddingRemoval), cbxPaddingHoriz.Text);
             outputConfig.paddingRemovalVertical = (OutputConfiguration.PaddingRemoval)Enum.Parse(typeof(OutputConfiguration.PaddingRemoval), cbxPaddingVert.Text);
+            int.TryParse(tbWidth.Text, out outputConfig.clippingHoriz);
+            int.TryParse(tbHeight.Text, out outputConfig.clippingVert);
             outputConfig.commentStyle = (OutputConfiguration.CommentStyle)Enum.Parse(typeof(OutputConfiguration.CommentStyle), cbxCommentStyle.Text);
             outputConfig.bitLayout = (OutputConfiguration.BitLayout)Enum.Parse(typeof(OutputConfiguration.BitLayout), cbxBitLayout.Text);
             outputConfig.byteFormat = (OutputConfiguration.ByteFormat)Enum.Parse(typeof(OutputConfiguration.ByteFormat), cbxByteFormat.Text);
@@ -135,11 +137,11 @@ namespace TheDotFactory
             outputConfig.generateLookupArray = cbxGenerateLookupArray.Checked;
             outputConfig.byteOrderMsbFirst = cbxByteOrderMsbFirst.Checked;
 
-            outputConfig.bmpVisualizerChar = (txtBmpVisualizerChar.Text.Length >= 1) ? 
+            outputConfig.bmpVisualizerChar = (txtBmpVisualizerChar.Text.Length >= 1) ?
                     txtBmpVisualizerChar.Text[0] :
                      OutputConfiguration.CommentVisualizerCharDefault;
 
-            outputConfig.bmpVisualizerCharEmpty = (txtBmpVisualizerChar.Text.Length >= 2) ? 
+            outputConfig.bmpVisualizerCharEmpty = (txtBmpVisualizerChar.Text.Length >= 2) ?
                 txtBmpVisualizerChar.Text[1] :
                 OutputConfiguration.CommendVisualizerCharEmptyDefault;
 
@@ -181,7 +183,7 @@ namespace TheDotFactory
 
             // can never be modifying preset when just displayed
             modifyingPresetConfigurationExit();
-            
+
             // check if we need to display an OC
             if (displayedOutputConfigurationIndex != -1)
             {
@@ -200,7 +202,7 @@ namespace TheDotFactory
 
             // set index in cbx
             cbxOutputConfigurations.SelectedIndex = displayedOutputConfigurationIndex;
-            
+
             // load the configuration of the working output configuration
             loadOutputConfigurationToForm(m_outputConfigurationManager.workingOutputConfiguration);
 
@@ -258,10 +260,10 @@ namespace TheDotFactory
         {
             // no focus
             gbxPadding.Focus();
-            
+
             // exit modifying
             modifyingPresetConfigurationExit();
-            
+
             // get name of new configuration
             InputBoxDialog ib = new InputBoxDialog();
                 ib.FormPrompt = "Enter preset name";
@@ -292,7 +294,7 @@ namespace TheDotFactory
                 // set selected index
                 cbxOutputConfigurations.SelectedIndex = cbxOutputConfigurations.Items.Count - 1;
 
-                // re-save 
+                // re-save
                 m_outputConfigurationManager.saveToFile("OutputConfigs.xml");
             }
         }
@@ -318,13 +320,13 @@ namespace TheDotFactory
             // no focus
             gbxPadding.Focus();
 
-            // remove current 
+            // remove current
             m_outputConfigurationManager.configurationDelete(cbxOutputConfigurations.SelectedIndex);
 
             // re-populate dropdown
             m_outputConfigurationManager.comboBoxPopulate(cbxOutputConfigurations);
 
-            // re-save 
+            // re-save
             m_outputConfigurationManager.saveToFile("OutputConfigs.xml");
 
             // check if any configurations left in manager
@@ -347,17 +349,17 @@ namespace TheDotFactory
         {
             // no focus
             gbxPadding.Focus();
-            
+
             // exit modifying
             modifyingPresetConfigurationExit();
 
             // get the configuration reference at index
             OutputConfiguration updatedOutputConfiguration = m_outputConfigurationManager.configurationGetAtIndex(cbxOutputConfigurations.SelectedIndex);
-            
+
             // load current form to the configuration
             loadFormToOutputConfiguration(ref updatedOutputConfiguration);
 
-            // re-save 
+            // re-save
             m_outputConfigurationManager.saveToFile("OutputConfigs.xml");
         }
 

@@ -39,17 +39,17 @@ namespace UIToolbox
 		// Constants
 		private const int CHECKBOX_X_OFFSET = 10;
 		private const int CHECKBOX_Y_OFFSET = 0;
-        private const int COLLAPSED_HEIGHT = 20;
+		private const int COLLAPSED_HEIGHT = 20;
 
 		// Members
 		private bool m_bDisableChildrenIfUnchecked;
-        private int m_UncollapsedHeigth;
-        private bool m_bCollapseGroupBoxIfUnchecked;
+		private int m_UncollapsedHeigth;
+		private bool m_bCollapseGroupBoxIfUnchecked;
 
-        /// <summary>
-        /// CheckGroupBox public constructor.
-        /// </summary>
-        public CheckGroupBox()
+		/// <summary>
+		/// CheckGroupBox public constructor.
+		/// </summary>
+		public CheckGroupBox()
 		{
 			this.InitializeComponent();
 			this.m_bDisableChildrenIfUnchecked = true;
@@ -58,8 +58,8 @@ namespace UIToolbox
 			this.Checked = true;
 
 			// Set the color of the CheckBox's text to the color of the label in a standard groupbox control.
-			VisualStyleRenderer vsr = new VisualStyleRenderer(VisualStyleElement.Button.GroupBox.Normal);
-			Color groupBoxTextColor = vsr.GetColor(ColorProperty.TextColor);
+			//VisualStyleRenderer vsr = new VisualStyleRenderer(VisualStyleElement.Button.GroupBox.Normal);
+			Color groupBoxTextColor = Color.Black;
 			this.m_checkBox.ForeColor = groupBoxTextColor;
 		}
 
@@ -153,60 +153,60 @@ namespace UIToolbox
 		}
 
 		public new int Height
-        {
-            get
-            {
-                return base.Height;
-            }
-            set
-            {
-                base.Height = value;
-                this.m_UncollapsedHeigth = value;
-            }
-        }
+		{
+			get
+			{
+				return base.Height;
+			}
+			set
+			{
+				base.Height = value;
+				this.m_UncollapsedHeigth = value;
+			}
+		}
 
-        public new Size Size
-        {
-            get
-            {
-                return base.Size;
-            }
-            set
-            {
-                base.Size = value;
-                this.m_UncollapsedHeigth = value.Height;
-            }
-        }
+		public new Size Size
+		{
+			get
+			{
+				return base.Size;
+			}
+			set
+			{
+				base.Size = value;
+				this.m_UncollapsedHeigth = value.Height;
+			}
+		}
 
-        /// <summary>
+		/// <summary>
 		/// Determines if child controls of the GroupBox are collapsed when the CheckBox is unchecked.
 		/// </summary>
 		[Description("Determines if child controls of the GroupBox are collapsed when the CheckBox is unchecked.")]
-        [Category("Appearance")]
-        [DefaultValue(false)]
-        public bool CollapseIfNotChecked
-        {
-            get
-            {
-                return m_bCollapseGroupBoxIfUnchecked;
-            }
-            set
-            {
-                if (m_bCollapseGroupBoxIfUnchecked != value)
-                {
-                    m_bCollapseGroupBoxIfUnchecked = value;
-                }
-            }
-        }
-        #endregion Properties
+		[Category("Appearance")]
+		[DefaultValue(false)]
+		public bool CollapseIfNotChecked
+		{
+			get
+			{
+				return m_bCollapseGroupBoxIfUnchecked;
+			}
+			set
+			{
+				if (m_bCollapseGroupBoxIfUnchecked != value)
+				{
+					m_bCollapseGroupBoxIfUnchecked = value;
+				}
+			}
+		}
+		#endregion Properties
 
-        #region Event Handlers
-        /// <summary>
-        /// Occurs whenever the Checked property of the CheckBox is changed.
-        /// </summary>
-        [Description("Occurs whenever the Checked property of the CheckBox is changed.")]
+		#region Event Handlers
+		/// <summary>
+		/// Occurs whenever the Checked property of the CheckBox is changed.
+		/// </summary>
+		[Description("Occurs whenever the Checked property of the CheckBox is changed.")]
 		public event EventHandler CheckedChanged;
-		
+
 		/// <summary>
 		/// Occurs whenever the CheckState property of the CheckBox is changed.
 		/// </summary>
@@ -245,10 +245,10 @@ namespace UIToolbox
 				}
 			}
 
-            if(this.m_bCollapseGroupBoxIfUnchecked)
-            {
-                base.Height = this.m_checkBox.Checked ? m_UncollapsedHeigth : COLLAPSED_HEIGHT;
-            }
+			if(this.m_bCollapseGroupBoxIfUnchecked)
+			{
+				base.Height = this.m_checkBox.Checked ? m_UncollapsedHeigth : COLLAPSED_HEIGHT;
+			}
 
 			if(CheckedChanged != null)
 			{
