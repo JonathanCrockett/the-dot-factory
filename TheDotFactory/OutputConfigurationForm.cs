@@ -20,11 +20,11 @@ namespace TheDotFactory
         void populateControls()
         {
             // set datasources
-            cbxPaddingHoriz.DataSource = Enum.GetNames(typeof(OutputConfiguration.PaddingRemoval));
-            cbxPaddingVert.DataSource = Enum.GetNames(typeof(OutputConfiguration.PaddingRemoval));
-            cbxCommentStyle.DataSource = Enum.GetNames(typeof(OutputConfiguration.CommentStyle));
-            cbxBitLayout.DataSource = Enum.GetNames(typeof(OutputConfiguration.BitLayout));
-            cbxByteFormat.DataSource = Enum.GetNames(typeof(OutputConfiguration.ByteFormat));
+            cbxPaddingHoriz.DataSource = Enum.GetValues(typeof(OutputConfiguration.PaddingRemoval));
+            cbxPaddingVert.DataSource = Enum.GetValues(typeof(OutputConfiguration.PaddingRemoval));
+            cbxCommentStyle.DataSource = Enum.GetValues(typeof(OutputConfiguration.CommentStyle));
+            cbxBitLayout.DataSource = Enum.GetValues(typeof(OutputConfiguration.BitLayout));
+            cbxByteFormat.DataSource = Enum.GetValues(typeof(OutputConfiguration.ByteFormat));
             cbxRotation.DataSource = OutputConfiguration.Rotation.GetNames();
 
             // display string arrays
@@ -76,6 +76,8 @@ namespace TheDotFactory
             txtVarNfFontInfo.Text = outputConfig.varNfFontInfo;
             txtVarNfImageBitmap.Text = outputConfig.varNfImageBitmap;
             txtVarNfImageInfo.Text = outputConfig.varNfImageInfo;
+            numericUpDownPaddingTrimHoriz.Value = outputConfig.clippingHoriz;
+            numericUpDownPaddingTrimVert.Value = outputConfig.clippingVert;
 
             // load check boxes
             cbxFlipHoriz.Checked = outputConfig.flipHorizontal;
@@ -105,8 +107,8 @@ namespace TheDotFactory
             // load combo boxes
             outputConfig.paddingRemovalHorizontal = (OutputConfiguration.PaddingRemoval)Enum.Parse(typeof(OutputConfiguration.PaddingRemoval), cbxPaddingHoriz.Text);
             outputConfig.paddingRemovalVertical = (OutputConfiguration.PaddingRemoval)Enum.Parse(typeof(OutputConfiguration.PaddingRemoval), cbxPaddingVert.Text);
-            int.TryParse(tbWidth.Text, out outputConfig.clippingHoriz);
-            int.TryParse(tbHeight.Text, out outputConfig.clippingVert);
+            outputConfig.clippingVert = (int)numericUpDownPaddingTrimVert.Value;
+            outputConfig.clippingHoriz = (int)numericUpDownPaddingTrimHoriz.Value;
             outputConfig.commentStyle = (OutputConfiguration.CommentStyle)Enum.Parse(typeof(OutputConfiguration.CommentStyle), cbxCommentStyle.Text);
             outputConfig.bitLayout = (OutputConfiguration.BitLayout)Enum.Parse(typeof(OutputConfiguration.BitLayout), cbxBitLayout.Text);
             outputConfig.byteFormat = (OutputConfiguration.ByteFormat)Enum.Parse(typeof(OutputConfiguration.ByteFormat), cbxByteFormat.Text);
@@ -396,6 +398,15 @@ namespace TheDotFactory
             {
                 // when user has changed a preset, enter modifying state
                 modifyingPresetConfigurationEnter();
+            }
+
+            if (cbxPaddingHoriz.SelectedItem is OutputConfiguration.PaddingRemoval)
+            {
+                numericUpDownPaddingTrimHoriz.Enabled = (OutputConfiguration.PaddingRemoval)cbxPaddingHoriz.SelectedValue == OutputConfiguration.PaddingRemoval.Clipped;
+            }
+            if (cbxPaddingVert.SelectedValue is OutputConfiguration.PaddingRemoval)
+            {
+                numericUpDownPaddingTrimVert.Enabled = (OutputConfiguration.PaddingRemoval)cbxPaddingVert.SelectedValue == OutputConfiguration.PaddingRemoval.Clipped;
             }
         }
     }
