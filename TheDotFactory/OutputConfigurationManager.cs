@@ -272,10 +272,10 @@ namespace TheDotFactory
         public bool generateLookupArray = true;
         public DescriptorFormat descCharWidth = DescriptorFormat.DisplayInBits;
         public DescriptorFormat descCharHeight = DescriptorFormat.DontDisplay;
-        public DescriptorFormat descFontHeight = DescriptorFormat.DisplayInBytes;
+        public DescriptorFormat descFontHeight = DescriptorFormat.DisplayInBits;
         public bool generateLookupBlocks = false;
         public int lookupBlocksNewAfterCharCount = 80;
-        public DescriptorFormat descImgWidth = DescriptorFormat.DisplayInBytes;
+        public DescriptorFormat descImgWidth = DescriptorFormat.DisplayInBits;
         public DescriptorFormat descImgHeight = DescriptorFormat.DisplayInBits;
         public bool addCodePage = false;
 
