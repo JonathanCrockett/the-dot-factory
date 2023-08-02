@@ -76,7 +76,7 @@ namespace TheDotFactory
                             );
             }
             //
-            // iterate thruogh all bitmaps and generate the bitmap we will convert to string
+            // iterate through all bitmaps and generate the bitmap we will convert to string
             // this means performing all manipulation (pad remove, flip)
             //
 
@@ -111,6 +111,11 @@ namespace TheDotFactory
                                                     OutConfig.CommentBlockMiddle,
                                                     getFontName(Font, false),
                                                     OutConfig.CommentBlockEnd);
+
+                // Add NRF Connect specific header
+                sourceText.Append(OutConfig.nl + OutConfig.nl);
+                sourceText.Append("#include \"nrf_font.h\"");
+                sourceText.Append(OutConfig.nl + OutConfig.nl);
 
                 // add source header
                 sourceText.AppendFormat("{0}Character bitmaps for {1} {2}" + OutConfig.nl,

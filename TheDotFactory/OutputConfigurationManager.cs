@@ -18,7 +18,7 @@ namespace TheDotFactory
         [XmlAttribute("space", Namespace = "http://www.w3.org/XML/1998/namespace")]
         public const string Space = "preserve";
 
-        #region string constanst
+        #region string constants
         public const string CommentStartCPP = "// ";
         public const string CommentBlockEndCPP = "// ";
         public const string CommentBlockMiddleCPP = "// ";
@@ -37,7 +37,7 @@ namespace TheDotFactory
         public readonly string nl = Environment.NewLine;
         #endregion
 
-        #region enums constans
+        #region enums constants
         // padding removal type
         public enum PaddingRemoval
         {
@@ -277,17 +277,17 @@ namespace TheDotFactory
         public int lookupBlocksNewAfterCharCount = 80;
         public DescriptorFormat descImgWidth = DescriptorFormat.DisplayInBytes;
         public DescriptorFormat descImgHeight = DescriptorFormat.DisplayInBits;
-        public bool addCodePage = true;
+        public bool addCodePage = false;
 
         // space generation
         public bool generateSpaceCharacterBitmap = false;
         public int spaceGenerationPixels = 2;
 
         // variable formats
-        public string varNfBitmaps = "const uint_8 {0}Bitmaps";
+        public string varNfBitmaps = "const uint8_t {0}Bitmaps";
         public string varNfCharInfo = "const FONT_CHAR_INFO {0}Descriptors";
         public string varNfFontInfo = "const FONT_INFO {0}FontInfo";
-        public string varNfImageBitmap = "const uint_8 {0}Bitmap";
+        public string varNfImageBitmap = "const uint8_t {0}Bitmap";
         public string varNfImageInfo = "const IMAGE_INFO {0}ImageInfo";
 
         // display name
