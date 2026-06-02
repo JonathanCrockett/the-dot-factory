@@ -112,6 +112,9 @@ namespace TheDotFactory
                                                     getFontName(Font, false),
                                                     OutConfig.CommentBlockEnd);
 
+                // add include of NRF font header
+                sourceText.AppendFormat("#include \"nrf_font.h\"" + OutConfig.nl);
+
                 // add source header
                 sourceText.AppendFormat("{0}Character bitmaps for {1} {2}" + OutConfig.nl,
                                                     OutConfig.CommentStart,
