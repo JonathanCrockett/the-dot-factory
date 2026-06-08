@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Drawing;
-using System.Text.RegularExpressions;
 
 namespace TheDotFactory
 {
@@ -337,10 +336,10 @@ namespace TheDotFactory
 
             s = string.Format("{0}{2}{1}pt", font.Name, Math.Round(font.Size), space);
 
-            if(font.Style != FontStyle.Regular)
+            if (font.Style != FontStyle.Regular)
             {
                 s += space + font.Style.ToString();
-                if(variabelName) s = s.Replace(", ", "_");
+                if (variabelName) s = s.Replace(", ", "_");
             }
 
             return (variabelName) ? MyExtensions.ScrubVariableName(s) : s;

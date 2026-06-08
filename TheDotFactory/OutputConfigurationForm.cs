@@ -236,7 +236,7 @@ namespace TheDotFactory
         private void cbxByteFormat_TextChanged(object sender, EventArgs e)
         {
             // set leading string acccordingly
-            switch((OutputConfiguration.ByteFormat)cbxByteFormat.SelectedIndex )
+            switch ((OutputConfiguration.ByteFormat)cbxByteFormat.SelectedIndex)
             {
                 case OutputConfiguration.ByteFormat.Hex:
                     // set hex leading only if set to binary
@@ -268,9 +268,9 @@ namespace TheDotFactory
 
             // get name of new configuration
             InputBoxDialog ib = new InputBoxDialog();
-                ib.FormPrompt = "Enter preset name";
-                ib.FormCaption = "New preset configuration";
-                ib.DefaultValue = "";
+            ib.FormPrompt = "Enter preset name";
+            ib.FormCaption = "New preset configuration";
+            ib.DefaultValue = "";
 
             // show the dialog
             if (ib.ShowDialog() == DialogResult.OK)

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Drawing.Drawing2D;
 
 namespace TheDotFactory
 {
@@ -125,7 +124,7 @@ namespace TheDotFactory
                 // row is empty
                 return true;
             };
-            
+
             for (b.Left = 0; b.Left < width; ++b.Left)
             {
                 if (!columnIsEmpty(b.Left)) break;
@@ -165,7 +164,7 @@ namespace TheDotFactory
 
             destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
-            for(int y = 0; y < image.Height; y++)
+            for (int y = 0; y < image.Height; y++)
             {
                 for (int x = 0; x < image.Width; x++)
                 {
@@ -209,7 +208,7 @@ namespace TheDotFactory
         public static int ConvertValueByDescriptorFormat(OutputConfiguration.DescriptorFormat descFormat, int valueInBits)
         {
             // according to format
-            switch(descFormat)
+            switch (descFormat)
             {
                 case OutputConfiguration.DescriptorFormat.DisplayInBytes:
                     // get value in bytes
@@ -250,7 +249,7 @@ namespace TheDotFactory
             // return name
             return outName.ToString();
         }
-        
+
         // get only the variable name from an expression in a specific format
         // e.g. input: const far unsigned int my_font[] = ; 
         //      output: my_font[]

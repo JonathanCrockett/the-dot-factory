@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Text.RegularExpressions;
-using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace TheDotFactory
 {
@@ -70,7 +68,7 @@ namespace TheDotFactory
         }
 
         // Byte format
-        public enum ByteFormat:int
+        public enum ByteFormat : int
         {
             Binary,     // Binary
             Hex         // Hex
@@ -87,7 +85,7 @@ namespace TheDotFactory
 
             private rotationEnm value;
 
-            private enum rotationEnm:byte
+            private enum rotationEnm : byte
             {
                 RotateZero,
                 RotateNinety,
@@ -147,7 +145,7 @@ namespace TheDotFactory
                         else if (flipX && !flipY) return RotateFlipType.RotateNoneFlipX;
                         else if (!flipX && flipY) return RotateFlipType.RotateNoneFlipY;
                         else// if (flipX && flipY)
-                        return RotateFlipType.RotateNoneFlipXY;
+                            return RotateFlipType.RotateNoneFlipXY;
                     case rotationEnm.RotateNinety:
                         // return according to flip
                         if (!flipX && !flipY) return RotateFlipType.Rotate90FlipNone;
@@ -310,7 +308,7 @@ namespace TheDotFactory
         {
             get
             {
-                switch(commentStyle)
+                switch (commentStyle)
                 {
                     case CommentStyle.C: return CommentStartC;
                     case CommentStyle.Cpp: return CommentStartCPP;
@@ -441,9 +439,9 @@ namespace TheDotFactory
                 // close and flush the stream
                 textReader.Close();
             }
-            catch (IOException)  { }
+            catch (IOException) { }
             catch (InvalidOperationException) { }
-            catch (Exception  exc)
+            catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
             }

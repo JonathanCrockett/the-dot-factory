@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace TheDotFactory
@@ -19,10 +18,10 @@ namespace TheDotFactory
         private OutputConfiguration OutConfig { get { return ParentFontInfo.OutConfig; } }
         public Border OriginalBorder { get { return bitmapInfo.OriginalBorder; } }
         public Bitmap BitmapToGenerate { get { return bitmapInfo.BitmapToGenerate; } }    // the bitmap to generate into a string (flipped, trimmed - if applicable)
-        public int DataLength{ get { return bitmapInfo.PagesLength; } }               // value of pages (vertical 8 bits), in serial order from top of bitmap
+        public int DataLength { get { return bitmapInfo.PagesLength; } }               // value of pages (vertical 8 bits), in serial order from top of bitmap
         public string Descriptor { get; private set; } // holding the datadescriptor string with visualizer
-       
-        public CharacterDescriptor(FontDescriptor parentFontInfo ) : this ( parentFontInfo, '\0') { }
+
+        public CharacterDescriptor(FontDescriptor parentFontInfo) : this(parentFontInfo, '\0') { }
 
         public CharacterDescriptor(FontDescriptor parentFontInfo, char character)
         {
@@ -85,7 +84,7 @@ namespace TheDotFactory
             bitmapInfo.GenerateCharacterDataDescriptorAndVisulazer();
             Descriptor += bitmapInfo.Descriptor;
         }
-        
+
         public override string ToString()
         {
             return Character.ToString();
@@ -110,24 +109,24 @@ namespace TheDotFactory
              {
                  switch (descFormat)
                  {
-                        // don't display
-                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                     // don't display
+                     case OutputConfiguration.DescriptorFormat.DontDisplay:
                          return "";
                      case OutputConfiguration.DescriptorFormat.DisplayInBits:
                      case OutputConfiguration.DescriptorFormat.DisplayInBytes:
-                            // add comma and return
-                            return MyExtensions.ConvertValueByDescriptorFormat(descFormat, valueInBits) + ", ";
+                         // add comma and return
+                         return MyExtensions.ConvertValueByDescriptorFormat(descFormat, valueInBits) + ", ";
                      default:
                          throw new NotImplementedException();
                  }
              });
 
-            return string.Format("\t{{{0}{1}{2}}},", GetCharacterDescString(OutConfig.descCharWidth , s.Width),
+            return string.Format("\t{{{0}{1}{2}}},", GetCharacterDescString(OutConfig.descCharWidth, s.Width),
                                 GetCharacterDescString(OutConfig.descCharHeight, s.Height),
                                 OffsetInBytes)
                                 .PadRight(15) +
 
-             string.Format("{0}{1}{2}" + OutConfig.nl,                                
+             string.Format("{0}{1}{2}" + OutConfig.nl,
                                 OutConfig.CommentStart,
                                 Character == '\\' ? "\\ (backslash)" : Character.ToString(),
                                 OutConfig.CommentEnd);

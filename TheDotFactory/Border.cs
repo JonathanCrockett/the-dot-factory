@@ -13,12 +13,12 @@ namespace TheDotFactory
         private int _bottom;
 
         public static readonly Border Empty = new Border(0);
-        
+
         public Border(int all)
         {
             _top = _left = _right = _bottom = all;
         }
-        
+
         public Border(int left, int top, int right, int bottom)
         {
             _top = top;
@@ -26,37 +26,37 @@ namespace TheDotFactory
             _right = right;
             _bottom = bottom;
         }
-        
+
         public int All
         {
-            get { return _top == _left && _top == _right && _top == _bottom? _top : -1; }
+            get { return _top == _left && _top == _right && _top == _bottom ? _top : -1; }
             set { _top = _left = _right = _bottom = value; }
         }
-        
+
         public int Bottom
         {
             get { return _bottom; }
             set { _bottom = value; }
         }
-            
+
         public int Left
         {
             get { return _left; }
             set { _left = value; }
         }
-            
+
         public int Right
         {
             get { return _right; }
-            set {  _right = value; }
+            set { _right = value; }
         }
-            
+
         public int Top
         {
             get { return _top; }
-            set  { _top = value; }
+            set { _top = value; }
         }
-        
+
         public int Horizontal { get { return Left + Right; } }
 
         public int Vertical { get { return Top + Bottom; } }
@@ -74,9 +74,9 @@ namespace TheDotFactory
 
         public static bool operator ==(Border p1, Border p2)
         {
-            return p1.Left == p2.Left 
-                && p1.Top == p2.Top 
-                && p1.Right == p2.Right 
+            return p1.Left == p2.Left
+                && p1.Top == p2.Top
+                && p1.Right == p2.Right
                 && p1.Bottom == p2.Bottom;
         }
 
@@ -86,7 +86,7 @@ namespace TheDotFactory
                 || p1.Top != p2.Top
                 || p1.Right != p2.Right
                 || p1.Bottom != p2.Bottom;
-    }
+        }
 
         public override string ToString()
         {
@@ -95,7 +95,7 @@ namespace TheDotFactory
 
         public override int GetHashCode()
         {
-            return Left/4 + Top/4 + Bottom/4 + Right/4;
+            return Left / 4 + Top / 4 + Bottom / 4 + Right / 4;
         }
 
         public bool IsValid()

@@ -137,7 +137,7 @@ namespace TheDotFactory
             if (tcInput.SelectedTab.Text == "Text")
             {
                 // generate output text
-                generateOutputForFont(m_outputConfig, fontDlgInputFont.Font, txtInputText.Text,  textSource, textHeader);
+                generateOutputForFont(m_outputConfig, fontDlgInputFont.Font, txtInputText.Text, textSource, textHeader);
             }
             else if (tcInput.SelectedTab.Text == "Image")
             {
@@ -156,7 +156,7 @@ namespace TheDotFactory
             }
             else throw new Exception("Unknowen tabpage");
 
-            switch(m_outputConfig.commentStyle)
+            switch (m_outputConfig.commentStyle)
             {
                 case OutputConfiguration.CommentStyle.C:
                 case OutputConfiguration.CommentStyle.Cpp:
@@ -198,7 +198,7 @@ namespace TheDotFactory
                 colorList = MyExtensions.GetColorList(m_currentLoadedBitmap).ToDictionary<Color, Color, bool>(x => x, x => false);
                 colorList[colorList.ElementAt(0).Key] = true;
 
-                if(colorList.Count > 16)
+                if (colorList.Count > 16)
                 {
                     MessageBox.Show("Convert the image into black/white in a proper image processing program, to get better results.");
                 }
@@ -435,16 +435,16 @@ namespace TheDotFactory
 
             foreach (string s in CodePageInfo.GetEncoderNameList())
             {
-                if(s.ToLower() != "us-ascii"
+                if (s.ToLower() != "us-ascii"
                     //&& s.ToLower() != "utf-16"
                     )
-                cbxTextInsert.Items.Add(new ComboBoxItem(s, new string(new CodePageInfo(s).GetAllValidCharacter())));
+                    cbxTextInsert.Items.Add(new ComboBoxItem(s, new string(new CodePageInfo(s).GetAllValidCharacter())));
             }
 
             // select the first
             cbxTextInsert.SelectedIndex = 0;
         }
-        
+
         // Gussing the best background color
         private Color GetBackColorForPicturbox()
         {
@@ -467,7 +467,7 @@ namespace TheDotFactory
         private void populateComboBoxInputImageCodepage()
         {
             comboBoxInputImageCodepage.Items.Clear();
-            comboBoxInputImageCodepage.Items.AddRange(Encoding.GetEncodings().Select( e => e.GetEncoding().WebName  ).ToArray());
+            comboBoxInputImageCodepage.Items.AddRange(Encoding.GetEncodings().Select(e => e.GetEncoding().WebName).ToArray());
         }
 
         private bool TryParseCodePageString(string s, out int codepage)
@@ -488,7 +488,7 @@ namespace TheDotFactory
 
         private Size DetectTileSize()
         {
-            if(m_currentLoadedBitmap != null)
+            if (m_currentLoadedBitmap != null)
             {
                 return new Size(m_currentLoadedBitmap.Width / 16, m_currentLoadedBitmap.Height / 16);
             }
@@ -505,16 +505,16 @@ namespace TheDotFactory
             int w = (int)numericUpDownInputImageTileSizeX.Value;
             int h = (int)numericUpDownInputImageTileSizeY.Value;
             int tilesPerLine = (int)numericUpDownInputImageTilesPerLine.Value;
-            Size sz = new Size(Math.Max(m_currentLoadedBitmap.Width, w * tilesPerLine), Math.Max(m_currentLoadedBitmap.Height, (h * ((256 / tilesPerLine) + ((256 % tilesPerLine != 0) ? 1 : 0)) )));
+            Size sz = new Size(Math.Max(m_currentLoadedBitmap.Width, w * tilesPerLine), Math.Max(m_currentLoadedBitmap.Height, (h * ((256 / tilesPerLine) + ((256 % tilesPerLine != 0) ? 1 : 0)))));
             Bitmap bmp = new Bitmap(sz.Width, sz.Height);
             Graphics g = Graphics.FromImage(bmp);
 
-            g.DrawImage(m_currentLoadedBitmap, 0,0, m_currentLoadedBitmap.Width, m_currentLoadedBitmap.Height);
+            g.DrawImage(m_currentLoadedBitmap, 0, 0, m_currentLoadedBitmap.Width, m_currentLoadedBitmap.Height);
 
             if (checkGroupBoxFontImage.Checked)
             {
                 if (checkBoxInputImageOverlay.Checked)
-                { 
+                {
                     Color c = Color.FromArgb(64, Color.Black);
                     Color d = Color.FromArgb(64, Color.Magenta);
                     Brush b = new SolidBrush(c);
@@ -606,7 +606,7 @@ namespace TheDotFactory
             }
 
             imageName = MyExtensions.ScrubVariableName(txtImageName.Text);
-            backgroundColors = MyExtensions.GetEnabledKeys<Color>(colorList);            
+            backgroundColors = MyExtensions.GetEnabledKeys<Color>(colorList);
 
             // check if bitmap is assigned
             if (m_currentLoadedBitmap != null)
@@ -681,7 +681,7 @@ namespace TheDotFactory
                     switch (m_outputConfig.descImgWidth)
                     {
                         case OutputConfiguration.DescriptorFormat.DisplayInBytes:
-                            return string.Format(format ,
+                            return string.Format(format,
                                 m_outputConfig.CommentStart,
                                 m_outputConfig.CommentEnd,
                                 pagesPerRow,
@@ -797,7 +797,7 @@ namespace TheDotFactory
 
             // remove dublicats and sort
             // remove all charaters not includet in codepage and return
-            return CodePageCharacterList                
+            return CodePageCharacterList
                 .Intersect(characterList)
                 .Distinct()
                 .OrderBy(p => cpi.GetOffsetFromCharacter(p))
@@ -853,7 +853,7 @@ namespace TheDotFactory
 
             return s;
         }
-       
+
         // try to parse character range
         private static bool TryParseCharacterRangePoint(string s, out int value)
         {
@@ -865,11 +865,11 @@ namespace TheDotFactory
         #endregion
 
         #region fontbitmap
-        private void generateOutputForFontImage(OutputConfiguration outConfig, 
-            Dictionary<Color, bool> colorList, 
-            Size tileSize, 
-            int codepage, 
-            Bitmap bitmapOriginal, 
+        private void generateOutputForFontImage(OutputConfiguration outConfig,
+            Dictionary<Color, bool> colorList,
+            Size tileSize,
+            int codepage,
+            Bitmap bitmapOriginal,
             StringBuilder textSource,
             StringBuilder textHeader)
         {
@@ -917,14 +917,14 @@ namespace TheDotFactory
                 {
                     // add source file header
                     textSource.AppendFormat("{0}" + m_outputConfig.nl + "{1} Image data for {2}" + m_outputConfig.nl + "{3}" + m_outputConfig.nl + m_outputConfig.nl,
-                                                        m_outputConfig.CommentStart, 
-                                                        m_outputConfig.CommentBlockMiddle, 
+                                                        m_outputConfig.CommentStart,
+                                                        m_outputConfig.CommentBlockMiddle,
                                                         imageName,
                                                         m_outputConfig.CommentBlockEnd);
 
                     // add header file header
                     textHeader.AppendFormat("{0}Bitmap info for {1}{2}" + m_outputConfig.nl,
-                                                        m_outputConfig.CommentStart, 
+                                                        m_outputConfig.CommentStart,
                                                         imageName,
                                                         m_outputConfig.CommentEnd);
                 }

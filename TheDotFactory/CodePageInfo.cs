@@ -7,14 +7,14 @@ namespace TheDotFactory
     public class CodePageInfo
     {
         public readonly Encoding encoding;
-        public int CodePage { get { return encoding.CodePage;  } }
+        public int CodePage { get { return encoding.CodePage; } }
 
         public CodePageInfo(int codepage)
         {
             encoding = GetEncoding(codepage);
         }
 
-        public CodePageInfo(string codepage) : this ( GetCodepage(codepage))
+        public CodePageInfo(string codepage) : this(GetCodepage(codepage))
         {
 
         }
@@ -155,7 +155,7 @@ namespace TheDotFactory
             private int _codePage;
             public override int CodePage { get { return _codePage; } }
 
-            public override bool IsSingleByte { get {  return true; } }
+            public override bool IsSingleByte { get { return true; } }
 
             public override string HeaderName
             {
@@ -220,7 +220,7 @@ namespace TheDotFactory
 
             public override int GetByteCount(char[] chars, int index, int count)
             {
-                 return count;
+                return count;
             }
 
             public override int GetMaxByteCount(int charCount)
@@ -230,7 +230,7 @@ namespace TheDotFactory
 
             public override int GetMaxCharCount(int byteCount)
             {
-                 return byteCount;
+                return byteCount;
             }
 
             public override Decoder GetDecoder()
@@ -243,7 +243,7 @@ namespace TheDotFactory
                 return Encoder;
             }
 
-            
+
         }
 
         private class CodePageEncoder : Encoder
@@ -267,7 +267,7 @@ namespace TheDotFactory
             public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex, bool flush)
             {
                 int writenBytes = 0;
-                for( ; charIndex < chars.Length && byteIndex < bytes.Length; charIndex++, byteIndex++, charCount--, writenBytes++)
+                for (; charIndex < chars.Length && byteIndex < bytes.Length; charIndex++, byteIndex++, charCount--, writenBytes++)
                 {
                     bytes[byteIndex] = codePageReverse[chars[charIndex]];
                 }
@@ -395,7 +395,7 @@ namespace TheDotFactory
         {
             return EncodingList.Select(e => GetCodepageName(e.CodePage)).ToArray();
         }
-        
+
         public static string GetCodepageName(int codepage)
         {
             return Encoding.GetEncoding(codepage).HeaderName;

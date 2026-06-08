@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 
 namespace TheDotFactory
 {
@@ -34,7 +34,7 @@ namespace TheDotFactory
             OutConfig = outConfig;
             Original = bmp;
             OriginalBorder = Border.GetBorders(Original, borderColor);
-            ColorList = MyExtensions.GetColorList(Original).Aggregate (new Dictionary<Color, bool>(), (dic, c) => { dic.Add(c, c.ToArgb() == borderColor.ToArgb()); return dic; } );
+            ColorList = MyExtensions.GetColorList(Original).Aggregate(new Dictionary<Color, bool>(), (dic, c) => { dic.Add(c, c.ToArgb() == borderColor.ToArgb()); return dic; });
 
         }
 
@@ -109,7 +109,7 @@ namespace TheDotFactory
             }
 
             // should we crop vertically according to common
-            switch(OutConfig.paddingRemovalVertical)
+            switch (OutConfig.paddingRemovalVertical)
             {
                 case OutputConfiguration.PaddingRemoval.Clipped:
                     while ((bitmapCropBorder.Bottom - bitmapCropBorder.Top) < (OutConfig.clippingVert - 1))
@@ -255,7 +255,7 @@ namespace TheDotFactory
                     sb.Append(OutConfig.byteLeadingString);
 
                     // check format
-                    switch(OutConfig.byteFormat)
+                    switch (OutConfig.byteFormat)
                     {
                         case OutputConfiguration.ByteFormat.Hex:
                             // convert byte to hex
@@ -374,7 +374,7 @@ namespace TheDotFactory
                     }
 
                     // output the data
-                    switch(OutConfig.lineWrap)
+                    switch (OutConfig.lineWrap)
                     {
                         case OutputConfiguration.LineWrap.AtColumn:
                             // one line per row
@@ -391,7 +391,7 @@ namespace TheDotFactory
                                 resultString.Append(Pages[row]);
                             }
                             resultString.Append(OutConfig.nl);
-                        break;
+                            break;
                         default:
                             throw new NotImplementedException();
                     }
