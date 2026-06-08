@@ -234,7 +234,7 @@ namespace TheDotFactory
         public bool addCommentVariableName = true;
         public bool addCommentCharVisualizer = true;
         public bool addCommentCharDescriptor = true;
-        public CommentStyle commentStyle = CommentStyle.Cpp;
+        public CommentStyle commentStyle = CommentStyle.C;
         public char bmpVisualizerChar = '#';
         public char bmpVisualizerCharEmpty = ' ';
 
