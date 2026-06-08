@@ -106,14 +106,14 @@ namespace TheDotFactory
             if (OutConfig.addCommentVariableName)
             {
                 // add source file header
-                sourceText.AppendFormat("{0}" + OutConfig.nl + "{1} Font data for {2}" + OutConfig.nl + "{3}" + OutConfig.nl + OutConfig.nl,
+                sourceText.AppendFormat("{0}" + OutConfig.nl + "{1} Font data for {2}" + OutConfig.nl + "{3}" + OutConfig.nl,
                                                     OutConfig.CommentStart,
                                                     OutConfig.CommentBlockMiddle,
                                                     getFontName(Font, false),
                                                     OutConfig.CommentBlockEnd);
 
                 // add include of NRF font header
-                sourceText.AppendFormat("#include \"nrf_font.h\"" + OutConfig.nl);
+                sourceText.AppendFormat("#include \"nrf_font.h\"" + OutConfig.nl + OutConfig.nl);
 
                 // add source header
                 sourceText.AppendFormat("{0}Character bitmaps for {1} {2}" + OutConfig.nl,
