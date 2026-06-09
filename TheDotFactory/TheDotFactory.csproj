@@ -86,7 +86,7 @@
     </Compile>
     <Compile Include="BitmapInfo.cs" />
     <Compile Include="Border.cs" />
-    <Compile Include="CharacterGeneartionInfo.cs" />
+    <Compile Include="CharacterGenerationInfo.cs" />
     <Compile Include="CodePageInfo.cs" />
     <Compile Include="ComboBoxItem.cs" />
     <Compile Include="extensions.cs" />

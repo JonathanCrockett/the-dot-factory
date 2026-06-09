@@ -70,7 +70,7 @@ namespace TheDotFactory
             bitmapInfo.GeneratePageArray();
         }
         // generate string from character info
-        public void GenerateCharacterDataDescriptorAndVisulazer()
+        public void GenerateCharacterDataDescriptorAndVisualizer()
         {
             Descriptor = "";
 

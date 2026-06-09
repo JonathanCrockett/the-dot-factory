@@ -11,7 +11,7 @@ namespace TheDotFactory
     {
         public OutputConfiguration OutConfig { get; private set; }
 
-        private int FixedAbsolutCharHeight { get; set; }
+        private int FixedAbsoluteCharHeight { get; set; }
         private char FirstChar { get; set; }
         private char LastChar { get; set; }
         private CharacterDescriptor[] Characters { get; set; }
@@ -133,7 +133,7 @@ namespace TheDotFactory
             // source var
             sourceText.AppendFormat("{0} = " + OutConfig.nl + "{{" + OutConfig.nl, charBitmapVarName);
 
-            Characters.ToList().ForEach(chi => chi.GenerateCharacterDataDescriptorAndVisulazer());
+            Characters.ToList().ForEach(chi => chi.GenerateCharacterDataDescriptorAndVisualizer());
             Characters.Aggregate(sourceText, (sb, chi) =>
             {
                 // skip empty bitmaps
@@ -194,7 +194,7 @@ namespace TheDotFactory
             {
                 // convert the value
                 fontCharHeightString = String.Format("\t{0}, {1} Character height{2}" + OutConfig.nl,
-                                              MyExtensions.ConvertValueByDescriptorFormat(OutConfig.descFontHeight, FixedAbsolutCharHeight),
+                                              MyExtensions.ConvertValueByDescriptorFormat(OutConfig.descFontHeight, FixedAbsoluteCharHeight),
                                               OutConfig.CommentStart,
                                               OutConfig.CommentEnd);
             }
@@ -230,7 +230,7 @@ namespace TheDotFactory
                                               "\t{8}, {0} Character bitmap array{1}" + OutConfig.nl +
                                               "{11}" +
                                               "}};" + OutConfig.nl,
-                                               OutConfig.CommentStart,
+                                              OutConfig.CommentStart,
                                               OutConfig.CommentEnd,
                                               fontInfoVarName,
                                               fontCharHeightString,
@@ -273,7 +273,7 @@ namespace TheDotFactory
             LastChar = CodePageInfo.GetFirstValidCharacter();
 
             // the fixed absolute character height
-            this.FixedAbsolutCharHeight = OutConfig.rotation.getAbsoluteCharacterDimensions(Characters[0].BitmapToGenerate.Size).Height;
+            this.FixedAbsoluteCharHeight = OutConfig.rotation.getAbsoluteCharacterDimensions(Characters[0].BitmapToGenerate.Size).Height;
 
             // iterate through letter string
             for (int charIdx = 0; charIdx < Characters.Length; ++charIdx)
@@ -285,10 +285,10 @@ namespace TheDotFactory
                 char currentChar = Characters[charIdx].Character;
 
                 // is this character smaller than start char?
-                if (CodePageInfo.GetCharacterDifferance(currentChar, FirstChar) > 0) FirstChar = currentChar;
+                if (CodePageInfo.GetCharacterDifference(currentChar, FirstChar) > 0) FirstChar = currentChar;
 
                 // is this character bigger than end char?
-                if (CodePageInfo.GetCharacterDifferance(currentChar, LastChar) < 0) LastChar = currentChar;
+                if (CodePageInfo.GetCharacterDifference(currentChar, LastChar) < 0) LastChar = currentChar;
 
                 // populate offset of character
                 Characters[charIdx].OffsetInBytes = charByteOffset;
@@ -366,7 +366,7 @@ namespace TheDotFactory
                 currentCharacter = Characters[charIndex].Character;
 
                 // check if this character is too far from the previous character and it isn't the first char
-                if (cpi.GetCharacterDifferance(previousCharacter, currentCharacter) < differenceBetweenCharsForNewGroup && previousCharacter != '\0')
+                if (cpi.GetCharacterDifference(previousCharacter, currentCharacter) < differenceBetweenCharsForNewGroup && previousCharacter != '\0')
                 {
                     // it may not be far enough to generate a new group but it still may be non-sequential
                     // in this case we need to generate place holders

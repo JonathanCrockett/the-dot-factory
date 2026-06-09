@@ -379,7 +379,7 @@ namespace TheDotFactory
         }
 
 
-        public int GetCharacterDifferance(char a, char b)
+        public int GetCharacterDifference(char a, char b)
         {
             int offset_a, offset_b;
 
