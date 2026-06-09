@@ -28,7 +28,7 @@ namespace TheDotFactory
             CodePageInfo = new CodePageInfo(config.CodePage);
 
             //
-            // init char infos
+            // init char info
             //
             Characters = characters.Select(c => new CharacterDescriptor(this, c)).ToArray();
 
@@ -44,7 +44,7 @@ namespace TheDotFactory
                     });
 
             //
-            // create bitmaps per characater
+            // create bitmaps per character
             //
             Characters.ToList().ForEach(c => c.GenerateOriginal(largestBitmap));
 
@@ -75,7 +75,7 @@ namespace TheDotFactory
                             );
             }
             //
-            // iterate thruogh all bitmaps and generate the bitmap we will convert to string
+            // iterate through all the bitmaps and generate the bitmap we will convert to string
             // this means performing all manipulation (pad remove, flip)
             //
 
@@ -83,7 +83,7 @@ namespace TheDotFactory
             Characters.ToList().ForEach(c =>
             {
                 // check if bitmap exists
-                if (c.GenerateManipulatetBitmap(tightestCommonBorder))
+                if (c.GenerateManipulatedBitmap(tightestCommonBorder))
                 {
                     // create the page array for the character
                     c.GeneratePageArray();
@@ -155,7 +155,7 @@ namespace TheDotFactory
             sourceText.Append("};" + OutConfig.nl + OutConfig.nl);
 
             //
-            // Charater descriptor
+            // Character descriptor
             //
             // whether or not block lookup was generated
             bool blockLookupGenerated = false;
@@ -189,8 +189,8 @@ namespace TheDotFactory
             // the font character height
             string fontCharHeightString = "";
 
-            // get character height sstring - displayed according to output configuration
-            if (OutConfig.descFontHeight != OutputConfiguration.DescriptorFormat.DontDisplay)
+            // get character height string - displayed according to output configuration
+            if (OutConfig.descFontHeight != OutputConfiguration.DescriptorFormat.DoNotDisplay)
             {
                 // convert the value
                 fontCharHeightString = String.Format("\t{0}, {1} Character height{2}" + OutConfig.nl,
@@ -329,9 +329,9 @@ namespace TheDotFactory
         }
 
         // get the font name and format it
-        public static string getFontName(Font font, bool variabelName = false)
+        public static string getFontName(Font font, bool variableName = false)
         {
-            string space = (variabelName) ? "_" : " ";
+            string space = (variableName) ? "_" : " ";
             string s;
 
             s = string.Format("{0}{2}{1}pt", font.Name, Math.Round(font.Size), space);
@@ -339,18 +339,19 @@ namespace TheDotFactory
             if (font.Style != FontStyle.Regular)
             {
                 s += space + font.Style.ToString();
-                if (variabelName) s = s.Replace(", ", "_");
+                if (variableName) s = s.Replace(", ", "_");
             }
 
-            return (variabelName) ? MyExtensions.ScrubVariableName(s) : s;
+            return (variableName) ? MyExtensions.ScrubVariableName(s) : s;
         }
 
         #region Lookup
-        // genereate a list of blocks describing the characters
+        // generate a list of blocks describing the characters
         private List<CharacterDescriptor>[] generateCharacterDescriptorBlockList()
         {
             char currentCharacter, previousCharacter = '\0';
             List<List<CharacterDescriptor>> characterBlockList = new List<List<CharacterDescriptor>>();
+
             // initialize first block
             List<CharacterDescriptor> characterBlock = null;
             CodePageInfo cpi = new CodePageInfo(OutConfig.CodePage);
@@ -528,7 +529,7 @@ namespace TheDotFactory
             const string format = "[Char {0} in {1}], ";
             switch (descFormat)
             {
-                case OutputConfiguration.DescriptorFormat.DontDisplay:
+                case OutputConfiguration.DescriptorFormat.DoNotDisplay:
                     // don't display
                     return "";
                 case OutputConfiguration.DescriptorFormat.DisplayInBits:

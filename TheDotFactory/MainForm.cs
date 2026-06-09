@@ -120,10 +120,10 @@ namespace TheDotFactory
             // set focus somewhere else
             label1.Focus();
 
-            FastColoredTextBoxNS.SyntaxDescriptor pytonSyntax = new FastColoredTextBoxNS.SyntaxDescriptor();
+            FastColoredTextBoxNS.SyntaxDescriptor pythonSyntax = new FastColoredTextBoxNS.SyntaxDescriptor();
 
-            pytonSyntax.leftBracket = '(';
-            pytonSyntax.rightBracket = ')';
+            pythonSyntax.leftBracket = '(';
+            pythonSyntax.rightBracket = ')';
 
             // save default input text
             Properties.Settings.Default.InputText = txtInputText.Text;
@@ -154,7 +154,7 @@ namespace TheDotFactory
                 }
                 else generateOutputForImage(m_outputConfig, colorList, m_currentLoadedBitmap, textSource, textHeader);
             }
-            else throw new Exception("Unknowen tabpage");
+            else throw new Exception("Unknown tab page");
 
             switch (m_outputConfig.commentStyle)
             {
@@ -164,8 +164,8 @@ namespace TheDotFactory
                     txtOutputTextHeader.Language = FastColoredTextBoxNS.Language.CSharp;
                     break;
                 case OutputConfiguration.CommentStyle.Python:
-                    txtOutputTextHeader.DescriptionFile = "pyhtonStyle.xml";
-                    txtOutputTextSource.DescriptionFile = "pyhtonStyle.xml";
+                    txtOutputTextHeader.DescriptionFile = "pythonStyle.xml";
+                    txtOutputTextSource.DescriptionFile = "pythonStyle.xml";
                     txtOutputTextSource.Language = FastColoredTextBoxNS.Language.Custom;
                     txtOutputTextHeader.Language = FastColoredTextBoxNS.Language.Custom;
                     break;
@@ -206,8 +206,8 @@ namespace TheDotFactory
                 dataGridViewBackgroundColor.RowCount = colorList.Count;
                 dataGridViewBackgroundColor.Refresh();
 
-                // Set picterbox background
-                pbxBitmap.BackColor = GetBackColorForPicturbox();
+                // Set picture box background
+                pbxBitmap.BackColor = GetBackColorForPictureBox();
 
                 Size sz = DetectTileSize();
 
@@ -248,7 +248,7 @@ namespace TheDotFactory
             AboutForm about = new AboutForm();
             about.FormBorderStyle = FormBorderStyle.FixedToolWindow;
 
-            // show teh about form
+            // show the about form
             about.Show();
         }
 
@@ -423,8 +423,8 @@ namespace TheDotFactory
             }
 
             // add items
+            cbxTextInsert.Items.Add(new ComboBoxItem("All English (ASCII)", allEnglish));
             cbxTextInsert.Items.Add(new ComboBoxItem("All European", allEuropean));
-            cbxTextInsert.Items.Add(new ComboBoxItem("All English(ASCCI)", allEnglish));
             cbxTextInsert.Items.Add(new ComboBoxItem("Numbers (0-9)", numbers));
             cbxTextInsert.Items.Add(new ComboBoxItem("Letters (A-z)", letters));
             cbxTextInsert.Items.Add(new ComboBoxItem("Lowercase letters (a-z)", lowercaseLetters));
@@ -445,8 +445,8 @@ namespace TheDotFactory
             cbxTextInsert.SelectedIndex = 0;
         }
 
-        // Gussing the best background color
-        private Color GetBackColorForPicturbox()
+        // Guessing the best background color
+        private Color GetBackColorForPictureBox()
         {
             return colorList.Keys.Aggregate<Color, List<Color>, Color>(new List<Color>(),
                     (list, c) =>
@@ -566,22 +566,22 @@ namespace TheDotFactory
                 Bitmap character = MyExtensions.Clone(m_currentLoadedBitmap, r, PixelFormat.Format32bppArgb, c); ;
 
                 Size newSize = r.Size;
-                int faktor = 1;
+                int factor = 1;
 
                 while (newSize.Height <= 32)
                 {
                     newSize.Height *= 2;
                     newSize.Width *= 2;
-                    faktor *= 2;
+                    factor *= 2;
                 }
 
-                //convert to black white image
+                // convert to black white image
                 character = MyExtensions.ToBitmap(MyExtensions.ToArgbArray(character).Select(argb =>
                 {
                     return colorList[Color.FromArgb(argb)] ? Color.Black.ToArgb() : Color.White.ToArgb();
                 }).ToArray(), r.Size);
 
-                pictureBoxInputImageFontCharacterPreview.Image = MyExtensions.ResizeImage(character, faktor);
+                pictureBoxInputImageFontCharacterPreview.Image = MyExtensions.ResizeImage(character, factor);
                 pictureBoxInputImageFontCharacterPreview.Size = newSize;
             }
         }
@@ -621,7 +621,7 @@ namespace TheDotFactory
                 if (!bi.GenerateManipulatetBitmap(bi.OriginalBorder))
                 {
                     // show error
-                    MessageBox.Show("No blackground pixels found in bitmap",
+                    MessageBox.Show("No background pixels found in bitmap",
                                     "Can't convert bitmap",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
@@ -644,7 +644,7 @@ namespace TheDotFactory
                                                         m_outputConfig.CommentEnd);
                 }
 
-                // bitmap varname
+                // bitmap var name
                 string bitmapVarName = String.Format(m_outputConfig.varNfImageBitmap, imageName) + "[]";
 
                 // add to source
@@ -694,14 +694,14 @@ namespace TheDotFactory
                                 bi.BitmapToGenerate.Width,
                                 "Image width in pixels",
                                 m_outputConfig.nl);
-                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                        case OutputConfiguration.DescriptorFormat.DoNotDisplay:
                             return "";
                         default:
                             throw new NotImplementedException();
                     }
                 };
 
-                Func<string> getImageHeigtString = () =>
+                Func<string> getImageHeightString = () =>
                 {
                     const string format = "\t{2}, {0} {3}{1}{4}";
 
@@ -721,7 +721,7 @@ namespace TheDotFactory
                                 bi.BitmapToGenerate.Height,
                                 "Image height in pixels",
                                 m_outputConfig.nl);
-                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                        case OutputConfiguration.DescriptorFormat.DoNotDisplay:
                             return "";
                         default:
                             throw new NotImplementedException();
@@ -744,7 +744,7 @@ namespace TheDotFactory
                                                   m_outputConfig.CommentEnd,
                                                   imageInfoVarName,
                                                   getImageWidthString(),
-                                                  getImageHeigtString(),
+                                                  getImageHeightString(),
                                                   MyExtensions.GetVariableNameFromExpression(bitmapVarName));
 
             }
@@ -903,7 +903,7 @@ namespace TheDotFactory
                 if (!bi.GenerateManipulatetBitmap(bi.OriginalBorder))
                 {
                     // show error
-                    MessageBox.Show("No blackground pixels found in bitmap",
+                    MessageBox.Show("No background pixels found in bitmap",
                                     "Can't convert bitmap",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
@@ -929,7 +929,7 @@ namespace TheDotFactory
                                                         m_outputConfig.CommentEnd);
                 }
 
-                // bitmap varname
+                // bitmap var name
                 string bitmapVarName = String.Format(m_outputConfig.varNfImageBitmap, imageName) + "[]";
 
                 // add to source
@@ -979,14 +979,14 @@ namespace TheDotFactory
                                 bi.BitmapToGenerate.Width,
                                 "Image width in pixels",
                                 m_outputConfig.nl);
-                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                        case OutputConfiguration.DescriptorFormat.DoNotDisplay:
                             return "";
                         default:
                             throw new NotImplementedException();
                     }
                 };
 
-                Func<string> getImageHeigtString = () =>
+                Func<string> getImageHeightString = () =>
                 {
                     const string format = "\t{2}, {0} {3}{1}{4}";
 
@@ -1006,7 +1006,7 @@ namespace TheDotFactory
                                 bi.BitmapToGenerate.Height,
                                 "Image height in pixels",
                                 m_outputConfig.nl);
-                        case OutputConfiguration.DescriptorFormat.DontDisplay:
+                        case OutputConfiguration.DescriptorFormat.DoNotDisplay:
                             return "";
                         default:
                             throw new NotImplementedException();
@@ -1029,7 +1029,7 @@ namespace TheDotFactory
                                                   m_outputConfig.CommentEnd,
                                                   imageInfoVarName,
                                                   getImageWidthString(),
-                                                  getImageHeigtString(),
+                                                  getImageHeightString(),
                                                   MyExtensions.GetVariableNameFromExpression(bitmapVarName));
 
             }

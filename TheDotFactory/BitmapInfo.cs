@@ -103,7 +103,7 @@ namespace TheDotFactory
                     bitmapCropBorder.Top = 0;
                     bitmapCropBorder.Bottom = Original.Height - 1;
                     break;
-                case OutputConfiguration.PaddingRemoval.Tighest:
+                case OutputConfiguration.PaddingRemoval.Tightest:
                     break;
                 default: throw new NotImplementedException();
             }
@@ -137,7 +137,7 @@ namespace TheDotFactory
                     bitmapCropBorder.Left = 0;
                     bitmapCropBorder.Right = Original.Width - 1;
                     break;
-                case OutputConfiguration.PaddingRemoval.Tighest:
+                case OutputConfiguration.PaddingRemoval.Tightest:
                     break;
                 default: throw new NotImplementedException();
             }

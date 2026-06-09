@@ -60,7 +60,7 @@ namespace TheDotFactory
         }
 
         // generate the bitmap we will then use to convert to string (remove pad, flip)
-        public bool GenerateManipulatetBitmap(Border tightestCommonBorder)
+        public bool GenerateManipulatedBitmap(Border tightestCommonBorder)
         {
             return bitmapInfo.GenerateManipulatetBitmap(tightestCommonBorder);
         }
@@ -110,7 +110,7 @@ namespace TheDotFactory
                  switch (descFormat)
                  {
                      // don't display
-                     case OutputConfiguration.DescriptorFormat.DontDisplay:
+                     case OutputConfiguration.DescriptorFormat.DoNotDisplay:
                          return "";
                      case OutputConfiguration.DescriptorFormat.DisplayInBits:
                      case OutputConfiguration.DescriptorFormat.DisplayInBytes:

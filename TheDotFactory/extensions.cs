@@ -217,7 +217,7 @@ namespace TheDotFactory
                     // set into string
                     return valueInBytes;
                 case OutputConfiguration.DescriptorFormat.DisplayInBits:
-                case OutputConfiguration.DescriptorFormat.DontDisplay:
+                case OutputConfiguration.DescriptorFormat.DoNotDisplay:
                     // no conversion required
                     return valueInBits;
                 default:

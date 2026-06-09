@@ -40,7 +40,7 @@ namespace TheDotFactory
         public enum PaddingRemoval
         {
             None,               // no padding removal
-            Tighest,            // remove padding as much as possible, per bitmap
+            Tightest,           // remove padding as much as possible, per bitmap
             Fixed,              // remove padding as much as the bitmap with least padding
             Clipped             // Clip if possible
         }
@@ -198,7 +198,7 @@ namespace TheDotFactory
         // rotation
         public enum DescriptorFormat
         {
-            DontDisplay,
+            DoNotDisplay,
             DisplayInBits,
             DisplayInBytes
         }
@@ -253,7 +253,7 @@ namespace TheDotFactory
 
         // padding removal
         public PaddingRemoval paddingRemovalHorizontal = PaddingRemoval.Fixed;
-        public PaddingRemoval paddingRemovalVertical = PaddingRemoval.Tighest;
+        public PaddingRemoval paddingRemovalVertical = PaddingRemoval.Tightest;
         public int clippingHoriz = 16;
         public int clippingVert = 16;
 
@@ -269,7 +269,7 @@ namespace TheDotFactory
         // descriptors
         public bool generateLookupArray = true;
         public DescriptorFormat descCharWidth = DescriptorFormat.DisplayInBits;
-        public DescriptorFormat descCharHeight = DescriptorFormat.DontDisplay;
+        public DescriptorFormat descCharHeight = DescriptorFormat.DoNotDisplay;
         public DescriptorFormat descFontHeight = DescriptorFormat.DisplayInBits;
         public bool generateLookupBlocks = false;
         public int lookupBlocksNewAfterCharCount = 80;
@@ -399,7 +399,7 @@ namespace TheDotFactory
         // save to file
         public void saveToFile(string fileName)
         {
-            // create serailizer and text writer
+            // create XmlSerializer and text writer
             XmlSerializer serializer = new XmlSerializer(m_outputConfigurationList.GetType());
             TextWriter textWriter = new StreamWriter(fileName);
 
@@ -413,7 +413,7 @@ namespace TheDotFactory
         // load from file
         public void loadFromFile(string fileName)
         {
-            // create serailizer and text writer
+            // create XmlSerializer and text writer
             XmlSerializer serializer;
             try
             {
